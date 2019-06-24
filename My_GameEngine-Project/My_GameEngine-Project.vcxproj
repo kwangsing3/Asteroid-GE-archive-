@@ -162,6 +162,8 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Xml\pugiconfig.hpp" />
+    <ClInclude Include="Xml\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
@@ -172,6 +174,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Xml\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\04b8ee6ab06c0cc92d4d5c5c1dc413a2.jpg" />

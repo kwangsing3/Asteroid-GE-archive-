@@ -27,6 +27,12 @@
     <ClInclude Include="Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Xml\pugixml.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\pugiconfig.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -37,6 +43,9 @@
     </ClCompile>
     <ClCompile Include="..\src\glad.c">
       <Filter>資源檔</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\pugixml.cpp">
+      <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
