@@ -111,6 +111,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)src\glfw-3.3.bin.WIN64\include;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,6 +160,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="GraphicEngine\imconfig.h" />
+    <ClInclude Include="GraphicEngine\imgui.h" />
+    <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />
+    <ClInclude Include="GraphicEngine\imgui_impl_opengl3.h" />
+    <ClInclude Include="GraphicEngine\imgui_internal.h" />
+    <ClInclude Include="GraphicEngine\imstb_rectpack.h" />
+    <ClInclude Include="GraphicEngine\imstb_textedit.h" />
+    <ClInclude Include="GraphicEngine\imstb_truetype.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="pch.h" />
@@ -167,6 +176,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
+    <ClCompile Include="GraphicEngine\imgui.cpp" />
+    <ClCompile Include="GraphicEngine\imgui_demo.cpp" />
+    <ClCompile Include="GraphicEngine\imgui_draw.cpp" />
+    <ClCompile Include="GraphicEngine\imgui_impl_glfw.cpp" />
+    <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="GraphicEngine\imgui_widgets.cpp" />
     <ClCompile Include="My_GameEngine-Project.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

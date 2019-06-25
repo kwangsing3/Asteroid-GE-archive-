@@ -33,18 +33,60 @@
     <ClInclude Include="Xml\pugiconfig.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="GraphicEngine\imconfig.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imgui.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imgui_impl_glfw.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imgui_impl_opengl3.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imgui_internal.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imstb_rectpack.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imstb_textedit.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\imstb_truetype.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="My_GameEngine-Project.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="..\src\glad.c">
       <Filter>資源檔</Filter>
     </ClCompile>
     <ClCompile Include="Xml\pugixml.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="My_GameEngine-Project.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_demo.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_draw.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_impl_glfw.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_widgets.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
