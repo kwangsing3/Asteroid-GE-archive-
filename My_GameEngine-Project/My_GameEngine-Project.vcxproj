@@ -110,14 +110,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\glfw-3.3.bin.WIN64\include;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\glfw-3.3.bin.WIN64\include;$(SolutionDir)src;$(SolutionDir)My_GameEngine-Project;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)src\glfw-3.3.bin.WIN64\lib-vc2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)src\glfw-3.3.bin.WIN64\lib-vc2017;$(SolutionDir)My_GameEngine-Project\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -168,7 +168,8 @@
     <ClInclude Include="GraphicEngine\imstb_rectpack.h" />
     <ClInclude Include="GraphicEngine\imstb_textedit.h" />
     <ClInclude Include="GraphicEngine\imstb_truetype.h" />
-    <ClInclude Include="Shader.h" />
+    <ClInclude Include="mesh.h" />
+    <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
@@ -197,6 +198,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\FragmentShader.fs" />
+    <None Include="Shader\lightfragmentshader.fs" />
+    <None Include="Shader\lightVertexShader.vs" />
     <None Include="Shader\VertexShader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

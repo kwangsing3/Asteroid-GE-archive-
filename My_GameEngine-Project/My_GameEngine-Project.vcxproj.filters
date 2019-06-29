@@ -21,9 +21,6 @@
     <ClInclude Include="stb_image.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -55,6 +52,12 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="GraphicEngine\imstb_truetype.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_m.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,5 +104,7 @@
   <ItemGroup>
     <None Include="Shader\FragmentShader.fs" />
     <None Include="Shader\VertexShader.vs" />
+    <None Include="Shader\lightVertexShader.vs" />
+    <None Include="Shader\lightfragmentshader.fs" />
   </ItemGroup>
 </Project>
