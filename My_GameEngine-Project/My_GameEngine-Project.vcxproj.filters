@@ -57,7 +57,13 @@
     <ClInclude Include="shader_m.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
     <ClInclude Include="mesh.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="MainUI.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -92,6 +98,9 @@
     <ClCompile Include="GraphicEngine\imgui_widgets.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="MainUI.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\r50j9AV.gif">
@@ -100,11 +109,5 @@
     <Image Include="Texture\04b8ee6ab06c0cc92d4d5c5c1dc413a2.jpg">
       <Filter>資源檔</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shader\FragmentShader.fs" />
-    <None Include="Shader\VertexShader.vs" />
-    <None Include="Shader\lightVertexShader.vs" />
-    <None Include="Shader\lightfragmentshader.fs" />
   </ItemGroup>
 </Project>
