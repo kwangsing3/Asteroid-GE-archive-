@@ -67,20 +67,17 @@ static void ShowExampleAppMainMenuBar();
 static void ShowExampleMenuFile();
 static void ShowExampleAppLayout(bool* p_open);
 
- 
-
+static float _maineditorX = 854, _maineditorY = 590;
+static float _LogoutX = 854;
+static float _SceneX = 213, _SceneY = 360;
 void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
 	static bool show_app_main_menu_bar = false;
 	show_app_main_menu_bar = p_open;
 	ImGui::ShowDemoWindow(p_open);
 
-	//if (show_app_main_menu_bar)
-		//ShowExampleAppMainMenuBar();
-
 	float lastX = *width / 2.0f;
 	float lastY = *height / 2.0f;
-
 
 	static bool no_titlebar = true;
 	static bool no_scrollbar = true;
@@ -104,79 +101,92 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	if (no_background)      window_flags |= ImGuiWindowFlags_NoBackground;
 	if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 	if (no_close)           p_open = NULL; // Don't pass our bool* to Begin
-	
+
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
 
-	
-	if (!ImGui::Begin("Main menu", p_open, window_flags))
+	//Main Background--------------------------------------------------------------------------------------
 	{
-		// Early out if the window is collapsed, as an optimization.
-		ImGui::End();
-		return;
-	}
-	
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Menu"))
+		if (!ImGui::Begin("Main Background", p_open, window_flags))
 		{
-			ShowExampleMenuFile();
-			ImGui::EndMenu();
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
 		}
-		if (ImGui::BeginMenu("Edit"))
-		{
-			
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help"))
-		{
-			
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-	ImGui::End();
 
-	ImGui::SetNextWindowPos(ImVec2(0, *height - 100), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(*width, 100), ImGuiCond_FirstUseEver);
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Menu"))
+			{
+				ShowExampleMenuFile();
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Edit"))
+			{
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Help"))
+			{
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+		ImGui::End();
+	}
+	//Main Background--------------------------------------------------------------------------------------
+
+
+
 	ImGuiWindowFlags window_flags2 = 0;
-	if (!ImGui::Begin("Main Editor", p_open, window_flags2))
-	{
-		// Early out if the window is collapsed, as an optimization.
-		ImGui::End();
-		return;
-	}
-	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_Reorderable;
+	window_flags2 |= ImGuiWindowFlags_NoTitleBar;
+	window_flags2 |= ImGuiWindowFlags_NoMove;
 	
-
-	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+	//Main Editor------------------------------------------------------------------------------------------
+	ImGui::SetNextWindowPos(ImVec2(0, *height/35), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(_maineditorX, _maineditorY), ImGuiCond_Always);
 	{
-		if (ImGui::BeginTabItem("Editor"))
-		{
-			
-			ImGui::GetWindowDrawList()->AddImage(
-				(void *)textureColorbuffer, ImVec2(ImGui::GetCursorScreenPos()),
-				ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetWindowWidth(), ImGui::GetCursorScreenPos().y + ImGui::GetWindowHeight()-80), ImVec2(0, 1), ImVec2(1, 0));
-
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Game"))
-		{
-			
-
-			ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
-			ImGui::EndTabItem();
-		}
 		
-		ImGui::EndTabBar();
-	}
-	ImGui::Separator();
-	ImGui::End();
-	
 
-	
-	
-	
+		if (!ImGui::Begin("Main Editor", p_open, window_flags2))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_Reorderable;
+		if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+		{
+			if (ImGui::BeginTabItem("Editor"))
+			{
+
+				ImGui::GetWindowDrawList()->AddImage(
+					(void *)textureColorbuffer, ImVec2(ImGui::GetCursorScreenPos()),
+					ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetWindowWidth(), ImGui::GetCursorScreenPos().y + ImGui::GetWindowHeight() - 80), ImVec2(0, 1), ImVec2(1, 0));
+
+				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem("Game"))
+			{
+
+
+				ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
+		}
+		ImGui::Separator();
+
+		_maineditorX = ImGui::GetWindowWidth();
+		_maineditorY = ImGui::GetWindowHeight();
+		ImGui::End();
+
+	}
+	//Logout layer-----------------------------------------------------------------------------------------
+	ImGui::SetNextWindowPos(ImVec2(0, *height / 35 + _maineditorY), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(_maineditorX, *height- _maineditorY), ImGuiCond_Always);
+	{
+
 	if (!ImGui::Begin("options", p_open, window_flags2))
 	{
 		// Early out if the window is collapsed, as an optimization.
@@ -186,7 +196,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	//------------------------------------------------------------------------------------------------
 	if (ImGui::CollapsingHeader("Window options"))
 	{
-		ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
+		/*ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
 		ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
 		ImGui::Checkbox("No menu", &no_menu);
 		ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
@@ -195,10 +205,103 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
 		ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
 		ImGui::Checkbox("No background", &no_background);
-		ImGui::Checkbox("No bring to front", &no_bring_to_front);
+		ImGui::Checkbox("No bring to front", &no_bring_to_front);*/
 	}
+	_maineditorX = ImGui::GetWindowWidth();
+	_maineditorY =*height-ImGui::GetWindowHeight();
 	ImGui::End();
+    }
+
 	
+	//Scene------------------------------------------------------------------------------------------------
+	ImGui::SetNextWindowPos(ImVec2(_maineditorX, *height / 35), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(_SceneX, _SceneY), ImGuiCond_Always);
+	{
+
+		if (!ImGui::Begin("Scene", p_open, window_flags2))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+		//------------------------------------------------------------------------------------------------
+		if (ImGui::CollapsingHeader("Window options"))
+		{
+			ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
+			ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
+			ImGui::Checkbox("No menu", &no_menu);
+			ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
+			ImGui::Checkbox("No resize", &no_resize); ImGui::SameLine(300);
+			ImGui::Checkbox("No collapse", &no_collapse);
+			ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
+			ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
+			ImGui::Checkbox("No background", &no_background);
+			ImGui::Checkbox("No bring to front", &no_bring_to_front);
+		}
+		_SceneX = ImGui::GetWindowWidth();
+		_SceneY = ImGui::GetWindowHeight();
+
+		ImGui::End();
+
+	}
+	//Asset------------------------------------------------------------------------------------------------
+	ImGui::SetNextWindowPos(ImVec2(_maineditorX, *height / 35 + _SceneY), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(_SceneX, *height - _SceneY), ImGuiCond_Always);
+	{
+
+		if (!ImGui::Begin("Asset", p_open, window_flags2))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+		//------------------------------------------------------------------------------------------------
+		if (ImGui::CollapsingHeader("Window options"))
+		{
+			ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
+			ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
+			ImGui::Checkbox("No menu", &no_menu);
+			ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
+			ImGui::Checkbox("No resize", &no_resize); ImGui::SameLine(300);
+			ImGui::Checkbox("No collapse", &no_collapse);
+			ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
+			ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
+			ImGui::Checkbox("No background", &no_background);
+			ImGui::Checkbox("No bring to front", &no_bring_to_front);
+		}
+		_SceneX = ImGui::GetWindowWidth();
+		_SceneY = *height - ImGui::GetWindowHeight();
+		ImGui::End();
+
+	}
+	//Inspector-----------------------------------------------------------------------------------------
+	ImGui::SetNextWindowPos(ImVec2(_maineditorX+_SceneX, *height / 35), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(*width - (_maineditorX + _SceneX), *height), ImGuiCond_Always);
+	{
+
+		if (!ImGui::Begin("Inspector", p_open, window_flags2))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+		//------------------------------------------------------------------------------------------------
+		if (ImGui::CollapsingHeader("Window options"))
+		{
+			ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
+			ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
+			ImGui::Checkbox("No menu", &no_menu);
+			ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
+			ImGui::Checkbox("No resize", &no_resize); ImGui::SameLine(300);
+			ImGui::Checkbox("No collapse", &no_collapse);
+			ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
+			ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
+			ImGui::Checkbox("No background", &no_background);
+			ImGui::Checkbox("No bring to front", &no_bring_to_front);
+		}
+		ImGui::End();
+
+	}
 }
 
 
