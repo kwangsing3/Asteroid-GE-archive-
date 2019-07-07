@@ -74,7 +74,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 {
 	static bool show_app_main_menu_bar = false;
 	show_app_main_menu_bar = p_open;
-	ImGui::ShowDemoWindow(p_open);
+	
 
 	float lastX = *width / 2.0f;
 	float lastY = *height / 2.0f;
@@ -256,19 +256,19 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			return;
 		}
 		//------------------------------------------------------------------------------------------------
-		if (ImGui::CollapsingHeader("Window options"))
+		ImGui::Text("fsdfsdad我是中文dfd");
+		ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
+
+		if (ImGui::Button("新增一個方塊"))
 		{
-			ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
-			ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
-			ImGui::Checkbox("No menu", &no_menu);
-			ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
-			ImGui::Checkbox("No resize", &no_resize); ImGui::SameLine(300);
-			ImGui::Checkbox("No collapse", &no_collapse);
-			ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
-			ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
-			ImGui::Checkbox("No background", &no_background);
-			ImGui::Checkbox("No bring to front", &no_bring_to_front);
+
 		}
+
+		if (ImGui::Button("新增一個點光源"))
+		{
+
+		}
+
 		_SceneX = ImGui::GetWindowWidth();
 		_SceneY = *height - ImGui::GetWindowHeight();
 		ImGui::End();
@@ -302,6 +302,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::End();
 
 	}
+	ImGui::ShowDemoWindow(p_open);
 }
 
 

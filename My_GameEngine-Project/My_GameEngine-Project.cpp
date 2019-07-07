@@ -6,12 +6,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Xml/pugixml.hpp"
+
 #include "GraphicEngine/imgui.h"
 #include "GraphicEngine/imgui_impl_glfw.h"
 #include "GraphicEngine/imgui_impl_opengl3.h"
 
-
+#include <Window.h>
 #include <model.h>
 #include <shader_m.h>
 #include <Camera.h>
@@ -24,18 +24,17 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 unsigned int loadCubemap(vector<std::string> faces);
-void Xml_SettingImport();
 
 
 
-// settings
- static unsigned int SCR_WIDTH = 800;
- static unsigned int SCR_HEIGHT = 600;
+
+
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+Camera MainCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+float lastX = 500.0f;
+float lastY =300.0f;
 bool firstMouse = true;
 bool _mouseLucked = true;
 // timing
@@ -45,7 +44,7 @@ const char* glsl_version = "#version 460";
 
 int main()
 {
-	Xml_SettingImport();    //  從XML載入設定。
+	   //  從XML載入設定。
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
@@ -57,44 +56,33 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
+	
+	GLFWwindow* _mainWindow = Window::CreateWindow(framebuffer_size_callback, mouse_callback, scroll_callback);
+	MainCamera.CreateFrameBuffer();
+
 	// glfw window creation
 	// --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-
-	// tell GLFW to capture our mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
+	
 
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO(); //(void)io;
+	
+	ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
+	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f,&font_config, io.Fonts->GetGlyphRangesChineseFull());
+	
+	
+	io.Fonts->Build();
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls	
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 	//ImGui::StyleColorsClassic();
 
 	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_InitForOpenGL(_mainWindow, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	bool show_demo_window = true;
@@ -195,29 +183,7 @@ int main()
 
    // framebuffer configuration
    // -------------------------
-	unsigned int framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	// create a color attachment texture
 	
-	unsigned int textureColorbuffer;
-	glGenTextures(1, &textureColorbuffer);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-	// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	// load and create a texture 
 	// -------------------------
 	unsigned int texture1, texture2;
@@ -279,7 +245,7 @@ int main()
 	// render loop
 	// -----------
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(_mainWindow))
 	{
 		// per-frame time logic
 		// --------------------
@@ -288,10 +254,10 @@ int main()
 		lastFrame = currentFrame;
 		// input
 		// -----
-		processInput(window);
+		processInput(_mainWindow);
 		//  Game scene
 		
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, MainCamera.GetframeBuffer());
 		
 		// render
 		// ------
@@ -308,10 +274,10 @@ int main()
 		// activate shader
 		ourShader.use();
 		// pass projection matrix to shader (note that in this case it could change every frame)
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(MainCamera.Zoom),(float)Window::WINDOW_WIDTH/ (float)Window::WINDOW_HEIGHT, 0.1f, 100.0f);
 		ourShader.setMat4("projection", projection);
 		// camera/view transformation
-		glm::mat4 view = camera.GetViewMatrix();
+		glm::mat4 view = MainCamera.GetViewMatrix();
 		ourShader.setMat4("view", view);
 		// render boxes
 		glBindVertexArray(VAO);
@@ -340,7 +306,7 @@ int main()
 
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 		if (show_demo_window)
-			MyImGui::ShowMyImGUIDemoWindow(&show_demo_window,&SCR_WIDTH,&SCR_HEIGHT,textureColorbuffer);
+			MyImGui::ShowMyImGUIDemoWindow(&show_demo_window,&Window::WINDOW_WIDTH,&Window::WINDOW_WIDTH, MainCamera.GetframeBuffer());
 			//ImGui::ShowDemoWindow(&show_demo_window);
 
 		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
@@ -373,7 +339,7 @@ int main()
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(_mainWindow);
 		glfwPollEvents();
 	}
 	
@@ -398,13 +364,13 @@ void processInput(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
+		MainCamera.ProcessKeyboard(FORWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
+		MainCamera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime);
+		MainCamera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime);
+		MainCamera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -433,14 +399,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 	if(!_mouseLucked)
-	camera.ProcessMouseMovement(xoffset, yoffset);
+		MainCamera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(yoffset);
+	MainCamera.ProcessMouseScroll(yoffset);
 }
 
 // loads a cubemap texture from 6 individual texture faces
@@ -482,22 +448,4 @@ unsigned int loadCubemap(vector<std::string> faces)
 	return textureID;
 }
 
-void Xml_SettingImport()
-{
-	pugi::xml_document _doc;
-	std::ifstream _XMLstream("GlobalSettings.xml");
-
-	pugi::xml_parse_result result = _doc.load(_XMLstream);
-	std::cout << "Load result: " << result.description() << std::endl;
-
-	pugi::xml_node _node = _doc.child("GlobalSettings").child("WindowSetting").child("viewport");
-	if (_node)
-	{
-		SCR_WIDTH = _node.attribute("width").as_uint();
-		SCR_HEIGHT = _node.attribute("height").as_uint();
-	}
-	_XMLstream.close();
-
-	return;
-}
 

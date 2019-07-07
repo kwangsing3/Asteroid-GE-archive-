@@ -1,4 +1,4 @@
-// dear imgui: Renderer for modern OpenGL with shaders / programmatic pipeline
+﻿// dear imgui: Renderer for modern OpenGL with shaders / programmatic pipeline
 // - Desktop GL: 3.x 4.x
 // - Embedded GL: ES 2.0 (WebGL 1.0), ES 3.0 (WebGL 2.0)
 // This needs to be used along with a Platform Binding (e.g. GLFW, SDL, Win32, custom..)
