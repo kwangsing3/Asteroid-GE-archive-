@@ -3,23 +3,24 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <vector>
+#include <Actor.h>
 class Window
 {
 	
 
 public:
+	//Window setting
 	static GLFWwindow* _Mainwindow;
 	static unsigned int WINDOW_WIDTH;
 	static unsigned int WINDOW_HEIGHT;
-
 	static unsigned int GetWidth();
 	static unsigned int GetHeight();
-
 	static GLFWwindow* CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback);
-	
+	//Render Popline
+	static std::vector<Actor> vec_RenderObjects;
 
-	//void Xml_SettingImport();
+	
 };
 
 

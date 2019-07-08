@@ -69,6 +69,18 @@
     <ClInclude Include="Window.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Component\Transform.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Component.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="ADD_Function.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -105,6 +117,15 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Transform.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="ADD_Function.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

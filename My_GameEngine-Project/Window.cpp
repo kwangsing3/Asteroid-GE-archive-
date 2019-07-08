@@ -6,12 +6,12 @@
 
 
  GLFWwindow* Window::_Mainwindow = NULL;
-
-void Xml_SettingImport();
-//Default  settings
+ void Xml_SettingImport();
+ //Default  settings
  unsigned int Window::WINDOW_WIDTH = 800;
  unsigned int Window::WINDOW_HEIGHT = 600;
 
+ std::vector<Actor> vec_RenderObjects;
 
 GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)
 {

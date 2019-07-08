@@ -159,7 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="ADD_Function.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />
     <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />
@@ -174,12 +177,15 @@
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Component\Transform.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="ADD_Function.cpp" />
     <ClCompile Include="GraphicEngine\imgui.cpp" />
     <ClCompile Include="GraphicEngine\imgui_demo.cpp" />
     <ClCompile Include="GraphicEngine\imgui_draw.cpp" />
@@ -194,6 +200,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Xml\pugixml.cpp" />
   </ItemGroup>
