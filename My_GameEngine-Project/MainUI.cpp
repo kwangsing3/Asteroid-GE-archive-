@@ -10,6 +10,8 @@
 #include <math.h>           // sqrtf, powf, cosf, sinf, floorf, ceilf
 #include <stdio.h>          // vsnprintf, sscanf, printf
 #include <stdlib.h>         // NULL, malloc, free, atoi
+#include <ADD_Function.h>
+
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>         // intptr_t
 #else
@@ -102,45 +104,13 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 	if (no_close)           p_open = NULL; // Don't pass our bool* to Begin
 
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
-
-	//Main Background--------------------------------------------------------------------------------------
-	{
-		if (!ImGui::Begin("Main Background", p_open, window_flags))
-		{
-			// Early out if the window is collapsed, as an optimization.
-			ImGui::End();
-			return;
-		}
-
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("Menu"))
-			{
-				ShowExampleMenuFile();
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Edit"))
-			{
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Help"))
-			{
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenuBar();
-		}
-		ImGui::End();
-	}
-	//Main Background--------------------------------------------------------------------------------------
 
 
 
 	ImGuiWindowFlags window_flags2 = 0;
 	window_flags2 |= ImGuiWindowFlags_NoTitleBar;
 	window_flags2 |= ImGuiWindowFlags_NoMove;
-	
+	window_flags2 |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 	//Main Editor------------------------------------------------------------------------------------------
 	ImGui::SetNextWindowPos(ImVec2(0, *height/35), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(_maineditorX, _maineditorY), ImGuiCond_Always);
@@ -261,12 +231,12 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 
 		if (ImGui::Button("新增一個方塊"))
 		{
-
+			ADD_Function::Add_Cube();
 		}
 
 		if (ImGui::Button("新增一個點光源"))
 		{
-
+			ADD_Function::Add_DirectionalLight();
 		}
 
 		_SceneX = ImGui::GetWindowWidth();
@@ -302,6 +272,41 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::End();
 
 	}
+
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
+
+	//Main Background--------------------------------------------------------------------------------------
+	{
+		if (!ImGui::Begin("Main Background", p_open, window_flags))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Menu"))
+			{
+				ShowExampleMenuFile();
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Edit"))
+			{
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Help"))
+			{
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+		ImGui::End();
+	}
+	//Main Background--------------------------------------------------------------------------------------
+
+
 	ImGui::ShowDemoWindow(p_open);
 }
 

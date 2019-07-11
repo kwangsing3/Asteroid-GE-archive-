@@ -69,6 +69,18 @@
     <ClInclude Include="Window.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="ADD_Function.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader_List.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -107,12 +119,24 @@
     <ClCompile Include="Window.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="ADD_Function.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader_List.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\r50j9AV.gif">
-      <Filter>資源檔</Filter>
-    </Image>
-    <Image Include="Texture\04b8ee6ab06c0cc92d4d5c5c1dc413a2.jpg">
       <Filter>資源檔</Filter>
     </Image>
   </ItemGroup>

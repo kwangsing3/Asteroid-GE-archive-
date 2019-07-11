@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
 #include "Xml/pugixml.hpp"
@@ -11,6 +13,8 @@ void Xml_SettingImport();
 //Default  settings
  unsigned int Window::WINDOW_WIDTH = 800;
  unsigned int Window::WINDOW_HEIGHT = 600;
+ Camera Window::_editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+ std::vector<Actor*> Window::vec_ObjectsToRender;
 
 
 GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)
@@ -39,6 +43,9 @@ GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_ca
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		//return;
 	}
+
+
+	_editorCamera.EnableFrameBuffer(true);
 	return _Mainwindow;
 }
 
@@ -46,7 +53,6 @@ unsigned int Window::GetWidth()
 {
 	return WINDOW_WIDTH;
 }
-
 unsigned int Window::GetHeight()
 {
 	return WINDOW_HEIGHT;
@@ -70,4 +76,5 @@ void Xml_SettingImport()
 
 	return;
 }
+
 
