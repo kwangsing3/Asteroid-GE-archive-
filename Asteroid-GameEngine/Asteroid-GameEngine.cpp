@@ -18,12 +18,8 @@
 #include <Camera.h>
 #include <iostream>
 #include <MainUI.h>
-<<<<<<< HEAD
 
 #include<Cube.h>
-=======
-#include <Actor.h>
->>>>>>> ed1bdf2babff7727a9f89eb22a35a8e9126ad568
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -59,12 +55,6 @@ int main()
 
 	// glfw window creation
 	// --------------------
-<<<<<<< HEAD
-=======
-	
-	
-
->>>>>>> ed1bdf2babff7727a9f89eb22a35a8e9126ad568
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); //(void)io;
