@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include<Component/Component.h>
 using namespace std;
 
 struct Vertex {
@@ -34,7 +35,7 @@ struct Texture {
 	string path;
 };
 
-class Mesh {
+class Mesh:Component {
 public:
 	/*  Mesh Data  */
 	vector<Vertex> vertices;

@@ -160,9 +160,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+<<<<<<< HEAD
     <ClInclude Include="ADD_Function.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
+=======
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="ADD_Function.h" />
+>>>>>>> ed1bdf2babff7727a9f89eb22a35a8e9126ad568
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />
     <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />
@@ -178,6 +184,7 @@
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Component\Transform.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
@@ -186,8 +193,11 @@
     <ClCompile Include="..\src\glad.c" />
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ADD_Function.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
+=======
+>>>>>>> ed1bdf2babff7727a9f89eb22a35a8e9126ad568
     <ClCompile Include="GraphicEngine\imgui.cpp" />
     <ClCompile Include="GraphicEngine\imgui_demo.cpp" />
     <ClCompile Include="GraphicEngine\imgui_draw.cpp" />
@@ -202,7 +212,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Shader_List.cpp" />
+=======
+    <ClCompile Include="Component\Transform.cpp" />
+>>>>>>> ed1bdf2babff7727a9f89eb22a35a8e9126ad568
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Xml\pugixml.cpp" />
   </ItemGroup>

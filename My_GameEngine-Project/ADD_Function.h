@@ -3,6 +3,7 @@
 
 class ADD_Function
 {
+<<<<<<< HEAD
 
 
 public:
@@ -18,6 +19,11 @@ public:
 
 
 
+=======
+public:
+	void Add_Cube();
+	void Add_DirectionalLight();
+>>>>>>> ed1bdf2babff7727a9f89eb22a35a8e9126ad568
 };
 
 
