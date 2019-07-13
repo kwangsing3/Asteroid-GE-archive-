@@ -11,7 +11,7 @@
 #include <stdio.h>          // vsnprintf, sscanf, printf
 #include <stdlib.h>         // NULL, malloc, free, atoi
 #include <ADD_Function.h>
-
+#include <SceneManager.h>
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>         // intptr_t
 #else
@@ -45,7 +45,6 @@
 #pragma GCC diagnostic ignored "-Wconversion"                   // warning: conversion to 'xxxx' from 'xxxx' may alter its value
 #pragma GCC diagnostic ignored "-Wmisleading-indentation"       // [__GNUC__ >= 6] warning: this 'if' clause does not guard this statement      // GCC 6.0+ only. See #883 on GitHub.
 #endif
-
 // Play it nice with Windows users. Notepad in 2017 still doesn't display text data with Unix-style \n.
 #ifdef _WIN32
 #define IM_NEWLINE  "\r\n"
@@ -195,19 +194,23 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			return;
 		}
 		//------------------------------------------------------------------------------------------------
-		if (ImGui::CollapsingHeader("Window options"))
+		
+		ImGui::ListBoxHeader("", SceneManager::Objects.size(),20);
+
+		static bool selection[5] = {false};
+
+		
+
+		for (int n = 0; n < SceneManager::Objects.size(); n++)
 		{
-			ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
-			ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
-			ImGui::Checkbox("No menu", &no_menu);
-			ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
-			ImGui::Checkbox("No resize", &no_resize); ImGui::SameLine(300);
-			ImGui::Checkbox("No collapse", &no_collapse);
-			ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
-			ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
-			ImGui::Checkbox("No background", &no_background);
-			ImGui::Checkbox("No bring to front", &no_bring_to_front);
+			if (ImGui::Selectable(SceneManager::Objects[n]->transform.name, selection[n]))
+			{
+				if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
+					memset(selection, 0, sizeof(selection));
+				selection[n] ^= 1;
+			}
 		}
+		ImGui::ListBoxFooter();
 		_SceneX = ImGui::GetWindowWidth();
 		_SceneY = ImGui::GetWindowHeight();
 
@@ -234,11 +237,14 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ADD_Function::Add_Cube();
 		}
 
-		if (ImGui::Button("新增一個點光源"))
+		if (ImGui::Button("新增一個平光源"))
 		{
 			ADD_Function::Add_DirectionalLight();
 		}
-
+		if (ImGui::Button("新增一個點光源"))
+		{
+			ADD_Function::Add_PointLight();
+		}
 		_SceneX = ImGui::GetWindowWidth();
 		_SceneY = *height - ImGui::GetWindowHeight();
 		ImGui::End();

@@ -14,7 +14,7 @@ void Xml_SettingImport();
  unsigned int Window::WINDOW_WIDTH = 800;
  unsigned int Window::WINDOW_HEIGHT = 600;
  Camera Window::_editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
- std::vector<Actor*> Window::vec_ObjectsToRender;
+
 
 
 GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)

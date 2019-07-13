@@ -12,6 +12,7 @@ public:
 
 	Actor()
 	{
+		transform.name = "Actor";
 	}
 
 	virtual void Draw();

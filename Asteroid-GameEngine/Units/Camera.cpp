@@ -1,11 +1,11 @@
-#include<Camera.h>
+#include<Units/Camera.h>
 
 #include <Window.h>
 
 unsigned int framebuffer;
 unsigned int textureColorbuffer;
 unsigned int rbo;
-
+//Transform transform;
 
 void Camera::EnableFrameBuffer(bool _enable)
 {

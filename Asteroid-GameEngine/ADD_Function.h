@@ -8,7 +8,7 @@ class ADD_Function
 public:
 	static void Add_Cube();
 	static void Add_DirectionalLight();
-
+	static void Add_PointLight();
 
 
 

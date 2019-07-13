@@ -14,12 +14,12 @@
 
 #include <Window.h>
 #include <model.h>
-#include <Shader_List.h>
-#include <Camera.h>
+#include <SceneManager.h>
+#include <Units/Camera.h>
 #include <iostream>
 #include <MainUI.h>
 
-#include<Cube.h>
+#include<ADD_Function.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -91,12 +91,12 @@ int main()
 	//glEnable(GL_FRAMEBUFFER_SRGB); //gamma校正
 	// build and compile our shader zprogram
 	// ------------------------------------
-	//Shader ourShader("Shader/VertexShader.vs", "Shader/FragmentShader.fs");
+	
 
-	Shader_List _shader;
+	SceneManager _SceneManager;
+	ADD_Function::Add_Cube();
+	ADD_Function::Add_DirectionalLight();
 
-	Cube newcube;
-	//ourShader = *newcube._StandardShader;
 	// render loop
 	// -----------
 
@@ -119,16 +119,11 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 	
-		
-		
-	
-	
-		
-		
-		for (int i = 0; i < Window::vec_ObjectsToRender.size(); ++i)
-		{
 
-			Window::vec_ObjectsToRender[i]->Draw();
+		
+		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); ++i)
+		{
+			SceneManager::vec_ObjectsToRender[i]->Draw();
 		}
 
 		

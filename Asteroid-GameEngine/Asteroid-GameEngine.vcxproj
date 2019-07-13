@@ -160,10 +160,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h" />
+    <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="Units\DirectionalLight.h" />
+    <ClInclude Include="Units\Actor.h" />
     <ClInclude Include="ADD_Function.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Units\Camera.h" />
+    <ClInclude Include="Units\Cube.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />
     <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />
@@ -175,20 +178,22 @@
     <ClInclude Include="MainUI.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="Shader_List.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="Units\PointLight.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
-    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="Units\DirectionalLight.cpp" />
+    <ClCompile Include="Units\Actor.cpp" />
     <ClCompile Include="ADD_Function.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Units\Camera.cpp" />
+    <ClCompile Include="Units\Cube.cpp" />
     <ClCompile Include="GraphicEngine\imgui.cpp" />
     <ClCompile Include="GraphicEngine\imgui_demo.cpp" />
     <ClCompile Include="GraphicEngine\imgui_draw.cpp" />
@@ -197,13 +202,8 @@
     <ClCompile Include="GraphicEngine\imgui_widgets.cpp" />
     <ClCompile Include="MainUI.cpp" />
     <ClCompile Include="Asteroid-GameEngine.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Shader_List.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Units\PointLight .cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Xml\pugixml.cpp" />
   </ItemGroup>

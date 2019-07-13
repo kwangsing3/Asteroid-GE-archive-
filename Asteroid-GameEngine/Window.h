@@ -3,9 +3,9 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <Camera.h>
+#include <Units/Camera.h>
 #include <vector>
-#include <Actor.h>
+
 class Window
 {
 	
@@ -21,7 +21,7 @@ public:
 	static GLFWwindow* CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback);
 	static Camera _editorCamera;
 
-	static std::vector<Actor*> vec_ObjectsToRender;
+	
 };
 
 

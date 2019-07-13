@@ -1,6 +1,6 @@
 #ifndef CUBE_H
 #define CUBE_H
-#include <Actor.h>
+#include <Units/Actor.h>
 #include<Component/Transform.h>
 
 
@@ -17,6 +17,7 @@ public:
 	Cube() 
 	{
 		CreateCube();
+		transform.name = "Cube";
 	};
 private:
 	void CreateCube();

@@ -15,13 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="stb_image.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Xml\pugixml.hpp">
@@ -72,20 +66,32 @@
     <ClInclude Include="ADD_Function.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Actor.h">
+    <ClInclude Include="Units\Actor.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
+    <ClInclude Include="Units\Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Shader_List.h">
+    <ClInclude Include="Units\Cube.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Units\DirectionalLight.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Transform.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Component.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Units\PointLight.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\glad.c">
       <Filter>資源檔</Filter>
     </ClCompile>
@@ -116,22 +122,31 @@
     <ClCompile Include="Window.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="ADD_Function.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Actor.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader_List.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="Asteroid-GameEngine.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\Actor.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\Camera.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\Cube.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\DirectionalLight.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Transform.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\PointLight .cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

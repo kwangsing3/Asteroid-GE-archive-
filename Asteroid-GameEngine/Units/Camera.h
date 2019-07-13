@@ -1,4 +1,4 @@
-#ifndef CAMERA_H
+﻿#ifndef CAMERA_H
 #define CAMERA_H
 
 #include <glad/glad.h>
@@ -8,6 +8,7 @@
 //#include <Window.h>
 #include <vector>
 #include <iostream>
+#include <Units/Actor.h>
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
 	FORWARD,
@@ -25,15 +26,17 @@ const float ZOOM = 45.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
-class Camera
+class Camera:public Actor
 {
 public:
 	// Camera Attributes
-	glm::vec3 Position;
+	//glm::vec3 Position;   //現在是transform.position
+	  
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
+	
 	// Euler Angles
 	float Yaw;
 	float Pitch;
@@ -50,16 +53,17 @@ public:
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 	{
 
-		Position = position;
+		transform.position = position;
 		WorldUp = up;
 		Yaw = yaw;
 		Pitch = pitch;
+		transform.name = "Camera";
 		updateCameraVectors();
 	}
 	// Constructor with scalar values
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 	{
-		Position = glm::vec3(posX, posY, posZ);
+		transform.position = glm::vec3(posX, posY, posZ);
 		WorldUp = glm::vec3(upX, upY, upZ);
 		Yaw = yaw;
 		Pitch = pitch;
@@ -74,7 +78,7 @@ public:
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix()
 	{
-		return glm::lookAt(Position, Position + Front, Up);
+		return glm::lookAt(transform.position, transform.position + Front, Up);
 	}
 
 	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -82,13 +86,13 @@ public:
 	{
 		float velocity = MovementSpeed * deltaTime;
 		if (direction == FORWARD)
-			Position += Front * velocity;
+			transform.position += Front * velocity;
 		if (direction == BACKWARD)
-			Position -= Front * velocity;
+			transform.position -= Front * velocity;
 		if (direction == LEFT)
-			Position -= Right * velocity;
+			transform.position -= Right * velocity;
 		if (direction == RIGHT)
-			Position += Right * velocity;
+			transform.position += Right * velocity;
 	}
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
