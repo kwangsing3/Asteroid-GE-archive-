@@ -10,7 +10,7 @@ class PointLight:public Actor
 public:
 	PointLight()
 	{
-		transform.name = "PointLight";
+		transform.name = (char*) "PointLight";
 	}
 	
 };

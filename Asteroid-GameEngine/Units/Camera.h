@@ -57,7 +57,7 @@ public:
 		WorldUp = up;
 		Yaw = yaw;
 		Pitch = pitch;
-		transform.name = "Camera";
+		transform.name = (char*) "Camera";
 		updateCameraVectors();
 	}
 	// Constructor with scalar values

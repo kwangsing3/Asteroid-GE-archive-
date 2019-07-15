@@ -71,6 +71,33 @@ static void ShowExampleAppLayout(bool* p_open);
 static float _maineditorX = 854, _maineditorY = 590;
 static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
+
+
+struct listbool
+{
+	bool selected = false;
+	listbool* next=NULL;
+};
+
+static listbool _headlistbool;
+static listbool *_currentlistbool = &_headlistbool;
+
+void Clear_ListBool(listbool* _headlist)
+{
+	listbool* _cur = _headlist;
+	_cur->selected = false;
+	while (_cur->next!=NULL)
+	{
+		if (_cur->next == NULL)
+			return;
+		_cur->selected = false;
+		_cur = _cur->next;
+	}
+	return;
+}
+
+
+
 void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
 	static bool show_app_main_menu_bar = false;
@@ -180,7 +207,6 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	_maineditorY =*height-ImGui::GetWindowHeight();
 	ImGui::End();
     }
-
 	
 	//Scene------------------------------------------------------------------------------------------------
 	ImGui::SetNextWindowPos(ImVec2(_maineditorX, *height / 35), ImGuiCond_Always);
@@ -194,26 +220,39 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			return;
 		}
 		//------------------------------------------------------------------------------------------------
-		
-		ImGui::ListBoxHeader("", SceneManager::Objects.size(),20);
-
-		static bool selection[5] = {false};
-
-		
-
-		for (int n = 0; n < SceneManager::Objects.size(); n++)
+		if (SceneManager::Objects.size() > 0)
 		{
-			if (ImGui::Selectable(SceneManager::Objects[n]->transform.name, selection[n]))
-			{
-				if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
-					memset(selection, 0, sizeof(selection));
-				selection[n] ^= 1;
+			for (int n = 0; n < SceneManager::Objects.size(); n++)
+			{				
+				std::string _newname = SceneManager::Objects[n]->transform.name + std::to_string(n);
+				const char* newchar = _newname.c_str();
+				if (ImGui::Selectable(newchar, _currentlistbool->selected))
+				{
+					if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
+						Clear_ListBool(&_headlistbool);
+					
+					_currentlistbool->selected = !_currentlistbool->selected;
+				}
+				if (_currentlistbool->next == NULL)
+					_currentlistbool->next = new listbool();
+				_currentlistbool = _currentlistbool->next;
 			}
+			_currentlistbool = &_headlistbool;
 		}
-		ImGui::ListBoxFooter();
+		else
+			_headlistbool.next = NULL;   //應該要全部clear才行*******
+	
+		/*
+		Your IDs will collide if you have the same name multiple times at same point of hierarchy.
+		You probably need to use ImGui::PushID(SceneManager::Objects[n]); ... Selectable .. ImGui::PopID() to avoid the ID collision.
+
+		Please read the FAQ!     避免ID衝突
+		*/
+
+
 		_SceneX = ImGui::GetWindowWidth();
 		_SceneY = ImGui::GetWindowHeight();
-
+		//delete [] array;
 		ImGui::End();
 
 	}
@@ -341,6 +380,9 @@ static void ShowExampleAppMainMenuBar()
 		ImGui::EndMainMenuBar();
 	}
 }
+
+
+
 static void ShowExampleMenuFile()
 {
 	ImGui::MenuItem("(dummy menu)", NULL, false, false);

@@ -96,6 +96,7 @@ int main()
 	SceneManager _SceneManager;
 	ADD_Function::Add_Cube();
 	ADD_Function::Add_DirectionalLight();
+	
 
 	// render loop
 	// -----------

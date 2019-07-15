@@ -9,10 +9,13 @@ public:
 	Transform transform;
 	bool enabled;
 	void printTransform();
+	//bool IsSelected;
 
 	Actor()
 	{
-		transform.name = "Actor";
+		transform.name = (char*)"Actor";
+		enabled = true;
+	//	IsSelected = false;
 	}
 
 	virtual void Draw();

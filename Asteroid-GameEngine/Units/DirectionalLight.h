@@ -10,7 +10,7 @@ class DirectionalLight:public Actor
 public:
 	DirectionalLight()
 	{
-		transform.name = "DirectionalLight";
+		transform.name = (char*) "DirectionalLight";
 	}
 	
 };

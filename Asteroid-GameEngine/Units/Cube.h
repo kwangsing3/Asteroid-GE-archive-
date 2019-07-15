@@ -17,7 +17,7 @@ public:
 	Cube() 
 	{
 		CreateCube();
-		transform.name = "Cube";
+		transform.name = (char*)"Cube";
 	};
 private:
 	void CreateCube();
