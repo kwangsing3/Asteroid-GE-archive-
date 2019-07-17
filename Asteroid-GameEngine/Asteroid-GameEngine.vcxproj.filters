@@ -75,9 +75,6 @@
     <ClInclude Include="Units\Cube.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Units\DirectionalLight.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -87,7 +84,10 @@
     <ClInclude Include="Component\Component.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Units\PointLight.h">
+    <ClInclude Include="Component\PointLight.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\DirectionalLight.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,16 +137,16 @@
     <ClCompile Include="Units\Cube.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Units\DirectionalLight.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Component\Transform.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Units\PointLight .cpp">
+    <ClCompile Include="Component\DirectionalLight.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PointLight .cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

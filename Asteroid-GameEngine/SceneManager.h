@@ -3,8 +3,8 @@
 #include <shader_m.h>
 #include <vector>
 #include <Units/Actor.h>
-#include <Units/DirectionalLight.h>
-#include <Units/PointLight.h>
+#include <Component/DirectionalLight.h>
+#include <Component/PointLight.h>
 class SceneManager
 {
 public:

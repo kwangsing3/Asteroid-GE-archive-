@@ -8,7 +8,8 @@
 //#include <Window.h>
 #include <vector>
 #include <iostream>
-#include <Units/Actor.h>
+#include <Component/Component.h>
+#include <Component/Transform.h>
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
 	FORWARD,
@@ -26,7 +27,7 @@ const float ZOOM = 45.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
-class Camera:public Actor
+class Camera:public Component
 {
 public:
 	// Camera Attributes
@@ -36,7 +37,7 @@ public:
 	glm::vec3 Up;
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
-	
+	Transform transform;
 	// Euler Angles
 	float Yaw;
 	float Pitch;
@@ -52,7 +53,7 @@ public:
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 	{
-
+		enabled = true;
 		transform.position = position;
 		WorldUp = up;
 		Yaw = yaw;

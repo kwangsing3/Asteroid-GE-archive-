@@ -5,8 +5,11 @@ class Component
 {
 
 public:
-	
-private:
+	bool enabled;
+	Component()
+	{
+		enabled = false;	
+	}
 
 };
 

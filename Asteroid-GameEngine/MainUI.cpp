@@ -241,7 +241,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		{
 			for (int n = 0; n < SceneManager::Objects.size(); n++)
 			{				
-				std::string _newname = SceneManager::Objects[n]->transform.name + std::to_string(n);
+				std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
 				const char* newchar = _newname.c_str();
 				if (ImGui::Selectable(newchar, _currentlistbool->selected))
 				{
@@ -460,37 +460,40 @@ void InspectorManager::ShowInspector(Actor * actor)
 
 void InspectorManager::ListInspectorCur()
 {
-	static ImGuiTreeNodeFlags _TreeFlag = 0;
-	_TreeFlag |= ImGuiTreeNodeFlags_DefaultOpen;
+	
 	
 	if (cur_actor!=NULL)
 	{
-		 float vec4P[3] = { cur_actor->transform.position.x, cur_actor->transform.position.y, cur_actor->transform.position.z };
-		 float vec4R[3] = { cur_actor->transform.rotation.x, cur_actor->transform.rotation.y, cur_actor->transform.rotation.z };
-		 float vec4S[3] = { cur_actor->transform.scale.x, cur_actor->transform.scale.y, cur_actor->transform.scale.x };
-		if (ImGui::CollapsingHeader("Transform"))  //  記得拿掉false	
+		if (cur_actor->transform != NULL && cur_actor->transform->enabled)
 		{
-			if (ImGui::DragFloat3("Position", vec4P,0.01f))
+			
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)|false)  //  記得拿掉false	
 			{
-				cur_actor->transform.position.x = vec4P[0];
-				cur_actor->transform.position.y = vec4P[1];
-				cur_actor->transform.position.z = vec4P[2];
-			}
-			if (ImGui::DragFloat3("Rotation", vec4R,0.01f))
-			{
-				cur_actor->transform.rotation.x = vec4R[0];
-				cur_actor->transform.rotation.y = vec4R[1];
-				cur_actor->transform.rotation.z = vec4R[2];
-			}
-			if (ImGui::DragFloat3("Scale", vec4S,0.01f))
-			{
-				cur_actor->transform.scale.x = vec4S[0];
-				cur_actor->transform.scale.y = vec4S[1];
-				cur_actor->transform.scale.z = vec4S[2];
+				ImGui::DragFloat3("Position", (float*)&cur_actor->transform->position, 0.01f);
+				ImGui::DragFloat3("Rotation", (float*)&cur_actor->transform->rotation, 1.0f);
+				ImGui::DragFloat3("Scale", (float*)&cur_actor->transform->scale, 0.01f);	
 			}
 		}
-		
-		
-	
+		if (cur_actor->_Dirlight != NULL && cur_actor->_Dirlight->enabled)
+		{
+			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen)|false)
+			{
+				ImGui::ColorEdit3("Ambient", (float*)&cur_actor->_Dirlight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&cur_actor->_Dirlight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&cur_actor->_Dirlight->Specular);	
+			}
+		}
+		if (cur_actor->_PointLight != NULL&&cur_actor->_PointLight->enabled)
+		{
+			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::ColorEdit3("Ambient", (float*)&cur_actor->_PointLight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&cur_actor->_PointLight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&cur_actor->_PointLight->Specular);
+				ImGui::DragFloat("Constant", &cur_actor->_PointLight->Constant,0.01f);
+				ImGui::DragFloat("linear", &cur_actor->_PointLight->linear, 0.01f);
+				ImGui::DragFloat("quadratic", &cur_actor->_PointLight->quadratic, 0.01f);
+			}
+		}		
 	}
 }

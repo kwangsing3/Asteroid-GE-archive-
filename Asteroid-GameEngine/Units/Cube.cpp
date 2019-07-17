@@ -90,25 +90,23 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setVec3("viewPos", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setFloat("material.shininess", 32.0f);
-
-	
 	for (int i = 0; i < SceneManager::vec_DirectionlLight.size(); i++)
 	{
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", -0.2f, -1.0f, -0.3f);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->ambient, SceneManager::vec_DirectionlLight[i]->ambient, SceneManager::vec_DirectionlLight[i]->ambient);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", 0.4f, 0.4f, 0.4f);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", 0.5f, 0.5f, 0.5f);
+		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->transform->rotation);
+		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
+		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
+		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
 	}
-	
+
 	for (int i = 0; i < SceneManager::vec_PointLight.size(); i++)
 	{
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->transform.position);
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].ambient", 0.05f, 0.05f, 0.05f);
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].diffuse", 0.8f, 0.8f, 0.8f);
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].specular", 1.0f, 1.0f, 1.0f);
-		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].constant", 1.0f);
-		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].linear", 0.09);
-		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0.032);
+		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->transform->position);
+		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
+		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
+		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
+		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
+		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
+		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
 	}
 	// point light 1
 	/*
@@ -156,14 +154,14 @@ void Cube::Draw()
 	// camera/view transformation
 	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
 	SceneManager::vec_ShaderProgram[_index].setMat4("view", view);
-
+	
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
-	model = glm::translate(model, glm::vec3(this->transform.position.x, this->transform.position.y, this->transform.position.z));
-	static float angle[3] = { this->transform.rotation.x ,this->transform.rotation.y ,this->transform.rotation.z };
+	model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
+	float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
 	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, glm::radians(angle[1]), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
-	model = glm::scale(model, glm::vec3(this->transform.scale.x, this->transform.scale.y, this->transform.scale.z));
+	model = glm::scale(model, glm::vec3(this->transform->scale.x, this->transform->scale.y, this->transform->scale.z));
 	SceneManager::vec_ShaderProgram[_index].setMat4("model", model);
 
 	glActiveTexture(GL_TEXTURE0);
