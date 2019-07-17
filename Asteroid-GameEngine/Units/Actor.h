@@ -7,6 +7,7 @@ class Actor
 public:
 	
 	Transform transform;
+	DirectionalLight _Dirlight;
 	bool enabled;
 	void printTransform();
 	//bool IsSelected;
@@ -15,7 +16,7 @@ public:
 	{
 		transform.name = (char*)"Actor";
 		enabled = true;
-	//	IsSelected = false;
+		
 	}
 
 	virtual void Draw();

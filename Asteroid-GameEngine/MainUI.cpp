@@ -67,21 +67,17 @@
 static void ShowExampleAppMainMenuBar();
 static void ShowExampleMenuFile();
 static void ShowExampleAppLayout(bool* p_open);
-
 static float _maineditorX = 854, _maineditorY = 590;
 static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
-
 
 struct listbool
 {
 	bool selected = false;
 	listbool* next=NULL;
 };
-
 static listbool _headlistbool;
 static listbool *_currentlistbool = &_headlistbool;
-
 void Clear_ListBool(listbool* _headlist)
 {
 	listbool* _cur = _headlist;
@@ -95,6 +91,27 @@ void Clear_ListBool(listbool* _headlist)
 	}
 	return;
 }
+
+
+class InspectorManager
+{
+public:
+	Actor *cur_actor;
+	InspectorManager()
+	{
+		cur_actor = NULL;
+	}
+
+
+	void ShowInspector(Actor *actor);
+	void ListInspectorCur();
+};
+
+InspectorManager _InspectorManager;
+
+
+
+
 
 
 
@@ -232,6 +249,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 						Clear_ListBool(&_headlistbool);
 					
 					_currentlistbool->selected = !_currentlistbool->selected;
+					_InspectorManager.ShowInspector(SceneManager::Objects[n]);
 				}
 				if (_currentlistbool->next == NULL)
 					_currentlistbool->next = new listbool();
@@ -300,20 +318,8 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ImGui::End();
 			return;
 		}
+		_InspectorManager.ListInspectorCur();
 		//------------------------------------------------------------------------------------------------
-		if (ImGui::CollapsingHeader("Window options"))
-		{
-			ImGui::Checkbox("No titlebar", &no_titlebar); ImGui::SameLine(150);
-			ImGui::Checkbox("No scrollbar", &no_scrollbar); ImGui::SameLine(300);
-			ImGui::Checkbox("No menu", &no_menu);
-			ImGui::Checkbox("No move", &no_move); ImGui::SameLine(150);
-			ImGui::Checkbox("No resize", &no_resize); ImGui::SameLine(300);
-			ImGui::Checkbox("No collapse", &no_collapse);
-			ImGui::Checkbox("No close", &no_close); ImGui::SameLine(150);
-			ImGui::Checkbox("No nav", &no_nav); ImGui::SameLine(300);
-			ImGui::Checkbox("No background", &no_background);
-			ImGui::Checkbox("No bring to front", &no_bring_to_front);
-		}
 		ImGui::End();
 
 	}
@@ -380,9 +386,6 @@ static void ShowExampleAppMainMenuBar()
 		ImGui::EndMainMenuBar();
 	}
 }
-
-
-
 static void ShowExampleMenuFile()
 {
 	ImGui::MenuItem("(dummy menu)", NULL, false, false);
@@ -448,3 +451,46 @@ static void ShowExampleMenuFile()
 	if (ImGui::MenuItem("Quit", "Alt+F4")) {}
 }
 
+
+void InspectorManager::ShowInspector(Actor * actor)
+{
+	cur_actor = NULL;
+	cur_actor = actor;
+}
+
+void InspectorManager::ListInspectorCur()
+{
+	static ImGuiTreeNodeFlags _TreeFlag = 0;
+	_TreeFlag |= ImGuiTreeNodeFlags_DefaultOpen;
+	
+	if (cur_actor!=NULL)
+	{
+		 float vec4P[3] = { cur_actor->transform.position.x, cur_actor->transform.position.y, cur_actor->transform.position.z };
+		 float vec4R[3] = { cur_actor->transform.rotation.x, cur_actor->transform.rotation.y, cur_actor->transform.rotation.z };
+		 float vec4S[3] = { cur_actor->transform.scale.x, cur_actor->transform.scale.y, cur_actor->transform.scale.x };
+		if (ImGui::CollapsingHeader("Transform"))  //  記得拿掉false	
+		{
+			if (ImGui::DragFloat3("Position", vec4P,0.01f))
+			{
+				cur_actor->transform.position.x = vec4P[0];
+				cur_actor->transform.position.y = vec4P[1];
+				cur_actor->transform.position.z = vec4P[2];
+			}
+			if (ImGui::DragFloat3("Rotation", vec4R,0.01f))
+			{
+				cur_actor->transform.rotation.x = vec4R[0];
+				cur_actor->transform.rotation.y = vec4R[1];
+				cur_actor->transform.rotation.z = vec4R[2];
+			}
+			if (ImGui::DragFloat3("Scale", vec4S,0.01f))
+			{
+				cur_actor->transform.scale.x = vec4S[0];
+				cur_actor->transform.scale.y = vec4S[1];
+				cur_actor->transform.scale.z = vec4S[2];
+			}
+		}
+		
+		
+	
+	}
+}

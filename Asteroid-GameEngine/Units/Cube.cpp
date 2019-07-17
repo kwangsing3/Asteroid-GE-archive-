@@ -19,11 +19,11 @@ unsigned int VBO,VAO;
 float Cubevertices[] = {
 	// positions          // normals           // texture coords
 			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
 			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
 			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 			 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
@@ -40,11 +40,11 @@ float Cubevertices[] = {
 			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
 			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
 			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
 			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 			 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
@@ -54,11 +54,11 @@ float Cubevertices[] = {
 			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 
 			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
 			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 int _index = 1;
 
@@ -86,30 +86,16 @@ glm::vec3 pointLightPositions[] = {
 };
 void Cube::Draw()
 {
-	//SceneManager::vec_ShaderProgram[_index].use();
-	//SceneManager::vec_ShaderProgram[_index].setInt("NR_POINT_LIGHTS", SceneManager::vec_DirectionlLight.size());
-	// be sure to activate shader when setting uniforms/drawing objects
-	
+
 	SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setVec3("viewPos", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setFloat("material.shininess", 32.0f);
-/*
-	// directional light
-	SceneManager::vec_ShaderProgram[_index].setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
 	
 	for (int i = 0; i < SceneManager::vec_DirectionlLight.size(); i++)
 	{
-		
-	}*/
-	
-	for (int i = 0; i < SceneManager::vec_DirectionlLight.size(); i++)
-	{
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", -0.2f, -1.0f, -0.3f);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", 0.05f, 0.05f, 0.05f);
+		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->ambient, SceneManager::vec_DirectionlLight[i]->ambient, SceneManager::vec_DirectionlLight[i]->ambient);
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", 0.4f, 0.4f, 0.4f);
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", 0.5f, 0.5f, 0.5f);
 	}
@@ -151,7 +137,7 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[3].linear", 0.09);
 	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[3].quadratic", 0.032);*/
 	// spotLight
-	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.position", Window::_editorCamera.transform.position);
+	/*SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.position", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.direction", Window::_editorCamera.Front);
 	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
 	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
@@ -160,11 +146,7 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.linear", 0.09);
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.quadratic", 0.032);
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
-	
-	
-
+	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 	glBindVertexArray(VAO);
 	
 	// pass projection matrix to shader (note that in this case it could change every frame)
@@ -176,7 +158,12 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].setMat4("view", view);
 
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
-	model = glm::translate(model, glm::vec3(0, 0, 0));
+	model = glm::translate(model, glm::vec3(this->transform.position.x, this->transform.position.y, this->transform.position.z));
+	static float angle[3] = { this->transform.rotation.x ,this->transform.rotation.y ,this->transform.rotation.z };
+	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(angle[1]), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
+	model = glm::scale(model, glm::vec3(this->transform.scale.x, this->transform.scale.y, this->transform.scale.z));
 	SceneManager::vec_ShaderProgram[_index].setMat4("model", model);
 
 	glActiveTexture(GL_TEXTURE0);
