@@ -14,11 +14,12 @@ void Xml_SettingImport();
  unsigned int Window::WINDOW_WIDTH = 800;
  unsigned int Window::WINDOW_HEIGHT = 600;
  Camera Window::_editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
-
+ bool Window::WindowShouldClose = false;
 
 
 GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)
 {
+	WindowShouldClose = false;	
 	Xml_SettingImport();
 	_Mainwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "LearnOpenGL", NULL, NULL);
 
@@ -49,14 +50,7 @@ GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_ca
 	return _Mainwindow;
 }
 
-unsigned int Window::GetWidth()
-{
-	return WINDOW_WIDTH;
-}
-unsigned int Window::GetHeight()
-{
-	return WINDOW_HEIGHT;
-}
+
 
 void Xml_SettingImport()
 {

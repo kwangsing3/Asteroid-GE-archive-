@@ -12,6 +12,9 @@
 #include <stdlib.h>         // NULL, malloc, free, atoi
 #include <ADD_Function.h>
 #include <SceneManager.h>
+#include <Raycast.h>
+#include <Window.h>
+
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>         // intptr_t
 #else
@@ -70,7 +73,7 @@ static void ShowExampleAppLayout(bool* p_open);
 static float _maineditorX = 854, _maineditorY = 590;
 static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
-
+static void ShowExampleAppSimpleOverlay(bool* p_open);
 struct listbool
 {
 	bool selected = false;
@@ -92,25 +95,8 @@ void Clear_ListBool(listbool* _headlist)
 	return;
 }
 
-
-class InspectorManager
-{
-public:
-	Actor *cur_actor;
-	InspectorManager()
-	{
-		cur_actor = NULL;
-	}
-
-
-	void ShowInspector(Actor *actor);
-	void ListInspectorCur();
-};
-
-InspectorManager _InspectorManager;
-
-
-
+Actor *InspectorManager::cur_actor;
+InspectorManager InspectorManager::_InspectorManager;
 
 
 
@@ -249,7 +235,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 						Clear_ListBool(&_headlistbool);
 					
 					_currentlistbool->selected = !_currentlistbool->selected;
-					_InspectorManager.ShowInspector(SceneManager::Objects[n]);
+					InspectorManager::_InspectorManager.ShowInspector(SceneManager::Objects[n]);
 				}
 				if (_currentlistbool->next == NULL)
 					_currentlistbool->next = new listbool();
@@ -318,7 +304,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ImGui::End();
 			return;
 		}
-		_InspectorManager.ListInspectorCur();
+		InspectorManager::_InspectorManager.ListInspectorCur();
 		//------------------------------------------------------------------------------------------------
 		ImGui::End();
 
@@ -326,6 +312,10 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
+
+
+
+	ShowExampleAppSimpleOverlay(&show_app_main_menu_bar);
 
 	//Main Background--------------------------------------------------------------------------------------
 	{
@@ -389,27 +379,10 @@ static void ShowExampleAppMainMenuBar()
 static void ShowExampleMenuFile()
 {
 	ImGui::MenuItem("(dummy menu)", NULL, false, false);
-	if (ImGui::MenuItem("New")) {}
-	if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-	if (ImGui::BeginMenu("Open Recent"))
-	{
-		ImGui::MenuItem("fish_hat.c");
-		ImGui::MenuItem("fish_hat.inl");
-		ImGui::MenuItem("fish_hat.h");
-		if (ImGui::BeginMenu("More.."))
-		{
-			ImGui::MenuItem("Hello");
-			ImGui::MenuItem("Sailor");
-			if (ImGui::BeginMenu("Recurse.."))
-			{
-				ShowExampleMenuFile();
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenu();
-	}
-	if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+	if (ImGui::MenuItem("New")) { SceneManager::NewScene(); }
+	if (ImGui::MenuItem("Open", "Ctrl+O")) { SceneManager::OpenFile(); }
+	
+	if (ImGui::MenuItem("Save", "Ctrl+S")) { SceneManager::SaveFile(); }
 	if (ImGui::MenuItem("Save As..")) {}
 	ImGui::Separator();
 	if (ImGui::BeginMenu("Options"))
@@ -443,21 +416,75 @@ static void ShowExampleMenuFile()
 		}
 		ImGui::EndMenu();
 	}
-	if (ImGui::BeginMenu("Disabled", false)) // Disabled
+	
+	if (ImGui::MenuItem("Checked", NULL, true)) 
 	{
-		IM_ASSERT(0);
+		ImGui::Text("version v1.0.0");
 	}
-	if (ImGui::MenuItem("Checked", NULL, true)) {}
-	if (ImGui::MenuItem("Quit", "Alt+F4")) {}
+	if (ImGui::MenuItem("Quit", "Alt+F4")) { Window::WindowShouldClose = true; }
 }
 
 
+void InspectorManager::Deletecur_actor()
+{
+	if (InspectorManager::cur_actor == NULL) return;
+	
+	for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
+	{
+		if (*it == InspectorManager::cur_actor) 
+		{
+			SceneManager::Objects.erase(it);
+		 break;
+		}
+	}
+	for (auto it = SceneManager::vec_ObjectsToRender.begin(); it != SceneManager::vec_ObjectsToRender.end(); it++)
+	{
+		if (*it == InspectorManager::cur_actor)
+		{
+			SceneManager::vec_ObjectsToRender.erase(it);
+			break;
+		}
+	}
+	if (InspectorManager::cur_actor->_PointLight != NULL)
+	{
+		for (auto it = SceneManager::vec_PointLight.begin(); it != SceneManager::vec_PointLight.end(); it++)
+		{
+			if (*it == InspectorManager::cur_actor->_PointLight)
+			{
+				SceneManager::vec_PointLight.erase(it);
+				break;
+			}
+		}
+	}
+	if (InspectorManager::cur_actor->_Dirlight != NULL)
+	{
+		for (auto it = SceneManager::vec_DirectionlLight.begin(); it != SceneManager::vec_DirectionlLight.end(); it++)
+		{
+			if (*it == InspectorManager::cur_actor->_Dirlight)
+			{
+				SceneManager::vec_DirectionlLight.erase(it);
+				break;
+			}
+		}
+	}
+
+}
 void InspectorManager::ShowInspector(Actor * actor)
 {
 	cur_actor = NULL;
 	cur_actor = actor;
-}
+	static unsigned int AxisVAO,AxisVBO;
+	// Create Axis
+/*	float AxisVertices[] = {
+		//red			 //X-axis                          //arrow
+		1.0f,0.0f,0.0f,  -4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f, 3.0f,1.0f,0.0f, 4.0f,0.0f,0.0f, 3.0f,-1.0f,0.0f,
+		//green          //Y-axis
+		0.0f,1.0f,0.0f,  0.0f,-4.0f,0.0f,  0.0f,4.0f,0.0f,  0.0f,4.0f,0.0f, 1.0f,3.0f,0.0f, 0.0f,4.0f,0.0f, -1.0f,3.0f,0.0f,
+		//blue           //Z-axis
+		0.0f,0.0f,1.0f,  0.0f,0.0f,-4.0f,  0.0f,0.0f,4.0f,  0.0f,0.0f,4.0f, 0.0f,1.0f,3.0f, 0.0f,0.0f,4.0f, 0.0f,-1.0f,3.0f,
+	};*/
 
+}
 void InspectorManager::ListInspectorCur()
 {
 	
@@ -467,7 +494,7 @@ void InspectorManager::ListInspectorCur()
 		if (cur_actor->transform != NULL && cur_actor->transform->enabled)
 		{
 			
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)|false)  //  記得拿掉false	
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)|false) 
 			{
 				ImGui::DragFloat3("Position", (float*)&cur_actor->transform->position, 0.01f);
 				ImGui::DragFloat3("Rotation", (float*)&cur_actor->transform->rotation, 1.0f);
@@ -496,4 +523,44 @@ void InspectorManager::ListInspectorCur()
 			}
 		}		
 	}
+}
+
+static void ShowExampleAppSimpleOverlay(bool* p_open)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x/640*100, io.DisplaySize.y/1080*150), ImGuiCond_Always);
+	const float DISTANCE = 10.0f;
+	static int corner = 0;
+	
+	if (corner != -1)
+	{
+		ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y-DISTANCE : DISTANCE);
+		ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+		ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+	}
+	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+	if (ImGui::Begin("Example: Simple overlay", p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	{
+		ImGui::Text("Simple overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
+		ImGui::Separator();
+		if (ImGui::IsMousePosValid())
+		{
+			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
+			ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition().x, Raycast::GetWorldPosition().y, Raycast::GetWorldPosition().z);
+		}
+			
+		else
+			ImGui::Text("Mouse Position: <invalid>");
+		if (ImGui::BeginPopupContextWindow())
+		{
+			if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
+			if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
+			if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
+			if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
+			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
+			if (p_open && ImGui::MenuItem("Close")) *p_open = false;
+			ImGui::EndPopup();
+		}
+	}
+	ImGui::End();
 }

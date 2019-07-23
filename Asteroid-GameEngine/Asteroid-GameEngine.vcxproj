@@ -163,6 +163,7 @@
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\Transform.h" />
     <ClInclude Include="Component\DirectionalLight.h" />
+    <ClInclude Include="Raycast.h" />
     <ClInclude Include="Units\Actor.h" />
     <ClInclude Include="ADD_Function.h" />
     <ClInclude Include="Units\Camera.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="..\src\glad.c" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="Component\DirectionalLight.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Units\Actor.cpp" />
     <ClCompile Include="ADD_Function.cpp" />
     <ClCompile Include="Units\Camera.cpp" />

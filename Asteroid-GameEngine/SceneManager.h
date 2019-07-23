@@ -1,21 +1,24 @@
-#ifndef SHADER_LIST_H
+﻿#ifndef SHADER_LIST_H
 #define SHADER_LIST_H
 #include <shader_m.h>
 #include <vector>
 #include <Units/Actor.h>
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
-class SceneManager
+#include "Xml/pugixml.hpp"
+class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
 {
 public:
+	//管理遊戲場景物件
 	static std::vector<Actor*> Objects;
 	static std::vector<Actor*> vec_ObjectsToRender;
 	static std::vector<DirectionalLight*> vec_DirectionlLight;
 	static std::vector<PointLight*> vec_PointLight;
-
 	static std::vector<Shader> vec_ShaderProgram;
-
-
+	//載入檔案
+	static void OpenFile();
+	static void SaveFile();
+	static void NewScene();
 	SceneManager()
 	{
 		CreateShader();

@@ -90,6 +90,9 @@
     <ClInclude Include="Component\DirectionalLight.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c">
@@ -147,6 +150,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Component\PointLight .cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Raycast.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

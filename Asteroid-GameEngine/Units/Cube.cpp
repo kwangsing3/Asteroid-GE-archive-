@@ -1,4 +1,4 @@
-#include "Cube.h"
+﻿#include "Cube.h"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -81,25 +81,41 @@ void Cube::CreateCube()
 	SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setInt("texture1", 0);
 }
-glm::vec3 pointLightPositions[] = {
-	   glm::vec3(0.0f,  0.0f, 3.0f)
-};
 void Cube::Draw()
 {
 
 	SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setVec3("viewPos", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setFloat("material.shininess", 32.0f);
-	for (int i = 0; i < SceneManager::vec_DirectionlLight.size(); i++)
+	
+	for (int i = 0; i <8; i++)
 	{
+		if (i+1 > SceneManager::vec_DirectionlLight.size())
+		{
+			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0,0,0));
+			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+			continue;
+		}
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->transform->rotation);
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
 		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
 	}
-
-	for (int i = 0; i < SceneManager::vec_PointLight.size(); i++)
+	for (int i = 0; i <8; i++)
 	{
+		if (i + 1 > SceneManager::vec_PointLight.size())
+		{
+			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
+			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+			SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
+			SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
+			SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].quadratic",0);
+			continue;
+		}
 		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->transform->position);
 		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
 		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
@@ -108,32 +124,7 @@ void Cube::Draw()
 		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
 		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
 	}
-	// point light 1
-	/*
-	// point light 2
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[1].position", pointLightPositions[0]);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[1].constant", 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[1].linear", 0.09);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[1].quadratic", 0.032);
-	// point light 3
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[2].position", pointLightPositions[0]);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[2].constant", 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[2].linear", 0.09);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[2].quadratic", 0.032);
-	// point light 4
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[3].position", pointLightPositions[0]);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[3].constant", 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[3].linear", 0.09);
-	SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[3].quadratic", 0.032);*/
+	
 	// spotLight
 	/*SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.position", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.direction", Window::_editorCamera.Front);
@@ -146,8 +137,8 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 	glBindVertexArray(VAO);
-	
-	// pass projection matrix to shader (note that in this case it could change every frame)
+
+	// pass projection matrix to shader (note that in this case it could change every frame)  // 現在在Camera.h上有Projection 要記得改 
 	glm::mat4 projection = glm::perspective(glm::radians(Window::_editorCamera.Zoom), (float)Window::WINDOW_WIDTH / (float)Window::WINDOW_HEIGHT, 0.1f, 100.0f);
 	SceneManager::vec_ShaderProgram[_index].setMat4("projection", projection);
 
@@ -172,6 +163,14 @@ void Cube::Draw()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	//printf("draw from cube");
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	
+
+}
+
+void Cube::translate(glm::vec3 position)
+{
+	this->transform->position = position;
 }
 
 

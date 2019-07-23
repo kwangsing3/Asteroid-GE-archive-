@@ -15,7 +15,9 @@ enum Camera_Movement {
 	FORWARD,
 	BACKWARD,
 	LEFT,
-	RIGHT
+	RIGHT,
+	UP,
+	DOWN
 };
 
 // Default camera values
@@ -31,13 +33,12 @@ class Camera:public Component
 {
 public:
 	// Camera Attributes
-	//glm::vec3 Position;   //現在是transform.position
-	  
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
 	Transform transform;
+	glm::mat4 Projection;
 	// Euler Angles
 	float Yaw;
 	float Pitch;
@@ -59,6 +60,8 @@ public:
 		Yaw = yaw;
 		Pitch = pitch;
 		transform.name = (char*) "Camera";
+		Projection = glm::perspective(glm::radians(ZOOM),(float)(1280 /720), 0.1f, 100.0f);
+		
 		updateCameraVectors();
 	}
 	// Constructor with scalar values
@@ -70,12 +73,8 @@ public:
 		Pitch = pitch;
 		updateCameraVectors();
 	}
-
 	void EnableFrameBuffer(bool _enable);
 	unsigned int GetframeBuffer();
-
-
-
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix()
 	{
@@ -94,6 +93,10 @@ public:
 			transform.position -= Right * velocity;
 		if (direction == RIGHT)
 			transform.position += Right * velocity;
+		if (direction == UP)
+			transform.position += Up * velocity;
+		if (direction == DOWN)
+			transform.position -= Up * velocity;
 	}
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -101,10 +104,8 @@ public:
 	{
 		xoffset *= MouseSensitivity;
 		yoffset *= MouseSensitivity;
-
 		Yaw += xoffset;
 		Pitch += yoffset;
-
 		// Make sure that when pitch is out of bounds, screen doesn't get flipped
 		if (constrainPitch)
 		{
@@ -113,7 +114,6 @@ public:
 			if (Pitch < -89.0f)
 				Pitch = -89.0f;
 		}
-
 		// Update Front, Right and Up Vectors using the updated Euler angles
 		updateCameraVectors();
 	}

@@ -9,7 +9,7 @@ class Cube:public Actor
 public:
 	
 	void Draw() override;
-	
+	void translate(glm::vec3 position);
 	unsigned int VBO, VAO;
 	unsigned int _Texture;
 
