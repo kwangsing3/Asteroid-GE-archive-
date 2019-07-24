@@ -20,7 +20,7 @@
 #include <MainUI.h>
 
 #include<Raycast.h>
-#include<ADD_Function.h>
+#include<ADD_Component.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -95,9 +95,9 @@ int main()
 	
 
 	SceneManager _SceneManager;
-	ADD_Function::Add_Cube();
-	ADD_Function::Add_DirectionalLight();
-	ADD_Function::Add_PointLight();
+	ADD_Component::Add_Cube(ADD_Component::Add_Actor());
+	ADD_Component::Add_DirectionalLight(ADD_Component::Add_Actor());
+	ADD_Component::Add_PointLight(ADD_Component::Add_Actor());
 
 	unsigned int AxisVAO, AxisVBO;
 
@@ -261,12 +261,14 @@ void processInput(GLFWwindow *window)
 		Window::_editorCamera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(UP, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		Window::_editorCamera.ProcessKeyboard(UP, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
-		InspectorManager::_InspectorManager.Deletecur_actor();
+		InspectorManager::_InspectorManager.Deletecur_actor(InspectorManager::cur_SelectObject);
+	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
+		InspectorManager::_InspectorManager.Renamecur_actor(InspectorManager::cur_SelectObject);
 
 }
 

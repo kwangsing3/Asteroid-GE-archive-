@@ -168,10 +168,7 @@ void Cube::Draw()
 
 }
 
-void Cube::translate(glm::vec3 position)
-{
-	this->transform->position = position;
-}
+
 
 
 

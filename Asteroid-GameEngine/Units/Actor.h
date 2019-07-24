@@ -4,7 +4,7 @@
 
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
-
+#include <Units/Cube.h>
 class Actor
 {
 public:
@@ -12,8 +12,9 @@ public:
 	Transform* transform;
 	DirectionalLight* _Dirlight;
 	PointLight* _PointLight;
+	Cube* meshrender;
 	bool enabled;
-
+	void translate(glm::vec3 position);
 
 	//bool IsSelected;
 

@@ -1,9 +1,9 @@
 ﻿#include "SceneManager.h"
-#include <ADD_Function.h>
+#include <ADD_Component.h>
 std::vector<Shader> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
-std::vector<Actor*> SceneManager::vec_ObjectsToRender;
+std::vector<Component*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
 
 
@@ -28,7 +28,8 @@ void SceneManager::OpenFile()
 	for (pugi::xml_node tool = _root.first_child(); tool; tool = tool.next_sibling())
 	{
 		
-		Actor* _Actor = ADD_Function::Add_Actor();
+		Actor* _Actor = ADD_Component::Add_Actor();
+
 		// name
 		std::string* _char = new std::string();
 		*_char = tool.attribute("name").value();
@@ -46,11 +47,23 @@ void SceneManager::OpenFile()
 		// Component
 		int _componentSize = tool.attribute("Component_size").as_int();
 		int _check = 0;
-		for (int i = 0; i < _componentSize; i++)
+		
+		if (tool.attribute("_Dirlight").as_int())
 		{
-			
+			ADD_Component::Add_DirectionalLight(_Actor);
 			_check++;
 		}
+		if (tool.attribute("_PointLight").as_int())
+		{
+			ADD_Component::Add_PointLight(_Actor);
+			_check++;
+		}
+		if (tool.attribute("meshrender").as_int())
+		{
+			ADD_Component::Add_Cube(_Actor);
+			_check++;
+		}
+		
 		if (_check != _componentSize) { std::cout<< _char <<": Component_size error"<<std::endl; }
 	}
 	
@@ -94,6 +107,12 @@ void SceneManager::SaveFile()
 			_childSca.append_attribute("x") = Objects[i]->transform->scale.x;
 			_childSca.append_attribute("y") = Objects[i]->transform->scale.y;
 			_childSca.append_attribute("z") = Objects[i]->transform->scale.z;
+		}
+		if (Objects[i]->meshrender != NULL)
+		{
+			_cur.append_attribute("meshrender") = 1;
+		
+			component_size++;
 		}
 		if (Objects[i]->_Dirlight != NULL)
 		{	
@@ -149,5 +168,6 @@ void SceneManager::NewScene()
 	vec_DirectionlLight.clear();
 	vec_ObjectsToRender.clear();
 	vec_PointLight.clear();
+	
 	Objects.clear();
 }

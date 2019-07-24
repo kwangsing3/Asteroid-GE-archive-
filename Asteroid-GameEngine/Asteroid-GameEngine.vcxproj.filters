@@ -63,9 +63,6 @@
     <ClInclude Include="Window.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="ADD_Function.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="Units\Actor.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -91,6 +88,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Raycast.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="ADD_Component.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,9 +125,6 @@
     <ClCompile Include="Window.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="ADD_Function.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="Asteroid-GameEngine.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
@@ -153,6 +150,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Raycast.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="ADD_Component.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

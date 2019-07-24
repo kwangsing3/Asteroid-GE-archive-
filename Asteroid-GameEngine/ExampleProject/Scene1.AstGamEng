@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="5">
-<Objects name="Cube" Component_size="0">
+<Scene name="test" Objects_Size="3">
+<Objects name="Actor" meshrender="1" Component_size="1">
 <Position x="0" y="0" z="0" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="1" y="1" z="1" />
 </Objects>
-<Objects name="DirectionalLight" _Dirlight="1" Component_size="1">
+<Objects name="Actor" _Dirlight="1" Component_size="1">
 <Position x="0" y="0" z="0" />
-<Rotation x="-0.200000003" y="-1" z="-0.300000012" />
+<Rotation x="0" y="0" z="0" />
 <Scale x="1" y="1" z="1" />
 <Ambient X="1" Y="1" Z="1" />
 <Diffuse X="0.400000006" Y="0.400000006" Z="0.400000006" />
 <Specular X="0.5" Y="0.5" Z="0.5" />
 </Objects>
-<Objects name="PointLight" _PointLight="1" Component_size="1">
+<Objects name="Actor" _PointLight="1" Component_size="1">
 <Position x="0" y="0" z="0" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="1" y="1" z="1" />
@@ -23,15 +23,5 @@
 <Constant Constant="1" />
 <linear linear="0.0900000036" />
 <quadratic quadratic="0.0320000015" />
-</Objects>
-<Objects name="Cube" Component_size="0">
-<Position x="5" y="0" z="0" />
-<Rotation x="0" y="0" z="0" />
-<Scale x="1" y="1" z="1" />
-</Objects>
-<Objects name="Cube" Component_size="0">
-<Position x="10" y="0" z="0" />
-<Rotation x="0" y="0" z="0" />
-<Scale x="1" y="1" z="1" />
 </Objects>
 </Scene>

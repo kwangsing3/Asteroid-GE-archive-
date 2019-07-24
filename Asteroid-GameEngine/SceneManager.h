@@ -11,7 +11,7 @@ class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件 
 public:
 	//管理遊戲場景物件
 	static std::vector<Actor*> Objects;
-	static std::vector<Actor*> vec_ObjectsToRender;
+	static std::vector<Component*> vec_ObjectsToRender;
 	static std::vector<DirectionalLight*> vec_DirectionlLight;
 	static std::vector<PointLight*> vec_PointLight;
 	static std::vector<Shader> vec_ShaderProgram;

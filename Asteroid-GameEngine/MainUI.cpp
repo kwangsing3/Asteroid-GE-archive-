@@ -10,7 +10,7 @@
 #include <math.h>           // sqrtf, powf, cosf, sinf, floorf, ceilf
 #include <stdio.h>          // vsnprintf, sscanf, printf
 #include <stdlib.h>         // NULL, malloc, free, atoi
-#include <ADD_Function.h>
+#include <ADD_Component.h>
 #include <SceneManager.h>
 #include <Raycast.h>
 #include <Window.h>
@@ -73,31 +73,141 @@ static void ShowExampleAppLayout(bool* p_open);
 static float _maineditorX = 854, _maineditorY = 590;
 static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
-static void ShowExampleAppSimpleOverlay(bool* p_open);
-struct listbool
+static void ShowSimpleOverlay(bool* p_open);
+
+static SelectObject _headSelectObject;
+static SelectObject *_currentSelectObject = &_headSelectObject;
+void Clear_ListBool(SelectObject* _headSelectObject)
 {
-	bool selected = false;
-	listbool* next=NULL;
-};
-static listbool _headlistbool;
-static listbool *_currentlistbool = &_headlistbool;
-void Clear_ListBool(listbool* _headlist)
-{
-	listbool* _cur = _headlist;
-	_cur->selected = false;
+	SelectObject* _cur = _headSelectObject;
+	_cur->Is_selected = false;
+	_cur->Is_renaming = false;
 	while (_cur->next!=NULL)
 	{
 		if (_cur->next == NULL)
 			return;
-		_cur->selected = false;
+		_cur->Is_selected = false;
+		_cur->Is_renaming = false;
 		_cur = _cur->next;
 	}
 	return;
 }
 
-Actor *InspectorManager::cur_actor;
+SelectObject *InspectorManager::cur_SelectObject;
 InspectorManager InspectorManager::_InspectorManager;
 
+void InspectorManager::Deletecur_actor(SelectObject* cur_selectobject)
+{
+	if (cur_selectobject == NULL) return;
+
+	for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
+	{
+		if (*it == cur_selectobject->_actor)
+		{
+			SceneManager::Objects.erase(it);
+			break;
+		}
+	}
+	for (auto it = SceneManager::vec_ObjectsToRender.begin(); it != SceneManager::vec_ObjectsToRender.end(); it++)
+	{
+		if (*it == cur_selectobject->_actor->meshrender)
+		{
+			SceneManager::vec_ObjectsToRender.erase(it);
+			break;
+		}
+	}
+	if (cur_selectobject->_actor->_PointLight != NULL)
+	{
+		for (auto it = SceneManager::vec_PointLight.begin(); it != SceneManager::vec_PointLight.end(); it++)
+		{
+			if (*it == cur_selectobject->_actor->_PointLight)
+			{
+				SceneManager::vec_PointLight.erase(it);
+				break;
+			}
+		}
+	}
+	if (cur_selectobject->_actor->_Dirlight != NULL)
+	{
+		for (auto it = SceneManager::vec_DirectionlLight.begin(); it != SceneManager::vec_DirectionlLight.end(); it++)
+		{
+			if (*it == cur_selectobject->_actor->_Dirlight)
+			{
+				SceneManager::vec_DirectionlLight.erase(it);
+				break;
+			}
+		}
+	}
+	cur_selectobject = NULL;
+}
+void InspectorManager::Renamecur_actor(SelectObject * cur_actor)
+{
+	if (cur_actor != NULL)
+		cur_actor->Is_renaming = true;
+}
+void InspectorManager::ShowInspector(SelectObject * selectobject)
+{
+	cur_SelectObject = new SelectObject();
+	cur_SelectObject= selectobject;
+	cur_SelectObject->_actor = selectobject->_actor;
+	static unsigned int AxisVAO, AxisVBO;
+	// Create Axis
+/*	float AxisVertices[] = {
+		//red			 //X-axis                          //arrow
+		1.0f,0.0f,0.0f,  -4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f, 3.0f,1.0f,0.0f, 4.0f,0.0f,0.0f, 3.0f,-1.0f,0.0f,
+		//green          //Y-axis
+		0.0f,1.0f,0.0f,  0.0f,-4.0f,0.0f,  0.0f,4.0f,0.0f,  0.0f,4.0f,0.0f, 1.0f,3.0f,0.0f, 0.0f,4.0f,0.0f, -1.0f,3.0f,0.0f,
+		//blue           //Z-axis
+		0.0f,0.0f,1.0f,  0.0f,0.0f,-4.0f,  0.0f,0.0f,4.0f,  0.0f,0.0f,4.0f, 0.0f,1.0f,3.0f, 0.0f,0.0f,4.0f, 0.0f,-1.0f,3.0f,
+	};*/
+
+}
+void InspectorManager::ListInspectorCur()
+{
+	if (cur_SelectObject != NULL)
+	{
+		if (cur_SelectObject->_actor->transform != NULL && cur_SelectObject->_actor->transform->enabled)
+		{
+
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::DragFloat3("Position", (float*)&cur_SelectObject->_actor->transform->position, 0.01f);
+				ImGui::DragFloat3("Rotation", (float*)&cur_SelectObject->_actor->transform->rotation, 1.0f);
+				ImGui::DragFloat3("Scale", (float*)&cur_SelectObject->_actor->transform->scale, 0.01f);
+			}
+		}
+		if (cur_SelectObject->_actor->_Dirlight != NULL && cur_SelectObject->_actor->_Dirlight->enabled)
+		{
+			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::ColorEdit3("Ambient", (float*)&cur_SelectObject->_actor->_Dirlight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&cur_SelectObject->_actor->_Dirlight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&cur_SelectObject->_actor->_Dirlight->Specular);
+			}
+		}
+		if (cur_SelectObject->_actor->_PointLight != NULL && cur_SelectObject->_actor->_PointLight->enabled)
+		{
+			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::ColorEdit3("Ambient", (float*)&cur_SelectObject->_actor->_PointLight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&cur_SelectObject->_actor->_PointLight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&cur_SelectObject->_actor->_PointLight->Specular);
+				ImGui::DragFloat("Constant", &cur_SelectObject->_actor->_PointLight->Constant, 0.01f);
+				ImGui::DragFloat("linear", &cur_SelectObject->_actor->_PointLight->linear, 0.01f);
+				ImGui::DragFloat("quadratic", &cur_SelectObject->_actor->_PointLight->quadratic, 0.01f);
+			}
+		}
+		if (cur_SelectObject->_actor->meshrender != NULL && cur_SelectObject->_actor->meshrender->enabled)
+		{
+			if (ImGui::CollapsingHeader("MeshRender", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::Text("MeshRender");
+			}
+		}
+	}
+
+
+}
 
 
 
@@ -223,28 +333,45 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			return;
 		}
 		//------------------------------------------------------------------------------------------------
+		
 		if (SceneManager::Objects.size() > 0)
 		{
+			
+			//buf1 =(char*) "";
 			for (int n = 0; n < SceneManager::Objects.size(); n++)
-			{				
-				std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
-				const char* newchar = _newname.c_str();
-				if (ImGui::Selectable(newchar, _currentlistbool->selected))
+			{
+				char * buf1 = new char[64]();
+				_currentSelectObject->_actor = SceneManager::Objects[n];
+				if (_currentSelectObject->Is_renaming)
 				{
-					if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
-						Clear_ListBool(&_headlistbool);
 					
-					_currentlistbool->selected = !_currentlistbool->selected;
-					InspectorManager::_InspectorManager.ShowInspector(SceneManager::Objects[n]);
+					//buf1 = SceneManager::Objects[n]->transform->name;
+					
+					if (ImGui::InputText("", buf1, 64))
+					{
+						SceneManager::Objects[n]->transform->name = buf1;
+					}
 				}
-				if (_currentlistbool->next == NULL)
-					_currentlistbool->next = new listbool();
-				_currentlistbool = _currentlistbool->next;
+				else
+				{
+					std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
+					const char* newchar = _newname.c_str();
+					if (ImGui::Selectable(newchar, _currentSelectObject->Is_selected))
+					{
+						if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
+							Clear_ListBool(&_headSelectObject);
+						_currentSelectObject->Is_selected = !_currentSelectObject->Is_selected;
+						InspectorManager::_InspectorManager.ShowInspector(_currentSelectObject);
+					}		
+				}
+				if (_currentSelectObject->next == NULL)
+					_currentSelectObject->next = new SelectObject();
+				_currentSelectObject = _currentSelectObject->next;
 			}
-			_currentlistbool = &_headlistbool;
+			_currentSelectObject = &_headSelectObject;
 		}
 		else
-			_headlistbool.next = NULL;   //應該要全部clear才行*******
+			Clear_ListBool(&_headSelectObject);
 	
 		/*
 		Your IDs will collide if you have the same name multiple times at same point of hierarchy.
@@ -277,16 +404,16 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 
 		if (ImGui::Button("新增一個方塊"))
 		{
-			ADD_Function::Add_Cube();
+			ADD_Component::Add_Cube(ADD_Component::Add_Actor());
 		}
 
 		if (ImGui::Button("新增一個平光源"))
 		{
-			ADD_Function::Add_DirectionalLight();
+			ADD_Component::Add_DirectionalLight(ADD_Component::Add_Actor());
 		}
 		if (ImGui::Button("新增一個點光源"))
 		{
-			ADD_Function::Add_PointLight();
+			ADD_Component::Add_PointLight(ADD_Component::Add_Actor());
 		}
 		_SceneX = ImGui::GetWindowWidth();
 		_SceneY = *height - ImGui::GetWindowHeight();
@@ -315,7 +442,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 
 
 
-	ShowExampleAppSimpleOverlay(&show_app_main_menu_bar);
+	ShowSimpleOverlay(&show_app_main_menu_bar);
 
 	//Main Background--------------------------------------------------------------------------------------
 	{
@@ -425,107 +552,9 @@ static void ShowExampleMenuFile()
 }
 
 
-void InspectorManager::Deletecur_actor()
-{
-	if (InspectorManager::cur_actor == NULL) return;
-	
-	for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
-	{
-		if (*it == InspectorManager::cur_actor) 
-		{
-			SceneManager::Objects.erase(it);
-		 break;
-		}
-	}
-	for (auto it = SceneManager::vec_ObjectsToRender.begin(); it != SceneManager::vec_ObjectsToRender.end(); it++)
-	{
-		if (*it == InspectorManager::cur_actor)
-		{
-			SceneManager::vec_ObjectsToRender.erase(it);
-			break;
-		}
-	}
-	if (InspectorManager::cur_actor->_PointLight != NULL)
-	{
-		for (auto it = SceneManager::vec_PointLight.begin(); it != SceneManager::vec_PointLight.end(); it++)
-		{
-			if (*it == InspectorManager::cur_actor->_PointLight)
-			{
-				SceneManager::vec_PointLight.erase(it);
-				break;
-			}
-		}
-	}
-	if (InspectorManager::cur_actor->_Dirlight != NULL)
-	{
-		for (auto it = SceneManager::vec_DirectionlLight.begin(); it != SceneManager::vec_DirectionlLight.end(); it++)
-		{
-			if (*it == InspectorManager::cur_actor->_Dirlight)
-			{
-				SceneManager::vec_DirectionlLight.erase(it);
-				break;
-			}
-		}
-	}
 
-}
-void InspectorManager::ShowInspector(Actor * actor)
-{
-	cur_actor = NULL;
-	cur_actor = actor;
-	static unsigned int AxisVAO,AxisVBO;
-	// Create Axis
-/*	float AxisVertices[] = {
-		//red			 //X-axis                          //arrow
-		1.0f,0.0f,0.0f,  -4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f, 3.0f,1.0f,0.0f, 4.0f,0.0f,0.0f, 3.0f,-1.0f,0.0f,
-		//green          //Y-axis
-		0.0f,1.0f,0.0f,  0.0f,-4.0f,0.0f,  0.0f,4.0f,0.0f,  0.0f,4.0f,0.0f, 1.0f,3.0f,0.0f, 0.0f,4.0f,0.0f, -1.0f,3.0f,0.0f,
-		//blue           //Z-axis
-		0.0f,0.0f,1.0f,  0.0f,0.0f,-4.0f,  0.0f,0.0f,4.0f,  0.0f,0.0f,4.0f, 0.0f,1.0f,3.0f, 0.0f,0.0f,4.0f, 0.0f,-1.0f,3.0f,
-	};*/
 
-}
-void InspectorManager::ListInspectorCur()
-{
-	
-	
-	if (cur_actor!=NULL)
-	{
-		if (cur_actor->transform != NULL && cur_actor->transform->enabled)
-		{
-			
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)|false) 
-			{
-				ImGui::DragFloat3("Position", (float*)&cur_actor->transform->position, 0.01f);
-				ImGui::DragFloat3("Rotation", (float*)&cur_actor->transform->rotation, 1.0f);
-				ImGui::DragFloat3("Scale", (float*)&cur_actor->transform->scale, 0.01f);	
-			}
-		}
-		if (cur_actor->_Dirlight != NULL && cur_actor->_Dirlight->enabled)
-		{
-			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen)|false)
-			{
-				ImGui::ColorEdit3("Ambient", (float*)&cur_actor->_Dirlight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&cur_actor->_Dirlight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&cur_actor->_Dirlight->Specular);	
-			}
-		}
-		if (cur_actor->_PointLight != NULL&&cur_actor->_PointLight->enabled)
-		{
-			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::ColorEdit3("Ambient", (float*)&cur_actor->_PointLight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&cur_actor->_PointLight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&cur_actor->_PointLight->Specular);
-				ImGui::DragFloat("Constant", &cur_actor->_PointLight->Constant,0.01f);
-				ImGui::DragFloat("linear", &cur_actor->_PointLight->linear, 0.01f);
-				ImGui::DragFloat("quadratic", &cur_actor->_PointLight->quadratic, 0.01f);
-			}
-		}		
-	}
-}
-
-static void ShowExampleAppSimpleOverlay(bool* p_open)
+static void ShowSimpleOverlay(bool* p_open)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x/640*100, io.DisplaySize.y/1080*150), ImGuiCond_Always);

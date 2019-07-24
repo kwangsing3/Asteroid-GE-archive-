@@ -1,15 +1,15 @@
 #ifndef CUBE_H
 #define CUBE_H
-#include <Units/Actor.h>
-#include<Component/Transform.h>
 
+#include <Component/Component.h>
+#include <Component/Transform.h>
 
-class Cube:public Actor
+class Cube:public Component
 {
 public:
 	
 	void Draw() override;
-	void translate(glm::vec3 position);
+	Transform* transform;
 	unsigned int VBO, VAO;
 	unsigned int _Texture;
 
@@ -17,8 +17,10 @@ public:
 	Cube() 
 	{
 		CreateCube();
-		transform->name = (char*)"Cube";
-	};
+		transform = new Transform();
+		enabled = true;
+		//transform->name = (char*)"Cube";
+	}
 private:
 	void CreateCube();
 	unsigned int LoadTexture(const char* path);

@@ -6,6 +6,7 @@ class Component
 
 public:
 	bool enabled;
+	virtual void Draw() {};
 	Component()
 	{
 		enabled = false;	

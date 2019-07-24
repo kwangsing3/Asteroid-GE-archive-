@@ -2,20 +2,32 @@
 #define MAINUI_H
 
 #include <Units/Actor.h>
+#include <iostream>
+struct SelectObject
+{
+	Actor* _actor;
+	int _index=0;
+	bool Is_selected = false;
+	bool Is_renaming = false;
+	SelectObject* next = NULL;
+};
 
 class InspectorManager
 {
 public:
-	static Actor *cur_actor;
+
+	static SelectObject *cur_SelectObject;
 	static InspectorManager _InspectorManager;
+	static void Deletecur_actor(SelectObject* cur_actor);
+	static void Renamecur_actor(SelectObject* cur_actor);
 	InspectorManager()
 	{
 		
 
 	}
 
-	void Deletecur_actor();
-	void ShowInspector(Actor *actor);
+	
+	void ShowInspector(SelectObject *actor);
 	void ListInspectorCur();
 };
 

@@ -165,7 +165,7 @@
     <ClInclude Include="Component\DirectionalLight.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="Units\Actor.h" />
-    <ClInclude Include="ADD_Function.h" />
+    <ClInclude Include="ADD_Component.h" />
     <ClInclude Include="Units\Camera.h" />
     <ClInclude Include="Units\Cube.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
@@ -193,7 +193,7 @@
     <ClCompile Include="Component\DirectionalLight.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Units\Actor.cpp" />
-    <ClCompile Include="ADD_Function.cpp" />
+    <ClCompile Include="ADD_Component.cpp" />
     <ClCompile Include="Units\Camera.cpp" />
     <ClCompile Include="Units\Cube.cpp" />
     <ClCompile Include="GraphicEngine\imgui.cpp" />
