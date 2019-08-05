@@ -3,6 +3,8 @@
 
 #include <Units/Actor.h>
 #include <iostream>
+#include <Xml/pugixml.hpp>
+
 struct SelectObject
 {
 	Actor* _actor;
@@ -11,7 +13,6 @@ struct SelectObject
 	bool Is_renaming = false;
 	SelectObject* next = NULL;
 };
-
 class InspectorManager
 {
 public:
@@ -35,13 +36,7 @@ public:
 
 namespace MyImGui
 {
-	
 	void ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer);
-
-
-
-
-	
 
 }
 

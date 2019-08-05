@@ -1,5 +1,6 @@
 
 #include "MainUI.h"
+
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -498,6 +499,26 @@ static void ShowExampleAppMainMenuBar()
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
 			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Objects"))
+		{
+			if (ImGui::MenuItem("Add Cube")) {}
+			if (ImGui::MenuItem("Add Sphere")) {}  
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add capsule")) {}
+			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+			if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Add Component"))
+		{
+			if (ImGui::MenuItem("Add MeshRender")) { if (InspectorManager::cur_SelectObject->_actor != NULL) ADD_Component::Add_Cube(InspectorManager::cur_SelectObject->_actor); }
+			
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add DirectionalLight")) { if (InspectorManager::cur_SelectObject->_actor != NULL) ADD_Component::Add_DirectionalLight(InspectorManager::cur_SelectObject->_actor); }
+			if (ImGui::MenuItem("Add PointLight")) { if (InspectorManager::cur_SelectObject->_actor != NULL) ADD_Component::Add_PointLight(InspectorManager::cur_SelectObject->_actor); }
+			if (ImGui::MenuItem("Add TestComponent")) {}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
