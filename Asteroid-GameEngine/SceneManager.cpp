@@ -1,5 +1,7 @@
 ﻿#include "SceneManager.h"
 #include <ADD_Component.h>
+
+
 std::vector<Shader> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;

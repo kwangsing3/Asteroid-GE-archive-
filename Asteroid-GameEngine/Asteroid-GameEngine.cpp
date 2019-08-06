@@ -17,7 +17,7 @@
 #include <SceneManager.h>
 
 #include <iostream>
-#include <MainUI.h>
+
 
 #include<Raycast.h>
 #include<ADD_Component.h>
@@ -138,6 +138,7 @@ int main()
 		// -----
 		processInput(_mainWindow);
 		//  Game scene
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
 		// render
 		// ------
@@ -166,67 +167,13 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		
-	//	if (show_demo_window)
 		MyImGui::ShowMyImGUIDemoWindow(&show_demo_window,&Window::WINDOW_WIDTH,&Window::WINDOW_WIDTH, Window::_editorCamera.GetframeBuffer());
 
-		//Debug Raycast
-		{
-			
-			ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x / 640 * 100, io.DisplaySize.y / 1080 * 150), ImGuiCond_Always);
-			const float DISTANCE = 10.0f;
-			static int corner = 0;
-			bool* p_open = new bool();
-			*p_open = true;
-			if (corner != -1)
-			{
-				ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - DISTANCE : DISTANCE);
-				ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-				ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-			}
-			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-			if (ImGui::Begin("Example: Simple overlay",p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
-			{
-				ImGui::Text("Simple overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
-				ImGui::Separator();
-				if (ImGui::IsMousePosValid())
-				{
-					ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-					ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition().x, Raycast::GetWorldPosition().y, Raycast::GetWorldPosition().z);
-				}
-
-				else
-					ImGui::Text("Mouse Position: <invalid>");
-				if (ImGui::BeginPopupContextWindow())
-				{
-					if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
-					if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
-					if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
-					if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
-					if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
-					if (p_open && ImGui::MenuItem("Close")) *p_open = false;
-					ImGui::EndPopup();
-				}
-			}
-			ImGui::End();
-		}
-		
-		
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		// -------------------------------------------------------------------------------
 
-		
 	//	glBindVertexArray(AxisVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		//glDrawArrays(GL_TRIANGLES, 0, 18);
-
-
-
-
-
-
-
 
 
 		glfwSwapBuffers(_mainWindow);
@@ -266,9 +213,9 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
-		InspectorManager::_InspectorManager.Deletecur_actor(InspectorManager::cur_SelectObject);
+		WindowUI::_InspectorManager.Deletecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
-		InspectorManager::_InspectorManager.Renamecur_actor(InspectorManager::cur_SelectObject);
+		WindowUI::_InspectorManager.Renamecur_actor(WindowUI::cur_SelectObject);
 
 }
 

@@ -176,7 +176,6 @@
     <ClInclude Include="GraphicEngine\imstb_rectpack.h" />
     <ClInclude Include="GraphicEngine\imstb_textedit.h" />
     <ClInclude Include="GraphicEngine\imstb_truetype.h" />
-    <ClInclude Include="MainUI.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="SceneManager.h" />
@@ -202,7 +201,7 @@
     <ClCompile Include="GraphicEngine\imgui_impl_glfw.cpp" />
     <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp" />
     <ClCompile Include="GraphicEngine\imgui_widgets.cpp" />
-    <ClCompile Include="MainUI.cpp" />
+    <ClCompile Include="hide\MainUI.cpp" />
     <ClCompile Include="Asteroid-GameEngine.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Component\PointLight .cpp" />

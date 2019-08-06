@@ -20,6 +20,9 @@ enum Camera_Movement {
 	DOWN
 };
 
+
+
+//enum Game_Mode { Mode_2D, Mode_3D } _mode;
 // Default camera values
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
@@ -47,20 +50,24 @@ public:
 	float MouseSensitivity;
 	float Zoom;
 
+
 	unsigned int framebuffer;
 	unsigned int textureColorbuffer;
 	unsigned int rbo;
-
+	bool Projection_3D;
+	glm::mat4 SwitchCamera3D(bool *_mode);
+	void SwitchCamera3D(bool _mode);
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 	{
+		Projection_3D = false;
 		enabled = true;
 		transform.position = position;
 		WorldUp = up;
 		Yaw = yaw;
 		Pitch = pitch;
 		transform.name = (char*) "Camera";
-		Projection = glm::perspective(glm::radians(ZOOM),(float)(1280 /720), 0.1f, 100.0f);
+		Projection = SwitchCamera3D(&Projection_3D);
 		
 		updateCameraVectors();
 	}
@@ -75,6 +82,19 @@ public:
 	}
 	void EnableFrameBuffer(bool _enable);
 	unsigned int GetframeBuffer();
+
+
+	
+
+
+
+
+
+
+
+
+
+
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix()
 	{

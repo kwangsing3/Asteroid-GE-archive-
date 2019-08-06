@@ -138,8 +138,12 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 	glBindVertexArray(VAO);
 
-	// pass projection matrix to shader (note that in this case it could change every frame)  // 現在在Camera.h上有Projection 要記得改 
-	glm::mat4 projection = glm::perspective(glm::radians(Window::_editorCamera.Zoom), (float)Window::WINDOW_WIDTH / (float)Window::WINDOW_HEIGHT, 0.1f, 100.0f);
+
+	glm::mat4 projection = Window::_editorCamera.Projection;
+	//    glm::perspective(glm::radians(Window::_editorCamera.Zoom), (float)Window::WINDOW_WIDTH / (float)Window::WINDOW_HEIGHT, 0.1f, 100.0f);
+	//    Window::_editorCamera.Projection;
+
+
 	SceneManager::vec_ShaderProgram[_index].setMat4("projection", projection);
 
 	// camera/view transformation
@@ -150,7 +154,7 @@ void Cube::Draw()
 	model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
 	float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
 	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(angle[1]), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
 	model = glm::scale(model, glm::vec3(this->transform->scale.x, this->transform->scale.y, this->transform->scale.z));
 	SceneManager::vec_ShaderProgram[_index].setMat4("model", model);

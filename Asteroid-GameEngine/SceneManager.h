@@ -6,6 +6,7 @@
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include "Xml/pugixml.hpp"
+
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
 {
 public:
@@ -19,8 +20,10 @@ public:
 	static void OpenFile();
 	static void SaveFile();
 	static void NewScene();
+
 	SceneManager()
 	{
+		
 		CreateShader();
 	}
 private:
