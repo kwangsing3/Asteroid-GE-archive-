@@ -56,7 +56,7 @@ GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_ca
 		//return;
 	}
 
-
+	_editorCamera.SwitchCamera3D(true);
 	_editorCamera.EnableFrameBuffer(true);
 	return _Mainwindow;
 }

@@ -8,8 +8,8 @@
     
   </WindowSetting>
   <ProjectSetting>
-    <All_UIElement All_UIElement="false"></All_UIElement>
-    <Game_Mode Game_Mode="0"></Game_Mode>
+    <All_UIElement All_UIElement="true"></All_UIElement>
+    <Game_Mode Game_Mode="1"></Game_Mode>
   </ProjectSetting>
   
   

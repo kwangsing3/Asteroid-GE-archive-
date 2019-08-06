@@ -100,22 +100,73 @@ int main()
 	ADD_Component::Add_PointLight(ADD_Component::Add_Actor());
 
 	unsigned int AxisVAO, AxisVBO;
+	/*
+	float coordinate[] = {
+		-5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f, -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,  -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,// left  
+		-5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f, -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,  -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,// right 
+		-5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f, -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f,  -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f  // top   
+	};
+	*/
+	float coordinate[] = {
+		// positions         // colors
+		   2.5f, 0.0f, 0.5f,  0.7f,0.7f,0.7f,  // bottom right
+		  -2.5f, 0.0f, 0.5f,  0.7f,0.7f,0.7f,  // bottom left
+		   2.5f, -0.0f, 0.0f, 0.7f,0.7f,0.7f,  // top  
+		  -2.5f, -0.0f, 0.0f,  0.7f,0.7f,0.7f,  // bottom right
+		   2.5f, 0.0f, -0.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  -2.5f, -0.0f, -0.5f, 0.7f,0.7f,0.7f,   // top  
+		  2.5f, 0.0f, 1.0f,  0.7f,0.7f,0.7f,  // bottom right
+		  -2.5f, 0.0f, 1.0f,  0.7f,0.7f,0.7f,  // bottom left
+		   2.5f, -0.0f, -1.0f, 0.7f,0.7f,0.7f,  // top  
+		  -2.5f, -0.0f, -1.0f,  0.7f,0.7f,0.7f,  // bottom right
+		   2.5f, 0.0f, 1.5f,  0.7f,0.7f,0.7f, // bottom left
+		  -2.5f, -0.0f, 1.5f,  0.7f,0.7f,0.7f,   // top  
+		   2.5f, 0.0f, -1.5f,  0.7f,0.7f,0.7f,  // bottom right
+		  -2.5f, 0.0f, -1.5f,  0.7f,0.7f,0.7f,  // bottom left
+		   2.5f, -0.0f, 2.0f,  0.7f,0.7f,0.7f,  // top  
+		  -2.5f, -0.0f, 2.0f,  0.7f,0.7f,0.7f,  // bottom right
+		   2.5f, 0.0f, -2.0f,  0.7f,0.7f,0.7f,  // bottom left
+		  -2.5f, -0.0f, -2.0f,  0.7f,0.7f,0.7f,   // top  
+		  2.5f, 0.0f,  2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  -2.5f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,   // top  
+		  2.5f, 0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  -2.5f, -0.0f, -2.5f, 0.7f,0.7f,0.7f,   // top  
 
-	float AxisVertices[] = {
-		0.0f,0.0f,0.0f,   0.5f,0.0f,0.0f,  0.5f,0.0f,0.0f,  0.4f,0.1f,0.0f,  0.5f,0.0f,0.0f,  0.4f,-0.1f, 0.0f,// left  
-		0.0f,0.0f,0.0f,   0.0f,0.5f,0.0f,  0.0f,0.5f,0.0f,  0.1f,0.4f,0.0f,  0.0f,0.5f,0.0f, -0.1f,0.4f,0.0f,// right 
-		0.0f,0.0f,0.0f,   0.0f,0.0f,0.5f,  0.0f,0.0f,0.5f,  0.1f,0.0f,0.4f,  0.0f,0.0f,0.5f, -0.1f,0.0f,0.4f  // top   
+		   0.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom right
+		   0.5f, 0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		   0.0f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,  // top  
+		   0.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom right
+		  -0.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  -0.5f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top  
+		  1.0f, 0.0f, 2.5f,    0.7f,0.7f,0.7f,  // bottom right
+		  1.0f, 0.0f, -2.5f,    0.7f,0.7f,0.7f,  // bottom left
+		   -1.0f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,  // top  
+		  -1.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom right
+		   1.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		   1.5f, -0.0f, -2.5f, 0.7f,0.7f,0.7f,   // top  
+		   -1.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom right
+		  -1.5f, 0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		   2.0f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,  // top  
+		  2.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom right
+		  -2.0f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  -2.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top  
+		   2.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  2.5f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top 
+		  -2.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
+		  -2.5f, 0.0f,  -2.5f,  0.7f,0.7f,0.7f   // top 
 	};
 
 	glGenVertexArrays(1, &AxisVAO);
 	glGenBuffers(1, &AxisVBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, AxisVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(AxisVertices), AxisVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinate), coordinate, GL_STATIC_DRAW);
 	glBindVertexArray(AxisVAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -124,6 +175,7 @@ int main()
 	
 	// render loop
 	// -----------
+	bool use_UI = true;  //調試用函數
 	
 	//記得拿掉
 	SceneManager::SaveFile();
@@ -138,42 +190,60 @@ int main()
 		// -----
 		processInput(_mainWindow);
 		//  Game scene
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
+		if(use_UI)
+			glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
 		// render
 		// ------
-		glClearColor(0.2f, 0.3f, 0.3f, 0.0f);
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 	
+		//Draw Croodinate
+		{
+			SceneManager::vec_ShaderProgram[0].use();
+			SceneManager::vec_ShaderProgram[0].setMat4("projection", Window::_editorCamera.Projection);
+			glm::mat4 view = Window::_editorCamera.GetViewMatrix();
+			SceneManager::vec_ShaderProgram[0].setMat4("view", view);
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(0, 0, 0));
+			if (WindowUI::_mode==Mode_2D) 
+				model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+			else
+				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
+			SceneManager::vec_ShaderProgram[0].setMat4("model", model);
+			glBindVertexArray(AxisVAO);
+			glDrawArrays(GL_LINES, 0, 44);
+		}
+
+
+
+		
 		
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			SceneManager::vec_ObjectsToRender[i]->Draw();
 		}
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT);
 		glDisable(GL_DEPTH_TEST);
 
-
-
-
-		
+	
 		
 		//UI----------------------------------------------------------------------------------------------------------------------
-	
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		if (use_UI)
+		{
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 
-		MyImGui::ShowMyImGUIDemoWindow(&show_demo_window,&Window::WINDOW_WIDTH,&Window::WINDOW_WIDTH, Window::_editorCamera.GetframeBuffer());
+			MyImGui::ShowMyImGUIDemoWindow(&show_demo_window, &Window::WINDOW_WIDTH, &Window::WINDOW_WIDTH, Window::_editorCamera.GetframeBuffer());
 
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
 
-	//	glBindVertexArray(AxisVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-		//glDrawArrays(GL_TRIANGLES, 0, 18);
 
 
 		glfwSwapBuffers(_mainWindow);
