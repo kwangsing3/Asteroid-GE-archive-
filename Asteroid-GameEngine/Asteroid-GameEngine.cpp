@@ -53,6 +53,7 @@ int main()
 #endif
 
 	GLFWwindow* _mainWindow = Window::CreateWindow(framebuffer_size_callback, mouse_callback, scroll_callback);
+	Window::DeBug_Mode = true;
 
 	// glfw window creation
 	// --------------------
@@ -178,7 +179,9 @@ int main()
 	bool use_UI = true;  //調試用函數
 	
 	//記得拿掉
-	SceneManager::SaveFile();
+	SceneManager::OpenFile();//調試用函數
+	//Actor *_mycube= ADD_Component::Add_Cube(ADD_Component::Add_Actor());
+
 	while (!Window::WindowShouldClose)
 	{
 		// per-frame time logic
@@ -214,8 +217,8 @@ int main()
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
 		}
-
-
+	//	_mycube->transform->scale = glm::vec3(0.5f,0.5f,0.5f);
+		//_mycube->transform->position = glm::vec3(Raycast::GetWorldPosition().x,Raycast::GetWorldPosition().y,0);
 
 		
 		

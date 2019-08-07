@@ -1,4 +1,4 @@
-﻿#include <Window.h>
+#include <Window.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -18,9 +18,9 @@ void Xml_SettingImport();
 
  unsigned int Window::WINDOW_WIDTH = 800;
  unsigned int Window::WINDOW_HEIGHT = 600;
- Camera Window::_editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+ Camera Window::_editorCamera(glm::vec3(0.0f,0.0f,3.0f));
  bool Window::WindowShouldClose = false;
-
+ bool Window::DeBug_Mode=false;
  
  //關於專案設定
  bool WindowUI::All_UIElement=true;
@@ -56,7 +56,25 @@ GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_ca
 		//return;
 	}
 
-	_editorCamera.SwitchCamera3D(true);
+	if (WindowUI::_mode == Mode_3D)
+	{
+		Window::_editorCamera.transform.position = glm::vec3(3.27092457f, 2.01133919f, 4.87599230f);
+		Window::_editorCamera.Up = glm::vec3(-0.158759713f, 0.951594353f, -0.263179779f);
+		Window::_editorCamera.Yaw = -121.099922f;
+		Window::_editorCamera.Pitch = -17.9000149f;
+		_editorCamera.SwitchCamera3D(true);
+	}
+	else
+	{
+		Window::_editorCamera.transform.position = glm::vec3(-3.0f, -1.7f, 3.00000000f);
+		_editorCamera.SwitchCamera3D(false);
+	}
+
+	
+
+
+
+
 	_editorCamera.EnableFrameBuffer(true);
 	return _Mainwindow;
 }
@@ -78,7 +96,7 @@ void Xml_SettingImport()
 	WindowUI::All_UIElement=_doc.child("GlobalSettings").child("ProjectSetting").child("All_UIElement").attribute("All_UIElement").as_bool();
 	WindowUI::_mode = Game_Mode(_doc.child("GlobalSettings").child("ProjectSetting").child("Game_Mode").attribute("Game_Mode").as_int());
 	
-
+	Window::DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
 
 	_XMLstream.close();
 
@@ -655,7 +673,9 @@ static void ShowSimpleOverlay(bool* p_open)
 			if (p_open && ImGui::MenuItem("Close")) *p_open = false;
 			ImGui::EndPopup();
 		}
-		ImGui::Text("Game Mode: %d",WindowUI::_mode);
+
+		ImGui::Text(WindowUI::_mode?"Game Mode: 3D": "Game Mode: 2D");
+		ImGui::Text(Window::DeBug_Mode? "Debug Mode: Active": "Debug Mode: inValid");
 	}
 	
 

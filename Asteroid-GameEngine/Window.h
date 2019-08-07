@@ -20,6 +20,9 @@ struct SelectObject
 };
 enum  Game_Mode { Mode_2D, Mode_3D };
 
+
+
+
 class Window
 {
 public:
@@ -32,7 +35,8 @@ public:
 
 	static GLFWwindow* CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback);
 	static Camera _editorCamera;
-
+	static bool DeBug_Mode;
+	
 	
 };
 

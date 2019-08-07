@@ -1,6 +1,7 @@
-﻿#include <ADD_Component.h>
+﻿
+#include <ADD_Component.h>
 
-
+#include <Units/Cube.h>
 
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
@@ -33,9 +34,27 @@ Actor* ADD_Component::Add_Cube(Actor* _actor)
 	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
 	return _newactor;
 }
+Actor* ADD_Component::Add_Cube2D(Actor* _actor)
+{
+	Cube* _NewCube = new Cube(0);
+
+	if (_actor)
+	{
+		_actor->meshrender = new Cube(0);
+
+		SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
+		_actor->meshrender->transform = _actor->transform;
+		return _actor;
+	}
+	Actor* _newactor = ADD_Component::Add_Actor();
+	_newactor->meshrender = new Cube(0);
+	_newactor->transform->name = (char*)"Cube";
+
+	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
+	return _newactor;
+}
 
 
-//現在做的東西都是新增一個Object 還沒有做到新增Component
 Actor* ADD_Component::Add_DirectionalLight(Actor* _actor)
 {
 	if (_actor)

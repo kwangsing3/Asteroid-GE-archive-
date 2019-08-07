@@ -90,6 +90,12 @@
     <ClInclude Include="ADD_Component.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Collision\BoxCollision.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Meshrender.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c">
@@ -150,6 +156,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="hide\MainUI.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Meshrender.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
