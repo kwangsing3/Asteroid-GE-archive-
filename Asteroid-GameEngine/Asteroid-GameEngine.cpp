@@ -173,10 +173,12 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	
-	// render loop
-	// -----------
-	bool use_UI = true;  //調試用函數
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+
+	//---------------------------------------
+	//bool use_UI = true;  //調試用函數
 	
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
@@ -193,8 +195,8 @@ int main()
 		// -----
 		processInput(_mainWindow);
 		//  Game scene
-		if(use_UI)
-			glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
 		// render
 		// ------
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -220,7 +222,10 @@ int main()
 	//	_mycube->transform->scale = glm::vec3(0.5f,0.5f,0.5f);
 		//_mycube->transform->position = glm::vec3(Raycast::GetWorldPosition().x,Raycast::GetWorldPosition().y,0);
 
-		
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
 		
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
@@ -235,18 +240,17 @@ int main()
 	
 		
 		//UI----------------------------------------------------------------------------------------------------------------------
-		if (use_UI)
-		{
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
+		
 
-			MyImGui::ShowMyImGUIDemoWindow(&show_demo_window, &Window::WINDOW_WIDTH, &Window::WINDOW_WIDTH, Window::_editorCamera.GetframeBuffer());
+		MyImGui::ShowMyImGUIDemoWindow(&show_demo_window, &Window::WINDOW_WIDTH, &Window::WINDOW_WIDTH, Window::_editorCamera.GetframeBuffer());
 
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		}
 
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+		
 
 
 		glfwSwapBuffers(_mainWindow);

@@ -142,7 +142,6 @@ void Cube::CreateCube()
 }
 void Cube::Draw()
 {
-
 	SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setVec3("viewPos", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setFloat("material.shininess", 32.0f);
@@ -197,48 +196,69 @@ void Cube::Draw()
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 	
 	//Draw Popline
-	
-		glBindVertexArray(this->_mode==Mode_3D?VAO:VAO2D);
-		glm::mat4 projection = Window::_editorCamera.Projection;
-		SceneManager::vec_ShaderProgram[_index].setMat4("projection", projection);
-		// camera/view transformation
-		glm::mat4 view = Window::_editorCamera.GetViewMatrix();
-		SceneManager::vec_ShaderProgram[_index].setMat4("view", view);
+	glBindVertexArray(this->_mode == Mode_3D ? VAO : VAO2D);
+	glm::mat4 projection = Window::_editorCamera.Projection;
+	SceneManager::vec_ShaderProgram[_index].setMat4("projection", projection);
+	// camera/view transformation
+	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
+	SceneManager::vec_ShaderProgram[_index].setMat4("view", view);
 
-		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
-		model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
-		float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
-		model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
-		model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
-		model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
-		model = glm::scale(model, glm::vec3(this->transform->scale.x, this->transform->scale.y, this->transform->scale.z));
-		SceneManager::vec_ShaderProgram[_index].setMat4("model", model);
+	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
+	model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
+	float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
+	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
+	model = glm::scale(model, glm::vec3(this->transform->scale.x, this->transform->scale.y, this->transform->scale.z));
+	SceneManager::vec_ShaderProgram[_index].setMat4("model", model);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _Texture);
-		if(this->_mode == Mode_3D)
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		else
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-		//printf("draw from cube");
-		glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _Texture);
+	if (this->_mode == Mode_3D)
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	else
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	//printf("draw from cube");
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	
 	
 	//Debug Popline
 	if (Window::DeBug_Mode)
 	{
-		if (Worldvectices_Debug[0] != Vectices_Debug[0]+ this->transform->position)
+		
+		UpdateWorldVertices();
+		//UpdateSpaceVertices
+		for (int i = 0; i < Vectices_Debug.size(); i++)
 		{
-			UpdateWorldVertices();
-
-			//UpdateSpaceVertices
-			for (int i = 0; i < Vectices_Debug.size(); i++)
-			{
-				glm::vec4 _sp = glm::vec4(Worldvectices_Debug[i], 1)*model*view*projection;
-				Spacevectices_Debug[i] = glm::vec3(_sp.x,_sp.y,0);
-			}
+			glm::vec4 _sp = glm::vec4(Worldvectices_Debug[i], 0)*model*view;// *projection;
+			Spacevectices_Debug[i] = glm::vec3(_sp.x, _sp.y, 0)/ _sp.w;
 		}
 
+
+		
+		ImGuiIO& io = ImGui::GetIO();
+		
+		//model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -10.0f));
+
+		for (int i = 0; i < Spacevectices_Debug.size(); i++)
+		{
+			glm::vec3 windowSpacePos = glm::project(Worldvectices_Debug[i], Window::_editorCamera.GetViewMatrix(), projection, glm::vec4(0, 0, Window::WINDOW_WIDTH,Window::WINDOW_HEIGHT));
+			
+			ImGui::SetNextWindowBgAlpha(0.2f);
+			ImGui::SetNextWindowPos(ImVec2(windowSpacePos.x, Window::WINDOW_HEIGHT-windowSpacePos.y), ImGuiCond_Always);
+			static bool _ts = true;
+			
+			char s[10];
+			sprintf(s, "%d", i+1);
+
+			if (ImGui::Begin(s, &_ts,ImGuiWindowFlags_NoMove| ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+			{
+				//ImGui::Text("%d Position: (%.1f,%.1f)",s[0], (2- Spacevectices_Debug[i].x-1)/2*io.DisplaySize.x, (2 - Spacevectices_Debug[i].y) / 2 * io.DisplaySize.y);
+				ImGui::Text("SPosition: (%.1f,%.1f)", windowSpacePos.x, windowSpacePos.y);
+				ImGui::End();
+			}
+		}
 	}
 	
 

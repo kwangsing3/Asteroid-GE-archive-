@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="6">
-<Objects name="Actor" meshrender="1" Component_size="1">
-<Position x="1.61000001" y="1.17999995" z="0" />
-<Rotation x="0" y="0" z="0" />
-<Scale x="0.800000012" y="0.800000012" z="0.800000012" />
-</Objects>
+<Scene name="test" Objects_Size="2">
 <Objects name="Actor" _Dirlight="1" Component_size="1">
 <Position x="0" y="0" z="0" />
 <Rotation x="0" y="0" z="0" />
@@ -13,30 +8,9 @@
 <Diffuse X="0.400000006" Y="0.400000006" Z="0.400000006" />
 <Specular X="0.5" Y="0.5" Z="0.5" />
 </Objects>
-<Objects name="Actor" _PointLight="1" Component_size="1">
+<Objects name="Actor" meshrender="1" Component_size="1">
 <Position x="0" y="0" z="0" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="1" y="1" z="1" />
-<Ambient X="0.0500000007" Y="0.0500000007" Z="0.0500000007" />
-<Diffuse X="0.800000012" Y="0.800000012" Z="0.800000012" />
-<Specular X="1" Y="1" Z="1" />
-<Constant Constant="1" />
-<linear linear="0.0900000036" />
-<quadratic quadratic="0.0320000015" />
-</Objects>
-<Objects name="Actor" meshrender="1" Component_size="1">
-<Position x="-1.71000004" y="1.37" z="0" />
-<Rotation x="0" y="0" z="-18" />
-<Scale x="0.800000012" y="0.800000012" z="0.800000012" />
-</Objects>
-<Objects name="Actor" meshrender="1" Component_size="1">
-<Position x="2" y="-1.09000003" z="0" />
-<Rotation x="0" y="0" z="19" />
-<Scale x="0.800000012" y="0.800000012" z="1" />
-</Objects>
-<Objects name="Actor" meshrender="1" Component_size="1">
-<Position x="-2.02999997" y="-0.870000005" z="0" />
-<Rotation x="0" y="0" z="0" />
-<Scale x="0.5" y="0.5" z="0.5" />
 </Objects>
 </Scene>

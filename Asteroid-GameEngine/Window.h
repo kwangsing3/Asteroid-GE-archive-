@@ -52,7 +52,7 @@ public:
 	static void Renamecur_actor(SelectObject* cur_actor);
 	void ShowInspector(SelectObject *actor);
 	void ListInspectorCur();
-
+	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
 

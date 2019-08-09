@@ -114,7 +114,7 @@ static float _maineditorX = 854, _maineditorY = 590;
 static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
-
+bool WindowUI::show_simple_overlay = false;
 static SelectObject _headSelectObject;
 static SelectObject *_currentSelectObject = &_headSelectObject;
 void Clear_ListBool(SelectObject* _headSelectObject)
@@ -254,8 +254,8 @@ void WindowUI::ListInspectorCur()
 
 void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
-	static bool show_app_main_menu_bar = false;
-	show_app_main_menu_bar = p_open;
+	
+	//show_simple_overlay = p_open;
 
 
 	float lastX = *width / 2.0f;
@@ -269,7 +269,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	static bool no_collapse = true;
 	static bool no_close = true;
 	static bool no_nav = false;
-	static bool no_background = false;
+	static bool no_background = true;
 	static bool no_bring_to_front = true;
 
 	ImGuiWindowFlags window_flags = 0;
@@ -284,17 +284,44 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 	if (no_close)           p_open = NULL; // Don't pass our bool* to Begin
 
+	//Main Background--------------------------------------------------------------------------------------
+
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
+	{
+		if (!ImGui::Begin("Main Background", p_open, window_flags|ImGuiWindowFlags_NoMouseInputs))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+
+		if (!WindowUI::All_UIElement)
+		{
+			ImGui::GetWindowDrawList()->AddImage(
+				(void *)textureColorbuffer,
+				ImVec2(ImGui::GetCursorScreenPos()),
+				ImVec2(ImGui::GetCursorScreenPos().x + Window::WINDOW_WIDTH,
+					ImGui::GetCursorScreenPos().y + Window::WINDOW_HEIGHT), ImVec2(0, 1), ImVec2(1, 0));
+
+		}
+
+
+		ShowMainMenuBar();
+		ImGui::End();
+	}
+	//Main Background--------------------------------------------------------------------------------------
+
 	if (WindowUI::All_UIElement)
 	{
 		ImGuiWindowFlags window_flags2 = 0;
 		window_flags2 |= ImGuiWindowFlags_NoTitleBar;
 		window_flags2 |= ImGuiWindowFlags_NoMove;
-		//window_flags2 |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+		window_flags2 |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 		//Main Editor------------------------------------------------------------------------------------------
 		ImGui::SetNextWindowPos(ImVec2(0, *height / 35), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(_maineditorX, _maineditorY), ImGuiCond_Always);
 		{
-
 
 			if (!ImGui::Begin("Main Editor", p_open, window_flags2))
 			{
@@ -476,44 +503,33 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ImGui::End();
 
 		}
-
-		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
-
-
-
-		
-
 	}
 
 
-	//Main Background--------------------------------------------------------------------------------------
-	{
-		if (!ImGui::Begin("Main Background", p_open, window_flags))
-		{
-			// Early out if the window is collapsed, as an optimization.
-			ImGui::End();
-			return;
-		}
 
-		if (!WindowUI::All_UIElement) 
-		{
-			ImGui::GetWindowDrawList()->AddImage(
-				(void *)textureColorbuffer, 
-				ImVec2(ImGui::GetCursorScreenPos()),
-				ImVec2(ImGui::GetCursorScreenPos().x + Window::WINDOW_WIDTH, 
-				ImGui::GetCursorScreenPos().y + Window::WINDOW_HEIGHT), ImVec2(0, 1), ImVec2(1, 0));
+	//////調試用
+	/*
+	glm::mat4 projection = Window::_editorCamera.Projection;
+	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
+	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
+	
+	glm::vec3 _world(0,0,0);
+	
+	glm::vec4 clipSpacePos = projection * (view * glm::vec4(_world, 1.0));
+	glm::vec3 ndcSpacePos = glm::vec3(clipSpacePos.x, clipSpacePos.y, clipSpacePos.z) / clipSpacePos.w;
 
-		}
-		
+	glm::vec2 windowSpacePos = (glm::vec2(((ndcSpacePos.x + 1.0) / 2.0) * io.DisplaySize.x, ((1.0 - ndcSpacePos.y) / 2.0) *io.DisplaySize.x));
+	   Ans: windowSpacePos.x, Window::WINDOW_HEIGHT-windowSpacePos.y
+	這是利用世界座標轉到螢幕座標的方法     或是使用glm::project  Cube.cpp裡面有
+	*/
 
-		ShowMainMenuBar();
-		ImGui::End();
-	}
-	//Main Background--------------------------------------------------------------------------------------
+	
+
+	//glViewport(0, 0, width, height);
 
 
-	ShowSimpleOverlay(&show_app_main_menu_bar);
+
+	ShowSimpleOverlay(&WindowUI::show_simple_overlay);
 
 	ImGui::ShowDemoWindow(p_open);
 }
@@ -563,7 +579,7 @@ static void ShowMainMenuBar()
 		{
 			if (ImGui::MenuItem("All Element", "", &WindowUI::All_UIElement))
 			{
-
+				
 			}
 			if (ImGui::MenuItem("Switch_GameMode"))
 			{
@@ -579,6 +595,11 @@ static void ShowMainMenuBar()
 					Window::_editorCamera.SwitchCamera3D(true);
 				}
 					
+			}
+			if (ImGui::MenuItem("Simple Overlay","",&WindowUI::show_simple_overlay))
+			{
+				
+
 			}
 			ImGui::EndMenu();
 		}
@@ -639,46 +660,49 @@ static void ShowMenu_File()
 }
 static void ShowSimpleOverlay(bool* p_open)
 {
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x / 640 * 100, io.DisplaySize.y / 1080 * 200), ImGuiCond_Always);
-	const float DISTANCE = 10.0f;
-	static int corner = 0;
+	if (*p_open)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x / 640 * 100, io.DisplaySize.y / 1080 * 200), ImGuiCond_Always);
+		const float DISTANCE = 10.0f;
+		static int corner = 0;
 
-	if (corner != -1)
-	{
-		ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - DISTANCE : DISTANCE);
-		ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-		ImGui::SetNextWindowPos(ImVec2(window_pos.x, window_pos.y + 10), ImGuiCond_Always, window_pos_pivot);
-	}
-	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-	if (ImGui::Begin("Example: Simple overlay", p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
-	{
-		ImGui::Text("Simple overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
-		ImGui::Separator();
-		if (ImGui::IsMousePosValid())
+		if (corner != -1)
 		{
-			ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-			ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition().x, Raycast::GetWorldPosition().y, Raycast::GetWorldPosition().z);
+			ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - DISTANCE : DISTANCE);
+			ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
+			ImGui::SetNextWindowPos(ImVec2(window_pos.x, window_pos.y + 10), ImGuiCond_Always, window_pos_pivot);
+		}
+		ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+		if (ImGui::Begin("Example: Simple overlay", p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+		{
+			ImGui::Text("Simple overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
+			ImGui::Separator();
+			if (ImGui::IsMousePosValid())
+			{
+				ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
+				ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition().x, Raycast::GetWorldPosition().y, Raycast::GetWorldPosition().z);
+			}
+
+			else
+				ImGui::Text("Mouse Position: <invalid>");
+			if (ImGui::BeginPopupContextWindow())
+			{
+				if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
+				if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
+				if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
+				if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
+				if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
+				if (p_open && ImGui::MenuItem("Close")) *p_open = false;
+				ImGui::EndPopup();
+			}
+
+			ImGui::Text(WindowUI::_mode ? "Game Mode: 3D" : "Game Mode: 2D");
+			ImGui::Text(Window::DeBug_Mode ? "Debug Mode: Active" : "Debug Mode: inValid");
 		}
 
-		else
-			ImGui::Text("Mouse Position: <invalid>");
-		if (ImGui::BeginPopupContextWindow())
-		{
-			if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;
-			if (ImGui::MenuItem("Top-left", NULL, corner == 0)) corner = 0;
-			if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
-			if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
-			if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
-			if (p_open && ImGui::MenuItem("Close")) *p_open = false;
-			ImGui::EndPopup();
-		}
 
-		ImGui::Text(WindowUI::_mode?"Game Mode: 3D": "Game Mode: 2D");
-		ImGui::Text(Window::DeBug_Mode? "Debug Mode: Active": "Debug Mode: inValid");
+
+		ImGui::End();
 	}
-	
-
-
-	ImGui::End();
 }
