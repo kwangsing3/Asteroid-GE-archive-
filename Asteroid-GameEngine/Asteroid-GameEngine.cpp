@@ -52,8 +52,10 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-	GLFWwindow* _mainWindow = Window::CreateWindow(framebuffer_size_callback, mouse_callback, scroll_callback);
-	Window::DeBug_Mode = true;
+	
+
+	Window *_mainWindow=new Window(framebuffer_size_callback, mouse_callback, scroll_callback);
+	_mainWindow->DeBug_Mode = true;
 
 	// glfw window creation
 	// --------------------
@@ -74,7 +76,7 @@ int main()
 	//ImGui::StyleColorsClassic();
 
 	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(_mainWindow, true);
+	ImGui_ImplGlfw_InitForOpenGL(_mainWindow->MainGLFWwindow, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	bool show_demo_window = true;
@@ -186,24 +188,21 @@ int main()
 
 	while (!Window::WindowShouldClose)
 	{
-		// per-frame time logic
-		// --------------------
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		// input
 		// -----
-		processInput(_mainWindow);
-		//  Game scene
-		
+		processInput(_mainWindow->MainGLFWwindow);
+
+		//  Game scene	
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
 		// render
 		// ------
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-	
-		//Draw Croodinate
+		//Draw Croodinate  基本座標(白)
 		{
 			SceneManager::vec_ShaderProgram[0].use();
 			SceneManager::vec_ShaderProgram[0].setMat4("projection", Window::_editorCamera.Projection);
@@ -216,17 +215,16 @@ int main()
 			else
 				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
 			SceneManager::vec_ShaderProgram[0].setMat4("model", model);
+
+			SceneManager::vec_ShaderProgram[0].setVec3("Color",1,1,1);
+			
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
 		}
-	//	_mycube->transform->scale = glm::vec3(0.5f,0.5f,0.5f);
-		//_mycube->transform->position = glm::vec3(Raycast::GetWorldPosition().x,Raycast::GetWorldPosition().y,0);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		
+		ImGui::NewFrame();	
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			SceneManager::vec_ObjectsToRender[i]->Draw();
@@ -235,25 +233,14 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);
-		glDisable(GL_DEPTH_TEST);
-
-	
-		
+		glDisable(GL_DEPTH_TEST);	
 		//UI----------------------------------------------------------------------------------------------------------------------
 		
-
-		MyImGui::ShowMyImGUIDemoWindow(&show_demo_window, &Window::WINDOW_WIDTH, &Window::WINDOW_WIDTH, Window::_editorCamera.GetframeBuffer());
-
-
+		MyImGui::ShowMyImGUIDemoWindow(&show_demo_window, &Window::_Width, &Window::_Height, Window::_editorCamera.GetframeBuffer());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
-		
-
-
-		glfwSwapBuffers(_mainWindow);
+		glfwSwapBuffers(_mainWindow->MainGLFWwindow);
 		glfwPollEvents();
 	}
 	
@@ -321,6 +308,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	lastX = xpos;
 	lastY = ypos;
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		WindowUI::SetMouseClickPos(xpos, ypos);
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);
@@ -328,6 +317,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called

@@ -1,11 +1,11 @@
-﻿#include "SceneManager.h"
-#include <ADD_Component.h>
+﻿#include <SceneManager.h>
+
 
 
 std::vector<Shader> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
-std::vector<Component*> SceneManager::vec_ObjectsToRender;
+std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
 
 
@@ -36,6 +36,7 @@ void SceneManager::OpenFile()
 		std::string* _char = new std::string();
 		*_char = tool.attribute("name").value();
 		_Actor->transform->name = (char*) _char->c_str();
+		//_Actor->ID = tool.attribute("ID").as_int();
 		//transform
 		_Actor->transform->position.x = tool.child("Position").attribute("x").as_float();
 		_Actor->transform->position.y = tool.child("Position").attribute("y").as_float();
@@ -93,6 +94,7 @@ void SceneManager::SaveFile()
 		
 		pugi::xml_node _cur = root.append_child("Objects");
 		_cur.append_attribute("name") = Objects[i]->transform->name;
+		//_cur.append_attribute("ID") = Objects[i]->ID;
 		//_cur.append_attribute("_index") =i;
 		component_size = 0;
 		if (Objects[i]->transform != NULL)

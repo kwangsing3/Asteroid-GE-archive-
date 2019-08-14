@@ -1,10 +1,10 @@
 ﻿
 #include <ADD_Component.h>
-
-#include <Units/Cube.h>
+#include <Component/Meshrender.h>
 
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
+#include <SceneManager.h>
 
 
 Actor * ADD_Component::Add_Actor()
@@ -15,20 +15,22 @@ Actor * ADD_Component::Add_Actor()
 }
 
 
-Actor* ADD_Component::Add_Cube(Actor* _actor)
-{
-	Cube* _NewCube= new Cube();
+Actor* ADD_Component::Add_Cube(Actor* _actor)        
 
+{
 	if (_actor)
 	{
-		_actor->meshrender = new Cube();
-		
-		SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
+		if (_actor->meshrender == NULL)
+		{
+			_actor->meshrender = new Meshrender();
+
+			SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
+		}
 		_actor->meshrender->transform = _actor->transform;
 		return _actor;
 	}
 	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->meshrender = new Cube();
+	_newactor->meshrender = new Meshrender();
 	_newactor->transform->name = (char*)"Cube";
 
 	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
@@ -36,18 +38,18 @@ Actor* ADD_Component::Add_Cube(Actor* _actor)
 }
 Actor* ADD_Component::Add_Cube2D(Actor* _actor)
 {
-	Cube* _NewCube = new Cube(0);
+	Meshrender* _NewCube = new Meshrender(0);
 
 	if (_actor)
 	{
-		_actor->meshrender = new Cube(0);
+		_actor->meshrender = new Meshrender(0);
 
 		SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
 		_actor->meshrender->transform = _actor->transform;
 		return _actor;
 	}
 	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->meshrender = new Cube(0);
+	_newactor->meshrender = new Meshrender(0);
 	_newactor->transform->name = (char*)"Cube";
 
 	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
@@ -91,6 +93,24 @@ Actor* ADD_Component::Add_PointLight(Actor* _actor)
 
 
 
+void ADD_Component::Add_BoxCollision(Actor* _actor )
+{
+
+
+
+
+
+	return;
+}
+
+void ADD_Component::Add_BoxCollision2D(Actor* _actor)
+{
+	
+
+
+
+	return;
+}
 
 
 

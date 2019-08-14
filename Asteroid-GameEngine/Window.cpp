@@ -2,22 +2,23 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <fstream>
-#include <iostream>
-#include "Xml/pugixml.hpp"
+
+
 #include "GraphicEngine/imgui.h"
 
 #include <ADD_Component.h>
 #include <SceneManager.h>
 #include <Raycast.h>
 
- GLFWwindow* Window::_Mainwindow = NULL;
+ GLFWwindow* Window::MainGLFWwindow = NULL;
 
-void Xml_SettingImport();
 //Default  settings
 
- unsigned int Window::WINDOW_WIDTH = 800;
- unsigned int Window::WINDOW_HEIGHT = 600;
+ unsigned int Window::_Width = 800;
+ unsigned int Window::_Height = 600;
+ ImVec2  Window::viewport_pos;
+ ImVec2  Window::viewport_size;
+
  Camera Window::_editorCamera(glm::vec3(0.0f,0.0f,3.0f));
  bool Window::WindowShouldClose = false;
  bool Window::DeBug_Mode=false;
@@ -25,96 +26,21 @@ void Xml_SettingImport();
  //關於專案設定
  bool WindowUI::All_UIElement=true;
  Game_Mode WindowUI::_mode= Mode_3D;
-
-GLFWwindow* Window::CreateWindow(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)
-{
-	WindowShouldClose = false;	
-	
-	Xml_SettingImport();
-	_Mainwindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "LearnOpenGL", NULL, NULL);
-
-
-	if (_Mainwindow == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		//return;
-	}
-	glfwMakeContextCurrent(_Mainwindow);
-	glfwSetFramebufferSizeCallback(_Mainwindow, (GLFWframebuffersizefun)framebuffer_size_callback);
-	glfwSetCursorPosCallback(_Mainwindow, (GLFWcursorposfun)mouse_callback);
-	glfwSetScrollCallback(_Mainwindow, (GLFWscrollfun)scroll_callback);
-
-	// tell GLFW to capture our mouse
-	glfwSetInputMode(_Mainwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		//return;
-	}
-
-	if (WindowUI::_mode == Mode_3D)
-	{
-		Window::_editorCamera.transform.position = glm::vec3(3.27092457f, 2.01133919f, 4.87599230f);
-		Window::_editorCamera.Up = glm::vec3(-0.158759713f, 0.951594353f, -0.263179779f);
-		Window::_editorCamera.Yaw = -121.099922f;
-		Window::_editorCamera.Pitch = -17.9000149f;
-		_editorCamera.SwitchCamera3D(true);
-	}
-	else
-	{
-		Window::_editorCamera.transform.position = glm::vec3(-3.0f, -1.7f, 3.00000000f);
-		_editorCamera.SwitchCamera3D(false);
-	}
-
-	
-
-
-
-
-	_editorCamera.EnableFrameBuffer(true);
-	return _Mainwindow;
-}
-void Xml_SettingImport()
-{
-	pugi::xml_document _doc;
-	std::ifstream _XMLstream("GlobalSettings.xml");
-
-	pugi::xml_parse_result result = _doc.load(_XMLstream);
-	std::cout << "Load result: " << result.description() << std::endl;
-
-	pugi::xml_node _node = _doc.child("GlobalSettings").child("WindowSetting").child("viewport");
-	if (_node)
-	{
-	  Window::WINDOW_WIDTH = _node.attribute("width").as_uint();
-      Window::WINDOW_HEIGHT = _node.attribute("height").as_uint();
-	}
-
-	WindowUI::All_UIElement=_doc.child("GlobalSettings").child("ProjectSetting").child("All_UIElement").attribute("All_UIElement").as_bool();
-	WindowUI::_mode = Game_Mode(_doc.child("GlobalSettings").child("ProjectSetting").child("Game_Mode").attribute("Game_Mode").as_int());
-	
-	Window::DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
-
-	_XMLstream.close();
-
-	return;
-}
+ std::vector<int> Window::vec_ID;
+ WindowUI *Window::_Main_UI;
 
 
 // ---------------------------UI---------------------------
 
-
-static void ShowMainMenuBar();
-static void ShowMenu_File();
-static void ShowExampleAppLayout(bool* p_open);
+ glm::vec2 WindowUI::_mouseClickpos;
+static void MainMenuBar();
+static void Menu_File();
+//static void ShowExampleAppLayout(bool* p_open);
 static float _maineditorX = 854, _maineditorY = 590;
 static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
-bool WindowUI::show_simple_overlay = false;
+bool WindowUI::show_simple_overlay = true;
 static SelectObject _headSelectObject;
 static SelectObject *_currentSelectObject = &_headSelectObject;
 void Clear_ListBool(SelectObject* _headSelectObject)
@@ -254,10 +180,7 @@ void WindowUI::ListInspectorCur()
 
 void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
-	
 	//show_simple_overlay = p_open;
-
-
 	float lastX = *width / 2.0f;
 	float lastY = *height / 2.0f;
 
@@ -285,7 +208,6 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 	if (no_close)           p_open = NULL; // Don't pass our bool* to Begin
 
 	//Main Background--------------------------------------------------------------------------------------
-
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
 	{
@@ -295,23 +217,20 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ImGui::End();
 			return;
 		}
-
-		if (!WindowUI::All_UIElement)
+		if (!WindowUI::All_UIElement)      //正在解決UI繪圖位置的問題
 		{
+			Window::viewport_pos = ImGui::GetWindowPos();
+			Window::viewport_size = ImGui::GetWindowSize();                   
 			ImGui::GetWindowDrawList()->AddImage(
 				(void *)textureColorbuffer,
 				ImVec2(ImGui::GetCursorScreenPos()),
-				ImVec2(ImGui::GetCursorScreenPos().x + Window::WINDOW_WIDTH,
-					ImGui::GetCursorScreenPos().y + Window::WINDOW_HEIGHT), ImVec2(0, 1), ImVec2(1, 0));
-
+				ImVec2(ImGui::GetCursorScreenPos().x + Window::viewport_size.x,
+					ImGui::GetCursorScreenPos().y + Window::viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
 		}
-
-
-		ShowMainMenuBar();
+		MainMenuBar();
 		ImGui::End();
 	}
 	//Main Background--------------------------------------------------------------------------------------
-
 	if (WindowUI::All_UIElement)
 	{
 		ImGuiWindowFlags window_flags2 = 0;
@@ -322,7 +241,6 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::SetNextWindowPos(ImVec2(0, *height / 35), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(_maineditorX, _maineditorY), ImGuiCond_Always);
 		{
-
 			if (!ImGui::Begin("Main Editor", p_open, window_flags2))
 			{
 				// Early out if the window is collapsed, as an optimization.
@@ -334,17 +252,17 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			{
 				if (ImGui::BeginTabItem("Editor"))
 				{
+					Window::viewport_pos = ImGui::GetWindowPos();
+					Window::viewport_size = ImGui::GetWindowSize();
 
 					ImGui::GetWindowDrawList()->AddImage(
 						(void *)textureColorbuffer, ImVec2(ImGui::GetCursorScreenPos()),
-						ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetWindowWidth(), ImGui::GetCursorScreenPos().y + ImGui::GetWindowHeight() - 80), ImVec2(0, 1), ImVec2(1, 0));
-
+						ImVec2(ImGui::GetCursorScreenPos().x + Window::viewport_size.x, ImGui::GetCursorScreenPos().y + Window::viewport_size.y - 80), ImVec2(0, 1), ImVec2(1, 0));
+						// 基於這個視窗的大小
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem("Game"))
 				{
-
-
 					ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
 					ImGui::EndTabItem();
 				}
@@ -469,18 +387,21 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ImGui::Text("fsdfsdad我是中文dfd");
 			ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
 
-			if (ImGui::Button("新增一個方塊"))
+			if (ImGui::Button("新增一個方塊物件"))
 			{
-				ADD_Component::Add_Cube(ADD_Component::Add_Actor());
+				Actor* _ac= ADD_Component::Add_Cube(ADD_Component::Add_Actor());
+				_ac->transform->name =(char*) "New Cube";
 			}
 
-			if (ImGui::Button("新增一個平光源"))
+			if (ImGui::Button("新增一個方向光源物件"))
 			{
-				ADD_Component::Add_DirectionalLight(ADD_Component::Add_Actor());
+				Actor* _ac = ADD_Component::Add_DirectionalLight(ADD_Component::Add_Actor());
+				_ac->transform->name = (char*) "New DirectionalLight";
 			}
-			if (ImGui::Button("新增一個點光源"))
+			if (ImGui::Button("新增一個點光源物件"))
 			{
-				ADD_Component::Add_PointLight(ADD_Component::Add_Actor());
+				Actor* _ac = ADD_Component::Add_PointLight(ADD_Component::Add_Actor());
+				_ac->transform->name = (char*) "New PointLight";
 			}
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = *height - ImGui::GetWindowHeight();
@@ -505,9 +426,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		}
 	}
 
-
-
-	//////調試用
+	//////備忘錄
 	/*
 	glm::mat4 projection = Window::_editorCamera.Projection;
 	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
@@ -520,12 +439,18 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 
 	glm::vec2 windowSpacePos = (glm::vec2(((ndcSpacePos.x + 1.0) / 2.0) * io.DisplaySize.x, ((1.0 - ndcSpacePos.y) / 2.0) *io.DisplaySize.x));
 	   Ans: windowSpacePos.x, Window::WINDOW_HEIGHT-windowSpacePos.y
+
 	這是利用世界座標轉到螢幕座標的方法     或是使用glm::project  Cube.cpp裡面有
+	https://stackoverflow.com/questions/8491247/c-opengl-convert-world-coords-to-screen2d-coords
 	*/
 
-	
+	//記事簿
 
-	//glViewport(0, 0, width, height);
+	//調試用
+	if (Window::DeBug_Mode)
+	{
+	
+	}
 
 
 
@@ -537,13 +462,13 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 
 
 
-static void ShowMainMenuBar()
+static void MainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			ShowMenu_File();
+			Menu_File();
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -573,6 +498,12 @@ static void ShowMainMenuBar()
 			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_DirectionalLight(WindowUI::cur_SelectObject->_actor); }
 			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_PointLight(WindowUI::cur_SelectObject->_actor); }
 			if (ImGui::MenuItem("Add TestComponent")) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Add BoxCollision")) {}
+			if (ImGui::MenuItem("Add BoxCollision2D")) {}
+			if (ImGui::MenuItem("Add SphereCollision")) {}
+			if (ImGui::MenuItem("Add SphereCollision2D")) {}
+			
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("UI Element"))
@@ -587,14 +518,12 @@ static void ShowMainMenuBar()
 				{
 					WindowUI::_mode = Mode_2D;
 					Window::_editorCamera.SwitchCamera3D(false);
-				}
-					
+				}	
 				else
 				{
 					WindowUI::_mode = Mode_3D;
 					Window::_editorCamera.SwitchCamera3D(true);
-				}
-					
+				}		
 			}
 			if (ImGui::MenuItem("Simple Overlay","",&WindowUI::show_simple_overlay))
 			{
@@ -605,13 +534,12 @@ static void ShowMainMenuBar()
 		}
 		if (ImGui::BeginMenu("Help"))
 		{
-
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
 }
-static void ShowMenu_File()
+static void Menu_File()
 {
 	ImGui::MenuItem("(dummy menu)", NULL, false, false);
 	if (ImGui::MenuItem("New")) { SceneManager::NewScene(); }
@@ -680,8 +608,8 @@ static void ShowSimpleOverlay(bool* p_open)
 			ImGui::Separator();
 			if (ImGui::IsMousePosValid())
 			{
-				ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-				ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition().x, Raycast::GetWorldPosition().y, Raycast::GetWorldPosition().z);
+				ImGui::Text("Click Position: (%.1f,%.1f)",WindowUI::_mouseClickpos.x,WindowUI::_mouseClickpos.y);
+				ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition(0.0f).x, Raycast::GetWorldPosition(0.0f).y, Raycast::GetWorldPosition(0.0f).z);
 			}
 
 			else

@@ -1,7 +1,7 @@
 #ifndef ADD_FUNCTION_H
 #define ADD_FUNCTION_H
+#include  <Units/Actor.h>
 
-#include <SceneManager.h>
 
 class ADD_Component
 {
@@ -14,8 +14,8 @@ public:
 	static Actor* Add_PointLight(Actor* _actor = nullptr);
 	static Actor* Add_Actor();
 
-
-
+	static void Add_BoxCollision(Actor* _actor = nullptr);
+	static void Add_BoxCollision2D(Actor* _actor = nullptr);
 
 
 

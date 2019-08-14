@@ -66,9 +66,6 @@
     <ClInclude Include="Units\Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Units\Cube.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -134,9 +131,6 @@
     <ClCompile Include="Units\Camera.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Units\Cube.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
@@ -159,6 +153,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Component\Meshrender.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Component.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

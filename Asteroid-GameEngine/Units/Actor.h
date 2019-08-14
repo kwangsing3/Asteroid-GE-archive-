@@ -1,11 +1,10 @@
-#ifndef ACTOR_H
+﻿#ifndef ACTOR_H
 #define ACTOR_H
 #include <Component/Transform.h>
-
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
-#include <Units/Cube.h>
 #include <Component/Meshrender.h>
+
 class Actor
 {
 public:
@@ -14,6 +13,7 @@ public:
 	DirectionalLight* _Dirlight;
 	PointLight* _PointLight;
 	Meshrender* meshrender;
+	
 	bool enabled;
 	void translate(glm::vec3 position);
 
@@ -26,9 +26,11 @@ public:
 		enabled = true;
 		
 
+
 	}
 
 	virtual void Draw();
+private:
 
 };
 

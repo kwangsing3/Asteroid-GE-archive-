@@ -169,7 +169,6 @@
     <ClInclude Include="Units\Actor.h" />
     <ClInclude Include="ADD_Component.h" />
     <ClInclude Include="Units\Camera.h" />
-    <ClInclude Include="Units\Cube.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />
     <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />
@@ -190,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
+    <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="Component\DirectionalLight.cpp" />
     <ClCompile Include="Component\Meshrender.cpp" />
@@ -197,7 +197,6 @@
     <ClCompile Include="Units\Actor.cpp" />
     <ClCompile Include="ADD_Component.cpp" />
     <ClCompile Include="Units\Camera.cpp" />
-    <ClCompile Include="Units\Cube.cpp" />
     <ClCompile Include="GraphicEngine\imgui.cpp" />
     <ClCompile Include="GraphicEngine\imgui_demo.cpp" />
     <ClCompile Include="GraphicEngine\imgui_draw.cpp" />
