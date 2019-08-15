@@ -8,7 +8,7 @@
 #include <Component/PointLight.h>
 #include "Xml/pugixml.hpp"
 #include <Component/Meshrender.h>
-
+#include <Collision/BoxCollision.h>
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
 {
 public:
@@ -18,7 +18,7 @@ public:
 	static std::vector<DirectionalLight*> vec_DirectionlLight;
 	static std::vector<PointLight*> vec_PointLight;
 	static std::vector<Shader> vec_ShaderProgram;
-	
+	static std::vector<BoxCollision*> vec_BoxCollision;
 	//載入檔案
 	static void OpenFile();
 	static void SaveFile();

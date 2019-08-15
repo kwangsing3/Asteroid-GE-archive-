@@ -158,6 +158,9 @@
     <ClCompile Include="Component\Component.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="Collision\BoxCollision.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\r50j9AV.gif">

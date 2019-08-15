@@ -1,4 +1,4 @@
-#ifndef MESHRENDER_H
+﻿#ifndef MESHRENDER_H
 #define MESHRENDER_H
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -28,16 +28,10 @@ public:
 	virtual void Draw();
 	int _index = 0;
 
-	std::vector<glm::vec3> Vectices_Debug;
-	std::vector<glm::vec3> Worldvectices_Debug;
-	std::vector<glm::vec3> Spacevectices_Debug;
-	Meshrender()
-	{
-	//	transform = new Transform();
-		VertexColor = glm::vec3(0,0,0);
-		_mode = RMode3D;
-		Meshrender(1);
-	}
+	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
+	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
+	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
+	
 
 
 	Meshrender(int m)

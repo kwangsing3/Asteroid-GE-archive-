@@ -7,7 +7,7 @@ std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
-
+std::vector<BoxCollision*> SceneManager::vec_BoxCollision;                          
 
 void SceneManager::OpenFile()
 {
@@ -66,7 +66,11 @@ void SceneManager::OpenFile()
 			ADD_Component::Add_Cube2D(_Actor);    //調試用
 			_check++;
 		}
-		
+		if (tool.attribute("_BoxCollision").as_int())
+		{
+			ADD_Component::Add_BoxCollision(_Actor);    //調試用
+			_check++;
+		}
 		if (_check != _componentSize) { std::cout<< _char <<": Component_size error"<<std::endl; }
 	}
 	
@@ -91,7 +95,6 @@ void SceneManager::SaveFile()
 	int component_size = 0;
 	for (int i = 0; i < Objects.size(); i++)  
 	{
-		
 		pugi::xml_node _cur = root.append_child("Objects");
 		_cur.append_attribute("name") = Objects[i]->transform->name;
 		//_cur.append_attribute("ID") = Objects[i]->ID;
@@ -157,6 +160,13 @@ void SceneManager::SaveFile()
 			_cur.append_child("quadratic").append_attribute("quadratic") = Objects[i]->_PointLight->quadratic;
 			component_size++;
 		}
+		if (Objects[i]->boxcollision != NULL)
+		{
+			_cur.append_attribute("_BoxCollision") = 1;
+			component_size++;
+		}
+
+		
 		_cur.append_attribute("Component_size") = component_size;
 	}
 	
@@ -170,8 +180,9 @@ void SceneManager::SaveFile()
 void SceneManager::NewScene()
 {
 	vec_DirectionlLight.clear();
-	vec_ObjectsToRender.clear();
 	vec_PointLight.clear();
+	vec_ObjectsToRender.clear();
+	vec_BoxCollision.clear();
 	
 	Objects.clear();
 }

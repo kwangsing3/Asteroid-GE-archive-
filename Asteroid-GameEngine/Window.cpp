@@ -169,6 +169,17 @@ void WindowUI::ListInspectorCur()
 			if (ImGui::CollapsingHeader("MeshRender", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
 				ImGui::Text("MeshRender");
+				const char* items[] = { "Cube","Sphere","目前還沒有功能" };
+				static int item_current = 0;
+				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
+			}
+		}
+		if (cur_SelectObject->_actor->boxcollision != NULL && cur_SelectObject->_actor->boxcollision->enabled)
+		{
+			
+			if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::Text("BoxCollision");
 			}
 		}
 	}
@@ -387,6 +398,11 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			ImGui::Text("fsdfsdad我是中文dfd");
 			ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
 
+			if (ImGui::Button("新增一個空物件"))
+			{
+				Actor* _ac = ADD_Component::Add_Actor();
+				_ac->transform->name = (char*) "New Actor";
+			}
 			if (ImGui::Button("新增一個方塊物件"))
 			{
 				Actor* _ac= ADD_Component::Add_Cube(ADD_Component::Add_Actor());
@@ -499,7 +515,7 @@ static void MainMenuBar()
 			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_PointLight(WindowUI::cur_SelectObject->_actor); }
 			if (ImGui::MenuItem("Add TestComponent")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Add BoxCollision")) {}
+			if (ImGui::MenuItem("Add BoxCollision")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject->_actor); }
 			if (ImGui::MenuItem("Add BoxCollision2D")) {}
 			if (ImGui::MenuItem("Add SphereCollision")) {}
 			if (ImGui::MenuItem("Add SphereCollision2D")) {}

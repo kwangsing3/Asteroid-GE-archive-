@@ -150,7 +150,7 @@ void Meshrender::Draw()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Debug Popline
-	if (Window::DeBug_Mode)
+	if (Window::DeBug_Mode &&false/*直接指定*/)
 	{
 		for (int i = 0; i < Vectices_Debug.size(); i++)
 		{
@@ -235,44 +235,37 @@ void Meshrender::CreateCube(RenderMode _m)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-
-
-
-
-
 	glBindVertexArray(0);
 	Texture = LoadTexture("Texture\\White.png");
 	SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setInt("texture1", 0);
 	//Debug Mode
 
-	if (Window::DeBug_Mode)
+
+	if (_m == RMode3D)
 	{
-		
-		if (_m == RMode3D)
+		for (int i = 0; i < sizeof(CubeVertices) / sizeof(CubeVertices[0]); i = i + 8)
 		{
-			for (int i = 0; i < sizeof(CubeVertices) / sizeof(CubeVertices[0]); i = i + 8)
-			{
-				Vectices_Debug.push_back(glm::vec3(CubeVertices[i],CubeVertices[i + 1],CubeVertices[i + 2]));
-			}
+			Vectices_Debug.push_back(glm::vec3(CubeVertices[i], CubeVertices[i + 1], CubeVertices[i + 2]));
 		}
-		else
-		{
-			for (int i = 0; i < sizeof(PlaneVertices) / sizeof(PlaneVertices[0]); i = i + 8)
-			{
-				Vectices_Debug.push_back(glm::vec3(PlaneVertices[i], PlaneVertices[i + 1], PlaneVertices[i + 2]));
-			}
-		}
-
-
-
-
-
-
-
-		Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
-
 	}
+	else
+	{
+		for (int i = 0; i < sizeof(PlaneVertices) / sizeof(PlaneVertices[0]); i = i + 8)
+		{
+			Vectices_Debug.push_back(glm::vec3(PlaneVertices[i], PlaneVertices[i + 1], PlaneVertices[i + 2]));
+		}
+	}
+
+
+
+
+
+
+
+	Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
+
+	
 
 }
 

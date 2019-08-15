@@ -4,7 +4,7 @@
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include <Component/Meshrender.h>
-
+#include <Collision/BoxCollision.h>
 class Actor
 {
 public:
@@ -13,7 +13,7 @@ public:
 	DirectionalLight* _Dirlight;
 	PointLight* _PointLight;
 	Meshrender* meshrender;
-	
+	BoxCollision* boxcollision;
 	bool enabled;
 	void translate(glm::vec3 position);
 

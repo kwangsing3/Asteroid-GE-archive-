@@ -227,8 +227,15 @@ int main()
 		ImGui::NewFrame();	
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
-			SceneManager::vec_ObjectsToRender[i]->Draw();
+			SceneManager::vec_ObjectsToRender[i]->Draw();		
 		}
+		for (int i = 0; i < SceneManager::vec_BoxCollision.size(); i++)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			SceneManager::vec_BoxCollision[i]->Draw();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

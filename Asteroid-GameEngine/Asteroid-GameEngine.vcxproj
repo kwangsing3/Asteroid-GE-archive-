@@ -189,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
+    <ClCompile Include="Collision\BoxCollision.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="Component\DirectionalLight.cpp" />
