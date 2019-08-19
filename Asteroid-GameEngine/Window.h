@@ -11,6 +11,7 @@
 
 #include <Units/Camera.h>
 #include <vector>
+#include "btBulletDynamicsCommon.h"
 struct SelectObject
 {
 	Actor* _actor;
@@ -69,6 +70,21 @@ public:
 	static std::vector<int> vec_ID;
 	static WindowUI *_Main_UI;
 	static bool WindowShouldClose;
+
+	static btBroadphaseInterface* broadphase;
+
+	// Set up the collision configuration and dispatcher
+	static btDefaultCollisionConfiguration* collisionConfiguration;
+	static btCollisionDispatcher* dispatcher;
+
+	// The actual physics solver
+	static btSequentialImpulseConstraintSolver* solver;
+
+	// The world.
+	static btDiscreteDynamicsWorld* dynamicsWorld;
+	
+	static btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
 	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)
 	{
 		WindowShouldClose = false;
@@ -118,8 +134,8 @@ public:
 		{
 			this->_editorCamera.transform.position = glm::vec3(3.27092457f, 2.01133919f, 4.87599230f);
 			this->_editorCamera.Up = glm::vec3(-0.158759713f, 0.951594353f, -0.263179779f);
-			this->_editorCamera.Yaw = -121.099922f;
-			this->_editorCamera.Pitch = -17.9000149f;
+			this->_editorCamera.Yaw = -124.199928f;
+			this->_editorCamera.Pitch = -17.3000202f;
 			this->_editorCamera.SwitchCamera3D(true);
 		}
 		else
@@ -128,6 +144,28 @@ public:
 			this->_editorCamera.SwitchCamera3D(false);
 		}
 		this->_editorCamera.EnableFrameBuffer(true);
+
+		/*調試用函數*/
+
+			//Bullet Physics creation
+	// --------------------
+
+    // Build the broadphase
+		this->broadphase = new btDbvtBroadphase();
+
+		// Set up the collision configuration and dispatcher
+		this->collisionConfiguration = new btDefaultCollisionConfiguration();
+		this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+		// The actual physics solver
+		this->solver = new btSequentialImpulseConstraintSolver;
+
+		// The world.
+		this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+		this->dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
+
+
+
 	}
 
 private: 

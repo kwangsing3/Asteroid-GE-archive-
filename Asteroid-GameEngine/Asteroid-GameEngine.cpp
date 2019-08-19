@@ -3,24 +3,20 @@
 
 //#define STB_IMAGE_IMPLEMENTATION
 //#include <stb_image.h>
-
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include "GraphicEngine/imgui.h"
 #include "GraphicEngine/imgui_impl_glfw.h"
 #include "GraphicEngine/imgui_impl_opengl3.h"
-
 #include <Window.h>
 #include <model.h>     //導入模型
 #include <SceneManager.h>
 
-#include <iostream>
-
-
 #include<Raycast.h>
-#include<ADD_Component.h>
+//#include<ADD_Component.h>
+#include "btBulletDynamicsCommon.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -47,18 +43,17 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
-
-	
-
 	Window *_mainWindow=new Window(framebuffer_size_callback, mouse_callback, scroll_callback);
 	_mainWindow->DeBug_Mode = true;
 
-	// glfw window creation
-	// --------------------
+
+
+
+
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); //(void)io;
@@ -81,7 +76,7 @@ int main()
 
 	bool show_demo_window = true;
 	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
@@ -182,9 +177,48 @@ int main()
 	//---------------------------------------
 	//bool use_UI = true;  //調試用函數
 	
+
+
+	//the ground is a cube of side 100 at position y = -56.
+    //the sphere will hit it at y = -6, with center at -5
+	{
+		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+
+		Window::collisionShapes.push_back(groundShape);
+
+		btTransform groundTransform;
+		groundTransform.setIdentity();
+		groundTransform.setOrigin(btVector3(0, -56, 0));
+
+		btScalar mass(0.);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			groundShape->calculateLocalInertia(mass, localInertia);
+
+		//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		//add the body to the dynamics world
+		Window::dynamicsWorld->addRigidBody(body);
+	}
+
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
-	//Actor *_mycube= ADD_Component::Add_Cube(ADD_Component::Add_Actor());
+	
+
+	
+	
+
+
+
+
+
 
 	while (!Window::WindowShouldClose)
 	{
@@ -236,7 +270,24 @@ int main()
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		
+		Window::dynamicsWorld->stepSimulation(1.f / 60.f, 10);
 
+		//print positions of all objects
+		for (int j = Window::dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+		{
+			btCollisionObject* obj = Window::dynamicsWorld->getCollisionObjectArray()[j];
+			btRigidBody* body = btRigidBody::upcast(obj);
+			btTransform trans;
+			if (body && body->getMotionState())
+			{
+				body->getMotionState()->getWorldTransform(trans);
+			}
+			else
+			{
+				trans = obj->getWorldTransform();
+			}
+			//printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);

@@ -14,8 +14,7 @@ Actor * ADD_Component::Add_Actor()
 	return _Actor;
 }
 
-Actor* ADD_Component::Add_Cube(Actor* _actor)        
-
+Actor* ADD_Component::Add_Cube(Actor* _actor)
 {
 	if (_actor)
 	{
@@ -34,6 +33,9 @@ Actor* ADD_Component::Add_Cube(Actor* _actor)
 	_newactor->transform->name = (char*)"Cube";
 
 	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
+
+	/*調試用*/
+	ADD_Component::Add_BoxCollision(_newactor);
 	return _newactor;
 }
 Actor* ADD_Component::Add_Cube2D(Actor* _actor)
@@ -95,7 +97,7 @@ void ADD_Component::Add_BoxCollision(Actor* _actor )
 		return;
 	}
 	_actor->boxcollision = new BoxCollision();  //  測試用
-	_actor->boxcollision->transform = _actor->transform;
+	  _actor->boxcollision->transform = _actor->transform;
 	SceneManager::vec_BoxCollision.push_back(_actor->boxcollision);
 
 	return;

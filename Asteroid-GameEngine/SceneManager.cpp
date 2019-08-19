@@ -17,7 +17,7 @@ void SceneManager::OpenFile()
 	std::ifstream _XMLstream;
 	try
 	{
-		_XMLstream.open("ExampleProject/Scene1.AstGamEng");
+		_XMLstream.open("ExampleProject/Scene2.AstGamEng");
 		_doc.load(_XMLstream);
 	}
 	catch (const std::exception&)
@@ -64,6 +64,15 @@ void SceneManager::OpenFile()
 		if (tool.attribute("meshrender").as_int())
 		{
 			ADD_Component::Add_Cube2D(_Actor);    //調試用
+			pugi::xml_node _n = tool.child("MeshRender");
+			if (_Actor->meshrender != NULL)
+			{
+				_Actor->meshrender->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
+			}
+			else
+			{
+				std::cout << "error:In Open File";
+			}
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
@@ -118,7 +127,10 @@ void SceneManager::SaveFile()
 		if (Objects[i]->meshrender != NULL)
 		{
 			_cur.append_attribute("meshrender") = 1;
-		
+			pugi::xml_node _n=_cur.append_child("MeshRender");
+			_n.append_attribute("VertexColorX") = Objects[i]->meshrender->VertexColor.x;
+			_n.append_attribute("VertexColorY") = Objects[i]->meshrender->VertexColor.y;
+			_n.append_attribute("VertexColorZ") = Objects[i]->meshrender->VertexColor.z;
 			component_size++;
 		}
 		if (Objects[i]->_Dirlight != NULL)
@@ -173,7 +185,7 @@ void SceneManager::SaveFile()
 	root.append_attribute("Objects_Size") = Objects.size();
 	
 
-	doc.save_file("ExampleProject/Scene1.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
+	doc.save_file("ExampleProject/Scene2.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
 	
 }
 

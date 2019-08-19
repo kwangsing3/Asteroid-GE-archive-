@@ -84,7 +84,8 @@ public:
 	unsigned int GetframeBuffer();
 
 
-	//  切換為2D的時候記得重製鏡頭的角度
+
+
 
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix()

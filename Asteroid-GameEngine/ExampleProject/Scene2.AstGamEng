@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene name="test" Objects_Size="1">
+<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
+</Scene>

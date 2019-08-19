@@ -23,6 +23,26 @@
  bool Window::WindowShouldClose = false;
  bool Window::DeBug_Mode=false;
  
+
+  btBroadphaseInterface* Window::broadphase;
+
+ // Set up the collision configuration and dispatcher
+  btDefaultCollisionConfiguration* Window::collisionConfiguration;
+  btCollisionDispatcher* Window::dispatcher;
+
+ // The actual physics solver
+  btSequentialImpulseConstraintSolver* Window::solver;
+
+ // The world.
+  btDiscreteDynamicsWorld* Window::dynamicsWorld;
+  btAlignedObjectArray<btCollisionShape*>  Window::collisionShapes;
+
+
+
+
+
+
+
  //關於專案設定
  bool WindowUI::All_UIElement=true;
  Game_Mode WindowUI::_mode= Mode_3D;
@@ -172,6 +192,21 @@ void WindowUI::ListInspectorCur()
 				const char* items[] = { "Cube","Sphere","目前還沒有功能" };
 				static int item_current = 0;
 				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
+
+				static ImVec4 color = ImVec4(
+					cur_SelectObject->_actor->meshrender->VertexColor.x *255.0f,
+					cur_SelectObject->_actor->meshrender->VertexColor.y *255.0f,
+					cur_SelectObject->_actor->meshrender->VertexColor.z *255.0f,
+					255.0f / 255.0f);
+				if (ImGui::ColorPicker4("##picker", (float*)&color, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview))
+				{
+					cur_SelectObject->_actor->meshrender->VertexColor.x = color.x;
+					cur_SelectObject->_actor->meshrender->VertexColor.y = color.y;
+					cur_SelectObject->_actor->meshrender->VertexColor.z = color.z;
+				}
+
+
+
 			}
 		}
 		if (cur_SelectObject->_actor->boxcollision != NULL && cur_SelectObject->_actor->boxcollision->enabled)
@@ -644,9 +679,11 @@ static void ShowSimpleOverlay(bool* p_open)
 			ImGui::Text(WindowUI::_mode ? "Game Mode: 3D" : "Game Mode: 2D");
 			ImGui::Text(Window::DeBug_Mode ? "Debug Mode: Active" : "Debug Mode: inValid");
 		}
-
-
-
 		ImGui::End();
+
+		
+
+
+
 	}
 }

@@ -53,7 +53,7 @@ float Vertices[] = {
 
 void BoxCollision::Draw()
 {
-	SceneManager::vec_ShaderProgram[_index].use();
+	/*SceneManager::vec_ShaderProgram[_index].use();
 	SceneManager::vec_ShaderProgram[_index].setVec3("viewPos", Window::_editorCamera.transform.position);
 	SceneManager::vec_ShaderProgram[_index].setFloat("material.shininess", 32.0f);
 
@@ -83,20 +83,20 @@ void BoxCollision::Draw()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Debug Popline
-	if (Window::DeBug_Mode)
+	if (Window::DeBug_Mode && false/*手動)
 	{
 		for (int i = 0; i < Vectices_Debug.size(); i++)
 		{
 			//從相對座標轉成世界座標
-			Vectices_Debug[i] = model * glm::vec4(Vectices_Debug[i], 1);
+			Worldvectices_Debug[i] = model * glm::vec4(Vectices_Debug[i], 1);
 				
 		}
 
 		//UpdateSpaceVertices
-		for (int i = 0; i < Vectices_Debug.size(); i++)
+		for (int i = 0; i < Worldvectices_Debug.size(); i++)
 		{
-			glm::vec4 _sp = glm::vec4(Vectices_Debug[i], 0)*model*view;// *projection;
-			Vectices_Debug[i] = glm::vec3(_sp.x, _sp.y, 0) / _sp.w;
+			glm::vec4 _sp = glm::vec4(Worldvectices_Debug[i], 0)*model*view;// *projection;
+			Spacevectices_Debug[i] = glm::vec3(_sp.x, _sp.y, 0) / _sp.w;
 		}
 		ImGuiIO& io = ImGui::GetIO();
 
@@ -106,7 +106,7 @@ void BoxCollision::Draw()
 		{
 			static bool _ts = true;
 			_ts = true;
-			glm::vec3 windowSpacePos = glm::project(Vectices_Debug[i], Window::_editorCamera.GetViewMatrix(), projection, glm::vec4(0, 0, Window::_Width, Window::_Height));
+			glm::vec3 windowSpacePos = glm::project(Worldvectices_Debug[i], Window::_editorCamera.GetViewMatrix(), projection, glm::vec4(0, 0, Window::_Width, Window::_Height));
 			ImVec2 _nextwindowpos = ImVec2(windowSpacePos.x*Window::viewport_size.x / Window::_Width, (Window::_Height - windowSpacePos.y)*Window::viewport_size.y / Window::_Height);
 
 			if ((_nextwindowpos.x > Window::viewport_pos.x + Window::viewport_size.x) || (_nextwindowpos.x < Window::viewport_pos.x) || (_nextwindowpos.y > Window::viewport_pos.y + Window::viewport_size.y) || (_nextwindowpos.y < Window::viewport_pos.y))
@@ -132,14 +132,14 @@ void BoxCollision::Draw()
 
 
 
+*/
 
-
-
+	//this->transform->position = glm::vec3(float(this->startTransform.getOrigin().getX()), float(this->startTransform.getOrigin().getY()), float(this->startTransform.getOrigin().getZ()));
 }
 
 void BoxCollision::CreateBox()
 {
-	glGenVertexArrays(1, &VAO);
+	/*glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	
@@ -168,5 +168,45 @@ void BoxCollision::CreateBox()
 	{
 		Vectices_Debug.push_back(glm::vec3(Vertices[i], Vertices[i + 1], Vertices[i + 2]));
 	}
-	Worldvectices_Debug=Spacevectices_Debug=Vectices_Debug;
+	Worldvectices_Debug=Spacevectices_Debug=Vectices_Debug;*/
+
+	{
+		//create a dynamic rigidbody
+
+		//btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
+		btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+		Window::collisionShapes.push_back(colShape);
+
+		/// Create Dynamic Objects
+		
+		this->startTransform.setIdentity();
+
+		btScalar mass(1.f);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			colShape->calculateLocalInertia(mass, localInertia);
+		const btScalar* _x = &this->startTransform.getOrigin().getX();
+		const btScalar* _y = &this->startTransform.getOrigin().getY();
+		const btScalar* _z = &this->startTransform.getOrigin().getZ();
+
+		this->startTransform.setOrigin(btVector3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
+		this->transform->position= glm::vec3(*_x, *_y, *_z);
+		
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(this->startTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		
+		Window::dynamicsWorld->addRigidBody(body);
+	}
+
 }
+
+
+//  已經可以讓物品掉落了    可是要想辦法跟 startTransform接起來    而且關於物理的程式碼非常亂

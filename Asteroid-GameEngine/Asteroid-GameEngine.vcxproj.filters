@@ -15,13 +15,227 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stb_image.h">
+    <ClCompile Include="..\src\glad.c">
+      <Filter>資源檔</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\pugixml.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\BoxCollision.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Component.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\DirectionalLight.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Meshrender.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PointLight .cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Transform.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_demo.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_draw.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_impl_glfw.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\imgui_widgets.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="hide\MainUI.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics Engine\clew\clew.c">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\Actor.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Units\Camera.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid-GameEngine.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Raycast.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="ADD_Component.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\r50j9AV.gif">
+      <Filter>資源檔</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Xml\pugiconfig.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Xml\pugixml.hpp">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Xml\pugiconfig.hpp">
+    <ClInclude Include="assimp\Compiler\poppack1.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\Compiler\pstdint.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\Compiler\pushpack1.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\port\AndroidJNI\AndroidJNIIOSystem.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\ai_assert.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\anim.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\camera.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\cexport.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\cfileio.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\cimport.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\color4.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\config.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\DefaultIOStream.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\DefaultIOSystem.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\DefaultLogger.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\Defines.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\defs.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\Exporter.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\Importer.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\importerdesc.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\IOStream.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\IOSystem.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\light.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\Logger.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\LogStream.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\material.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\matrix3x3.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\matrix4x4.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\mesh.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\metadata.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\NullLogger.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\postprocess.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\ProgressHandler.hpp">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\quaternion.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\scene.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\SceneCombiner.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\texture.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\types.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\vector2.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\vector3.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp\version.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\BoxCollision.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Component.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\DirectionalLight.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Meshrender.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PointLight.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Transform.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="GraphicEngine\imconfig.h">
@@ -48,16 +262,7 @@
     <ClInclude Include="GraphicEngine\imstb_truetype.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="shader_m.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="Physics Engine\clew\clew.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Units\Actor.h">
@@ -66,105 +271,52 @@
     <ClInclude Include="Units\Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
+    <ClInclude Include="mesh.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Component\Transform.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\Component.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\PointLight.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\DirectionalLight.h">
+    <ClInclude Include="model.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Raycast.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_m.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
     <ClInclude Include="ADD_Component.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Collision\BoxCollision.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\Meshrender.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\glad.c">
-      <Filter>資源檔</Filter>
-    </ClCompile>
-    <ClCompile Include="Xml\pugixml.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicEngine\imgui.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicEngine\imgui_demo.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicEngine\imgui_draw.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicEngine\imgui_impl_glfw.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicEngine\imgui_widgets.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Asteroid-GameEngine.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Units\Actor.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Units\Camera.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\Transform.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\DirectionalLight.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\PointLight .cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Raycast.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="ADD_Component.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="hide\MainUI.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\Meshrender.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\Component.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision\BoxCollision.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Texture\r50j9AV.gif">
-      <Filter>資源檔</Filter>
-    </Image>
+    <None Include="assimp\color4.inl">
+      <Filter>標頭檔</Filter>
+    </None>
+    <None Include="assimp\material.inl">
+      <Filter>標頭檔</Filter>
+    </None>
+    <None Include="assimp\matrix3x3.inl">
+      <Filter>標頭檔</Filter>
+    </None>
+    <None Include="assimp\matrix4x4.inl">
+      <Filter>標頭檔</Filter>
+    </None>
+    <None Include="assimp\quaternion.inl">
+      <Filter>標頭檔</Filter>
+    </None>
+    <None Include="assimp\vector2.inl">
+      <Filter>標頭檔</Filter>
+    </None>
+    <None Include="assimp\vector3.inl">
+      <Filter>標頭檔</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 #include <Component/Component.h>
 #include <Component/Meshrender.h>
 #include <vector>
-
+#include "btBulletDynamicsCommon.h"
 
 
 class BoxCollision: public Component
@@ -18,7 +18,7 @@ public:
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
 	glm::vec4 _Color;
 	unsigned int VBO, VAO;
-
+	btTransform startTransform;
 
 	BoxCollision()
 	{

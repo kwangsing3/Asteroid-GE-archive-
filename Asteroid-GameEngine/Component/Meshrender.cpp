@@ -68,6 +68,7 @@ float PlaneVertices[] = {
 			-0.5f,  0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
 			-0.5f, -0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 };
+
 void Meshrender::Draw()
 {
 	SceneManager::vec_ShaderProgram[_index].use();
@@ -257,16 +258,7 @@ void Meshrender::CreateCube(RenderMode _m)
 		}
 	}
 
-
-
-
-
-
-
 	Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
-
-	
-
 }
 
 
