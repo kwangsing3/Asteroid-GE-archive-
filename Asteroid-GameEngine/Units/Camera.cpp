@@ -74,15 +74,24 @@ void Camera::SwitchCamera3D(bool _mode)
 {
 	if (_mode)
 	{
-		Projection = glm::perspective(glm::radians(Zoom), (float)viewports[1].x / (float)viewports[1].y, 0.1f, 100.0f);
 		Projection_3D = true;
+		Projection = glm::perspective(glm::radians(Zoom), (float)viewports[1].x / (float)viewports[1].y, 0.1f, 100.0f);
+		
+		this->transform.position = glm::vec3(7.01402903f, 2.56576705f, 3.61038375f);
+		this->Up = glm::vec3(-0.166986957f, 0.982935309f, -0.0771586150f);
+		this->Yaw = -155.200058f;
+		this->Pitch = -10.6000004;
+		this->Front = glm::vec3(-0.892286956f, -0.183951348f, -0.412293464f);
+		this->Right = glm::vec3(0.419451267f, 0.000000000f, -0.907777905f);
 	}
 	else
 	{
+		Projection_3D = false;
 		Projection = glm::ortho(0.0f, (float)viewports[1].x / 200, 0.0f, (float)viewports[1].y / 200, 0.1f, 100.0f);
 		this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
 		this->Yaw = YAW; this->Pitch = PITCH;
 		this->Front = glm::vec3(0.0f, 0.0f, -1.0f);
-		Projection_3D = false;
+		this->transform.position = glm::vec3(-3.0f, -1.7f, 3.00000000f);
+
 	}
 }

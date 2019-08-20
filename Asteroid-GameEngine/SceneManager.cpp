@@ -63,7 +63,7 @@ void SceneManager::OpenFile()
 		}
 		if (tool.attribute("meshrender").as_int())
 		{
-			ADD_Component::Add_Cube2D(_Actor);    //調試用
+			ADD_Component::Add_Cube(_Actor);    
 			pugi::xml_node _n = tool.child("MeshRender");
 			if (_Actor->meshrender != NULL)
 			{

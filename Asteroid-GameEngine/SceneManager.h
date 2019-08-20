@@ -26,18 +26,13 @@ public:
 
 	SceneManager()
 	{
-		
-		CreateShader();
-	}
-private:
-	void CreateShader()
-	{
 		Shader _SimpleShader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
 		Shader _StandardShader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs");
 		SceneManager::vec_ShaderProgram.push_back(_SimpleShader);
 		SceneManager::vec_ShaderProgram.push_back(_StandardShader);
-
 	}
+private:
+
 };
 
 

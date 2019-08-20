@@ -22,6 +22,6 @@ glm::vec3 Raycast::GetScreenPosition(glm::vec3 _pos)
 
 glm::vec3 Raycast::GetRaycastVector()
 {
-	return GetWorldPosition(0.0f)- GetWorldPosition(1.0f);
+	return GetWorldPosition(1.0f)- GetWorldPosition(0.0f);
 }
 

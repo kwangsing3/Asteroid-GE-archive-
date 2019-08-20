@@ -19,15 +19,16 @@ public:
 	glm::vec4 _Color;
 	unsigned int VBO, VAO;
 	btTransform startTransform;
+	int phy_order;
 
 	BoxCollision()
 	{
-		transform = new Transform();
+		//transform = new Transform();
 		this->enabled = true;
 		_Color = { 0,1,0,1 };  //Green
-		
+		phy_order = -1;
 		this->CreateBox();
-
+		
 
 
 

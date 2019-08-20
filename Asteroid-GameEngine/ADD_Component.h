@@ -14,8 +14,8 @@ public:
 	static Actor* Add_PointLight(Actor* _actor = nullptr);
 	static Actor* Add_Actor();
 
-	static void Add_BoxCollision(Actor* _actor = nullptr);
-	static void Add_BoxCollision2D(Actor* _actor = nullptr);
+	static Actor* Add_BoxCollision(Actor* _actor = nullptr);
+	static Actor* Add_BoxCollision2D(Actor* _actor = nullptr);
 
 
 

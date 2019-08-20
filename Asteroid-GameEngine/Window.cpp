@@ -24,24 +24,6 @@
  bool Window::DeBug_Mode=false;
  
 
-  btBroadphaseInterface* Window::broadphase;
-
- // Set up the collision configuration and dispatcher
-  btDefaultCollisionConfiguration* Window::collisionConfiguration;
-  btCollisionDispatcher* Window::dispatcher;
-
- // The actual physics solver
-  btSequentialImpulseConstraintSolver* Window::solver;
-
- // The world.
-  btDiscreteDynamicsWorld* Window::dynamicsWorld;
-  btAlignedObjectArray<btCollisionShape*>  Window::collisionShapes;
-
-
-
-
-
-
 
  //關於專案設定
  bool WindowUI::All_UIElement=true;

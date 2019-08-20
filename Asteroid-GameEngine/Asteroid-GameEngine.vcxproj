@@ -183,6 +183,7 @@
     <ClCompile Include="Units\Actor.cpp" />
     <ClCompile Include="Units\Camera.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="Xml\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +256,7 @@
     <ClInclude Include="Units\Actor.h" />
     <ClInclude Include="Units\Camera.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
   </ItemGroup>

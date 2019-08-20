@@ -68,7 +68,6 @@ public:
 		Pitch = pitch;
 		transform.name = (char*) "Camera";
 		Projection = SwitchCamera3D(&Projection_3D);
-		
 		updateCameraVectors();
 	}
 	// Constructor with scalar values

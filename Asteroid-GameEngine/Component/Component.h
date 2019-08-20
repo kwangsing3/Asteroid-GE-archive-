@@ -6,13 +6,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
+
 class Component
 {
 
 public:
 	bool enabled;
 	int ID;
-	static std::vector<int> vec_ID;
+	
+	static std::vector<int> vec_ID;    // 放在這裡不安全  應該要歸類在別的地方
 	virtual void Draw() {};
 	Component()
 	{

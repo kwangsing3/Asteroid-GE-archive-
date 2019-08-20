@@ -13,6 +13,7 @@
 #include <Window.h>
 #include <model.h>     //導入模型
 #include <SceneManager.h>
+#include <World.h>
 
 #include<Raycast.h>
 //#include<ADD_Component.h>
@@ -33,7 +34,7 @@ bool _mouseLucked = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 const char* glsl_version = "#version 460";
-
+World* _cur_World;
 int main()
 {
 	   //  從XML載入設定。
@@ -49,7 +50,7 @@ int main()
 	Window *_mainWindow=new Window(framebuffer_size_callback, mouse_callback, scroll_callback);
 	_mainWindow->DeBug_Mode = true;
 
-
+	_cur_World =new World();
 
 
 
@@ -77,6 +78,8 @@ int main()
 	bool show_demo_window = true;
 	bool show_another_window = false;
 
+
+
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
@@ -92,10 +95,8 @@ int main()
 	// ------------------------------------
 	
 
-	SceneManager _SceneManager;
-	ADD_Component::Add_Cube(ADD_Component::Add_Actor());
-	ADD_Component::Add_DirectionalLight(ADD_Component::Add_Actor());
-	ADD_Component::Add_PointLight(ADD_Component::Add_Actor());
+
+
 
 	unsigned int AxisVAO, AxisVBO;
 	/*
@@ -170,9 +171,9 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	
 
-
+	SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建
 
 	//---------------------------------------
 	//bool use_UI = true;  //調試用函數
@@ -180,11 +181,11 @@ int main()
 
 
 	//the ground is a cube of side 100 at position y = -56.
-    //the sphere will hit it at y = -6, with center at -5
+    //the sphere will hit it at y = -6, with center at -5    //   測試用地板
 	{
 		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 
-		Window::collisionShapes.push_back(groundShape);
+		_cur_World->collisionShapes.push_back(groundShape);
 
 		btTransform groundTransform;
 		groundTransform.setIdentity();
@@ -205,16 +206,18 @@ int main()
 		btRigidBody* body = new btRigidBody(rbInfo);
 
 		//add the body to the dynamics world
-		Window::dynamicsWorld->addRigidBody(body);
+		_cur_World->dynamicsWorld->addRigidBody(body);
 	}
 
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
+
+
 	
+
 
 	
 	
-
 
 
 
@@ -259,35 +262,38 @@ int main()
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();	
+
+		//Pyhscis Pipeline
+		_cur_World->dynamicsWorld->stepSimulation(1.f / 60.f, 10);   //  這句才是讓物理動起來的精隨
+		for (int i = 0; i < SceneManager::Objects.size(); i++)
+		{
+			if (SceneManager::Objects[i]->boxcollision != NULL)
+			{
+				int _order = SceneManager::Objects[i]->boxcollision->phy_order;
+				btCollisionObject* obj = _cur_World->dynamicsWorld->getCollisionObjectArray()[_order];
+				btRigidBody* body = btRigidBody::upcast(obj);
+				btTransform trans;
+				if (body && body->getMotionState())
+				{
+					body->getMotionState()->getWorldTransform(trans);
+				}
+				else
+				{
+					trans = obj->getWorldTransform();
+				}
+				SceneManager::Objects[i]->transform->position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+			}
+		}
+		_cur_World->dynamicsWorld->debugDrawWorld();
+		// Draw Pipeline
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			SceneManager::vec_ObjectsToRender[i]->Draw();		
 		}
-		for (int i = 0; i < SceneManager::vec_BoxCollision.size(); i++)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			SceneManager::vec_BoxCollision[i]->Draw();
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		
-		Window::dynamicsWorld->stepSimulation(1.f / 60.f, 10);
+	
 
-		//print positions of all objects
-		for (int j = Window::dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
-		{
-			btCollisionObject* obj = Window::dynamicsWorld->getCollisionObjectArray()[j];
-			btRigidBody* body = btRigidBody::upcast(obj);
-			btTransform trans;
-			if (body && body->getMotionState())
-			{
-				body->getMotionState()->getWorldTransform(trans);
-			}
-			else
-			{
-				trans = obj->getWorldTransform();
-			}
-			//printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-		}
+
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT);
@@ -354,6 +360,33 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		glm::vec3 out_origin = Raycast::GetWorldPosition(0.0f);
+		glm::vec3 out_end = out_origin + Raycast::GetRaycastVector() * 1000.0f;
+
+		btCollisionWorld::ClosestRayResultCallback RayCallback(
+			btVector3(out_origin.x, out_origin.y, out_origin.z),
+			btVector3(out_end.x, out_end.y, out_end.z)
+		);
+		_cur_World->dynamicsWorld->rayTest(
+			btVector3(out_origin.x, out_origin.y, out_origin.z),
+			btVector3(out_end.x, out_end.y, out_end.z),
+			RayCallback
+		);
+
+		if (RayCallback.hasHit()) 
+		{
+			std::ostringstream oss;
+			oss << "mesh " << (int)RayCallback.m_collisionObject->getUserPointer();
+			std::cout<< oss.str();
+		}
+		else {
+			std::cout << "background";
+		}
+		WindowUI::SetMouseClickPos(xpos, ypos);
+	}
+		
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -366,8 +399,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	lastX = xpos;
 	lastY = ypos;
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		WindowUI::SetMouseClickPos(xpos, ypos);
+	
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);

@@ -4,6 +4,7 @@
 
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
+#include <Collision/BoxCollision.h>
 #include <SceneManager.h>
 
 
@@ -16,7 +17,7 @@ Actor * ADD_Component::Add_Actor()
 
 Actor* ADD_Component::Add_Cube(Actor* _actor)
 {
-	if (_actor)
+	if (_actor)// 經由按鈕製造的項目會跑這行
 	{
 		if (_actor->meshrender == NULL)
 		{
@@ -25,6 +26,8 @@ Actor* ADD_Component::Add_Cube(Actor* _actor)
 			SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
 		}
 		_actor->meshrender->transform = _actor->transform;
+		/*調試用*/     
+		_actor->boxcollision = new BoxCollision();
 		return _actor;
 	}
 
@@ -34,14 +37,10 @@ Actor* ADD_Component::Add_Cube(Actor* _actor)
 
 	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
 
-	/*調試用*/
-	ADD_Component::Add_BoxCollision(_newactor);
 	return _newactor;
 }
 Actor* ADD_Component::Add_Cube2D(Actor* _actor)
 {
-	
-
 	if (_actor)
 	{
 		_actor->meshrender = new Meshrender(0);
@@ -89,24 +88,30 @@ Actor* ADD_Component::Add_PointLight(Actor* _actor)
 	SceneManager::vec_PointLight.push_back(_newactor->_PointLight);
 	return _newactor;
 }
-void ADD_Component::Add_BoxCollision(Actor* _actor )
+Actor* ADD_Component::Add_BoxCollision(Actor* _actor)
 {
-	if (_actor==NULL)
+	if (_actor)
 	{
-		std::cout << "Add_BoxCollision return NULL in ADD_Component";
-		return;
-	}
-	_actor->boxcollision = new BoxCollision();  //  測試用
-	  _actor->boxcollision->transform = _actor->transform;
-	SceneManager::vec_BoxCollision.push_back(_actor->boxcollision);
+		if (_actor->boxcollision == NULL)
+		{
+			_actor->boxcollision = new BoxCollision();
 
-	return;
+		}
+		_actor->boxcollision->transform = _actor->transform;
+		return _actor;
+	}
+
+	Actor* _newactor = ADD_Component::Add_Actor();
+	_newactor->boxcollision = new BoxCollision();
+	_newactor->transform->name = (char*)"Cube (With Collision)";
+
+	return _newactor;
 }
 
-void ADD_Component::Add_BoxCollision2D(Actor* _actor)
+Actor* ADD_Component::Add_BoxCollision2D(Actor* _actor)
 {
 
-	return;
+	return NULL;
 }
 
 

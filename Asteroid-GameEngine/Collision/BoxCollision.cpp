@@ -3,7 +3,7 @@
 #include <Window.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include <World.h>
 int _index = 0;
 float Vertices[] = {
 	// positions          // normals           // texture coords
@@ -175,7 +175,7 @@ void BoxCollision::CreateBox()
 
 		//btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
 		btCollisionShape* colShape = new btSphereShape(btScalar(1.));
-		Window::collisionShapes.push_back(colShape);
+		World::collisionShapes.push_back(colShape);
 
 		/// Create Dynamic Objects
 		
@@ -189,12 +189,10 @@ void BoxCollision::CreateBox()
 		btVector3 localInertia(0, 0, 0);
 		if (isDynamic)
 			colShape->calculateLocalInertia(mass, localInertia);
-		const btScalar* _x = &this->startTransform.getOrigin().getX();
-		const btScalar* _y = &this->startTransform.getOrigin().getY();
-		const btScalar* _z = &this->startTransform.getOrigin().getZ();
+		
 
-		this->startTransform.setOrigin(btVector3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
-		this->transform->position= glm::vec3(*_x, *_y, *_z);
+		this->startTransform.setOrigin(btVector3(0,0,0));
+	
 		
 
 		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
@@ -203,7 +201,8 @@ void BoxCollision::CreateBox()
 		btRigidBody* body = new btRigidBody(rbInfo);
 
 		
-		Window::dynamicsWorld->addRigidBody(body);
+		World::dynamicsWorld->addRigidBody(body);
+		this->phy_order = World::dynamicsWorld->getNumCollisionObjects()-1;
 	}
 
 }
