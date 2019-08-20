@@ -238,6 +238,7 @@
     <ClInclude Include="Component\Meshrender.h" />
     <ClInclude Include="Component\PointLight.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="GLDebugDrawer.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />
     <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />

@@ -134,7 +134,7 @@ void BoxCollision::Draw()
 
 */
 
-	//this->transform->position = glm::vec3(float(this->startTransform.getOrigin().getX()), float(this->startTransform.getOrigin().getY()), float(this->startTransform.getOrigin().getZ()));
+	
 }
 
 void BoxCollision::CreateBox()
@@ -203,6 +203,7 @@ void BoxCollision::CreateBox()
 		
 		World::dynamicsWorld->addRigidBody(body);
 		this->phy_order = World::dynamicsWorld->getNumCollisionObjects()-1;
+		SceneManager::vec_BoxCollision.push_back(this);
 	}
 
 }

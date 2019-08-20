@@ -14,7 +14,7 @@
 #include <model.h>     //導入模型
 #include <SceneManager.h>
 #include <World.h>
-
+#include <GLDebugDrawer.h>
 #include<Raycast.h>
 //#include<ADD_Component.h>
 #include "btBulletDynamicsCommon.h"
@@ -213,7 +213,8 @@ int main()
 	SceneManager::OpenFile();//調試用函數
 
 
-	
+	GLDebugDrawer* _deb = new GLDebugDrawer();
+	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
 
 
 	
@@ -290,7 +291,10 @@ int main()
 		{
 			SceneManager::vec_ObjectsToRender[i]->Draw();		
 		}
-	
+		for (int i = 0; i < SceneManager::vec_BoxCollision.size(); i++)
+		{
+			SceneManager::vec_BoxCollision[i]->Draw();
+		}
 
 
 
