@@ -13,30 +13,34 @@ public:
 	Transform *transform;
 	//std::vector<glm::vec3> Vertices;
 
-	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於BoxCollision.cpp裡面的Vertices)
-	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
-	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
+
 	glm::vec4 _Color;
 	unsigned int VBO, VAO;
-	btTransform startTransform;
-	int phy_order;
+	//btTransform startTransform;
+	int phy_order;    //直接從Dynamic World 的Collision vector中 找到相應的對象
+	float _Mass;
+
+
 
 	BoxCollision()
 	{
-		//transform = new Transform();
+		transform = new Transform();
 		this->enabled = true;
 		_Color = { 0,1,0,1 };  //Green
 		phy_order = -1;
+
 		this->CreateBox();
-		
+		_Mass = 0.0f;
 
 
 
 	}
+	void ResetDynamic();
 
-	void Draw() override;
+
 
 private:
+	btRigidBody* body;
 	void CreateBox();
 };
 

@@ -1,5 +1,5 @@
 ﻿#include <SceneManager.h>
-
+#include <World.h>
 
 
 std::vector<Shader> SceneManager::vec_ShaderProgram;
@@ -7,11 +7,12 @@ std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
-std::vector<BoxCollision*> SceneManager::vec_BoxCollision;                          
+                        
 
 void SceneManager::OpenFile()
 {
 	SceneManager::NewScene();
+
 	std::cout << "Open File Function"<<std::endl;
 	pugi::xml_document _doc;
 	std::ifstream _XMLstream;
@@ -78,6 +79,8 @@ void SceneManager::OpenFile()
 		if (tool.attribute("_BoxCollision").as_int())
 		{
 			ADD_Component::Add_BoxCollision(_Actor);    //調試用
+			float _f = tool.child("BoxCollision").attribute("Mass").as_float();
+			_Actor->boxcollision->_Mass = _f;
 			_check++;
 		}
 		if (_check != _componentSize) { std::cout<< _char <<": Component_size error"<<std::endl; }
@@ -175,6 +178,7 @@ void SceneManager::SaveFile()
 		if (Objects[i]->boxcollision != NULL)
 		{
 			_cur.append_attribute("_BoxCollision") = 1;
+			_cur.append_child("BoxCollision").append_attribute("Mass") = Objects[i]->boxcollision->_Mass;
 			component_size++;
 		}
 
@@ -194,7 +198,8 @@ void SceneManager::NewScene()
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender.clear();
-	vec_BoxCollision.clear();
+	
 	
 	Objects.clear();
+	World::dynamicsWorld->getCollisionObjectArray().clear();
 }

@@ -18,7 +18,7 @@ public:
 	static std::vector<DirectionalLight*> vec_DirectionlLight;
 	static std::vector<PointLight*> vec_PointLight;
 	static std::vector<Shader> vec_ShaderProgram;
-	static std::vector<BoxCollision*> vec_BoxCollision;
+
 	//載入檔案
 	static void OpenFile();
 	static void SaveFile();

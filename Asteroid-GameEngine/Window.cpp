@@ -140,9 +140,10 @@ void WindowUI::ListInspectorCur()
 
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				ImGui::DragFloat3("Position", (float*)&cur_SelectObject->_actor->transform->position, 0.01f);
-				ImGui::DragFloat3("Rotation", (float*)&cur_SelectObject->_actor->transform->rotation, 1.0f);
-				ImGui::DragFloat3("Scale", (float*)&cur_SelectObject->_actor->transform->scale, 0.01f);
+				if (ImGui::DragFloat3("Position", (float*)&cur_SelectObject->_actor->transform->position, 0.01f)) { if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); }
+				if (ImGui::DragFloat3("Rotation", (float*)&cur_SelectObject->_actor->transform->rotation, 1.0f) ){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); }
+				if (ImGui::DragFloat3("Scale", (float*)&cur_SelectObject->_actor->transform->scale, 0.01f)){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); }
+				
 			}
 		}
 		if (cur_SelectObject->_actor->_Dirlight != NULL && cur_SelectObject->_actor->_Dirlight->enabled)
@@ -175,7 +176,7 @@ void WindowUI::ListInspectorCur()
 				static int item_current = 0;
 				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
 
-				static ImVec4 color = ImVec4(
+				 ImVec4 color = ImVec4(
 					cur_SelectObject->_actor->meshrender->VertexColor.x *255.0f,
 					cur_SelectObject->_actor->meshrender->VertexColor.y *255.0f,
 					cur_SelectObject->_actor->meshrender->VertexColor.z *255.0f,
@@ -196,7 +197,14 @@ void WindowUI::ListInspectorCur()
 			
 			if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				ImGui::Text("BoxCollision");
+				 float f0 = cur_SelectObject->_actor->boxcollision->_Mass;
+				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
+				{
+					cur_SelectObject->_actor->boxcollision->_Mass = f0;
+
+					cur_SelectObject->_actor->boxcollision->ResetDynamic();
+				}
+				
 			}
 		}
 	}

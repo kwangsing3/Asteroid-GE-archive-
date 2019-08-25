@@ -22,6 +22,7 @@ public:
 	glm::vec3 VertexColor;
 	Shape _shape;
 	RenderMode _mode;
+	
 	//---------------------------------
 	unsigned int VBO, VAO;
 	unsigned int Texture;

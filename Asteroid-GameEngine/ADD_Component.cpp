@@ -26,8 +26,7 @@ Actor* ADD_Component::Add_Cube(Actor* _actor)
 			SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
 		}
 		_actor->meshrender->transform = _actor->transform;
-		/*調試用*/     
-		_actor->boxcollision = new BoxCollision();
+		
 		return _actor;
 	}
 
@@ -92,19 +91,17 @@ Actor* ADD_Component::Add_BoxCollision(Actor* _actor)
 {
 	if (_actor)
 	{
-		if (_actor->boxcollision == NULL)
-		{
-			_actor->boxcollision = new BoxCollision();
-
-		}
+		_actor->boxcollision = new BoxCollision();
 		_actor->boxcollision->transform = _actor->transform;
+		_actor->boxcollision->ResetDynamic();
+		
 		return _actor;
 	}
 
 	Actor* _newactor = ADD_Component::Add_Actor();
 	_newactor->boxcollision = new BoxCollision();
 	_newactor->transform->name = (char*)"Cube (With Collision)";
-
+	_newactor->boxcollision->ResetDynamic();
 	return _newactor;
 }
 

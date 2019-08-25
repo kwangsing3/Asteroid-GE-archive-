@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="1">
+<Scene name="test" Objects_Size="2">
 <Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
-<Position x="0" y="0" z="0" />
-<Rotation x="0" y="0" z="0" />
+<Position x="0.389999986" y="3.07999992" z="0.109999999" />
+<Rotation x="184" y="88" z="79" />
 <Scale x="1" y="1" z="1" />
-<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+<MeshRender VertexColorX="1" VertexColorY="-8421505" VertexColorZ="-8421505" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="-6.59619218e-06" y="-0.439999998" z="7.08086591e-05" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="10" y="0.100000001" z="10" />
+<MeshRender VertexColorX="0.20607461" VertexColorY="0.419642866" VertexColorZ="0.419642866" />
+<BoxCollision Mass="0" />
 </Objects>
 </Scene>

@@ -176,43 +176,19 @@ int main()
 	SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建
 
 	//---------------------------------------
-	//bool use_UI = true;  //調試用函數
-	
+	//bool use_UI = true;  //調試用函數	
 
 
 	//the ground is a cube of side 100 at position y = -56.
     //the sphere will hit it at y = -6, with center at -5    //   測試用地板
-	{
-		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-
-		_cur_World->collisionShapes.push_back(groundShape);
-
-		btTransform groundTransform;
-		groundTransform.setIdentity();
-		groundTransform.setOrigin(btVector3(0, -56, 0));
-
-		btScalar mass(0.);
-
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
-
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			groundShape->calculateLocalInertia(mass, localInertia);
-
-		//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-		btRigidBody* body = new btRigidBody(rbInfo);
-
-		//add the body to the dynamics world
-		_cur_World->dynamicsWorld->addRigidBody(body);
-	}
+	
 
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
 
 
+
+	//記得拿掉
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
 
@@ -266,6 +242,7 @@ int main()
 
 		//Pyhscis Pipeline
 		_cur_World->dynamicsWorld->stepSimulation(1.f / 60.f, 10);   //  這句才是讓物理動起來的精隨
+
 		for (int i = 0; i < SceneManager::Objects.size(); i++)
 		{
 			if (SceneManager::Objects[i]->boxcollision != NULL)
@@ -286,15 +263,15 @@ int main()
 			}
 		}
 		_cur_World->dynamicsWorld->debugDrawWorld();
+
+
+
 		// Draw Pipeline
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			SceneManager::vec_ObjectsToRender[i]->Draw();		
 		}
-		for (int i = 0; i < SceneManager::vec_BoxCollision.size(); i++)
-		{
-			SceneManager::vec_BoxCollision[i]->Draw();
-		}
+	
 
 
 

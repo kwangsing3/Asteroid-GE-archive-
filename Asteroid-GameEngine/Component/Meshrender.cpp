@@ -6,6 +6,7 @@
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <Window.h>
 #include <SceneManager.h>
 
@@ -134,10 +135,25 @@ void Meshrender::Draw()
 
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
 	model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
+
+
+	
+	
 	float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
+	// Local Rotate
+	/*
 	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
+	*/
+	
+	//Global Rotate
+	model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
+	
+
+
 	model = glm::scale(model, glm::vec3(this->transform->scale.x, this->transform->scale.y, this->transform->scale.z));
 	SceneManager::vec_ShaderProgram[_index].setMat4("model", model);
 
