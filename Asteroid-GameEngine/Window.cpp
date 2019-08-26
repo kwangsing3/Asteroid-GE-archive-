@@ -34,7 +34,7 @@
 
 // ---------------------------UI---------------------------
 
- glm::vec2 WindowUI::_mouseClickpos;
+
 static void MainMenuBar();
 static void Menu_File();
 //static void ShowExampleAppLayout(bool* p_open);
@@ -140,9 +140,9 @@ void WindowUI::ListInspectorCur()
 
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				if (ImGui::DragFloat3("Position", (float*)&cur_SelectObject->_actor->transform->position, 0.01f)) { if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); }
-				if (ImGui::DragFloat3("Rotation", (float*)&cur_SelectObject->_actor->transform->rotation, 1.0f) ){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); }
-				if (ImGui::DragFloat3("Scale", (float*)&cur_SelectObject->_actor->transform->scale, 0.01f)){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); }
+				if (ImGui::DragFloat3("Position", (float*)&cur_SelectObject->_actor->transform->position, 0.01f)) { if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); cur_SelectObject->_actor->meshrender->ResetDynamic(); }
+				if (ImGui::DragFloat3("Rotation", (float*)&cur_SelectObject->_actor->transform->rotation, 1.0f) ){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); cur_SelectObject->_actor->meshrender->ResetDynamic();}
+				if (ImGui::DragFloat3("Scale", (float*)&cur_SelectObject->_actor->transform->scale, 0.01f)){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); cur_SelectObject->_actor->meshrender->ResetDynamic();}
 				
 			}
 		}
@@ -649,7 +649,7 @@ static void ShowSimpleOverlay(bool* p_open)
 			ImGui::Separator();
 			if (ImGui::IsMousePosValid())
 			{
-				ImGui::Text("Click Position: (%.1f,%.1f)",WindowUI::_mouseClickpos.x,WindowUI::_mouseClickpos.y);
+				ImGui::Text("Click Position: (%.1f,%.1f)", Raycast::X_pos, Raycast::Y_pos);
 				ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition(0.0f).x, Raycast::GetWorldPosition(0.0f).y, Raycast::GetWorldPosition(0.0f).z);
 			}
 

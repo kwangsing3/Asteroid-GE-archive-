@@ -37,7 +37,7 @@ const char* glsl_version = "#version 460";
 World* _cur_World;
 int main()
 {
-	   //  從XML載入設定。
+	   
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
@@ -51,29 +51,23 @@ int main()
 	_mainWindow->DeBug_Mode = true;
 
 	_cur_World =new World();
+	//UI 初始化-------------
+	{
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); //(void)io;
+		ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
+		io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
+		io.Fonts->Build();
 
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsClassic();
 
-
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); //(void)io;
-	
-	ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
-	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f,&font_config, io.Fonts->GetGlyphRangesChineseFull());
-	
-	
-	io.Fonts->Build();
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls	
-
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsClassic();
-
-	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(_mainWindow->MainGLFWwindow, true);
-	ImGui_ImplOpenGL3_Init(glsl_version);
+		// Setup Platform/Renderer bindings
+		ImGui_ImplGlfw_InitForOpenGL(_mainWindow->MainGLFWwindow, true);
+		ImGui_ImplOpenGL3_Init(glsl_version);
+	}
 
 	bool show_demo_window = true;
 	bool show_another_window = false;
@@ -98,14 +92,16 @@ int main()
 
 
 
-	unsigned int AxisVAO, AxisVBO;
-	/*
+	
+	/*    Axis的資料
 	float coordinate[] = {
 		-5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f, -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,  -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,// left  
 		-5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f, -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,  -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,// right 
 		-5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f, -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f,  -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f  // top   
 	};
 	*/
+	unsigned int AxisVAO, AxisVBO;
+	//  座標的點數資料
 	float coordinate[] = {
 		// positions         // colors
 		   2.5f, 0.0f, 0.5f,  0.7f,0.7f,0.7f,  // bottom right
@@ -153,11 +149,10 @@ int main()
 		  2.5f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top 
 		  -2.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
 		  -2.5f, 0.0f,  -2.5f,  0.7f,0.7f,0.7f   // top 
-	};
+	};    
 
 	glGenVertexArrays(1, &AxisVAO);
 	glGenBuffers(1, &AxisVBO);
-
 	glBindBuffer(GL_ARRAY_BUFFER, AxisVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinate), coordinate, GL_STATIC_DRAW);
 	glBindVertexArray(AxisVAO);
@@ -167,38 +162,20 @@ int main()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
-	
-
 	SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建
-
 	//---------------------------------------
 	//bool use_UI = true;  //調試用函數	
-
 
 	//the ground is a cube of side 100 at position y = -56.
     //the sphere will hit it at y = -6, with center at -5    //   測試用地板
 	
-
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
-
-
-
 	//記得拿掉
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
-
-
-	
-	
-
-
-
-
 
 	while (!Window::WindowShouldClose)
 	{
@@ -208,7 +185,6 @@ int main()
 		// input
 		// -----
 		processInput(_mainWindow->MainGLFWwindow);
-
 		//  Game scene	
 		glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
 		// render
@@ -240,44 +216,15 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();	
 
-		//Pyhscis Pipeline
-		_cur_World->dynamicsWorld->stepSimulation(1.f / 60.f, 10);   //  這句才是讓物理動起來的精隨
+		//世界的畫面刷新
 
-		for (int i = 0; i < SceneManager::Objects.size(); i++)
-		{
-			if (SceneManager::Objects[i]->boxcollision != NULL)
-			{
-				int _order = SceneManager::Objects[i]->boxcollision->phy_order;
-				btCollisionObject* obj = _cur_World->dynamicsWorld->getCollisionObjectArray()[_order];
-				btRigidBody* body = btRigidBody::upcast(obj);
-				btTransform trans;
-				if (body && body->getMotionState())
-				{
-					body->getMotionState()->getWorldTransform(trans);
-				}
-				else
-				{
-					trans = obj->getWorldTransform();
-				}
-				SceneManager::Objects[i]->transform->position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-			}
-		}
-		_cur_World->dynamicsWorld->debugDrawWorld();
+		_cur_World->UpdateFrame();
+
+		
 
 
-
-		// Draw Pipeline
-		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
-		{
-			SceneManager::vec_ObjectsToRender[i]->Draw();		
-		}
-	
-
-
-
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT);
 		glDisable(GL_DEPTH_TEST);	
 		//UI----------------------------------------------------------------------------------------------------------------------
 		
@@ -340,34 +287,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-	{
-		glm::vec3 out_origin = Raycast::GetWorldPosition(0.0f);
-		glm::vec3 out_end = out_origin + Raycast::GetRaycastVector() * 1000.0f;
-
-		btCollisionWorld::ClosestRayResultCallback RayCallback(
-			btVector3(out_origin.x, out_origin.y, out_origin.z),
-			btVector3(out_end.x, out_end.y, out_end.z)
-		);
-		_cur_World->dynamicsWorld->rayTest(
-			btVector3(out_origin.x, out_origin.y, out_origin.z),
-			btVector3(out_end.x, out_end.y, out_end.z),
-			RayCallback
-		);
-
-		if (RayCallback.hasHit()) 
-		{
-			std::ostringstream oss;
-			oss << "mesh " << (int)RayCallback.m_collisionObject->getUserPointer();
-			std::cout<< oss.str();
-		}
-		else {
-			std::cout << "background";
-		}
-		WindowUI::SetMouseClickPos(xpos, ypos);
-	}
-		
+{	
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -384,11 +304,35 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);   
 	}
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		Raycast::SetMousePosition(lastX, lastY);
+		glm::vec3 out_end = Raycast::MousePosInWorld + Raycast::GetRaycastVector() *1000.0f;
+
+		btCollisionWorld::ClosestRayResultCallback RayCallback(
+			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z)
+		);
+		_cur_World->dynamicsWorld->rayTest(
+			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z),
+			RayCallback
+		);
 	
+		if (RayCallback.hasHit()) {
+			std::ostringstream oss;
+			oss << "mesh " << (int)RayCallback.m_collisionObject->getUserPointer();
+			std::cout<< oss.str();
+		}
+		else {
+			std::cout << "background";
+		}
+
+	}
+
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called

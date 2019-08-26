@@ -120,6 +120,7 @@ public:
 		btQuaternion q;
 		m_basis.getRotation(q);
 		return q;
+		
 	}
 
 	/**@brief Set from an array 

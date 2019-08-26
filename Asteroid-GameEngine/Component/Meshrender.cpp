@@ -124,7 +124,6 @@ void Meshrender::Draw()
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.quadratic", 0.032);
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
 	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
-
 	//Draw Popline
 	glBindVertexArray(VAO);
 	glm::mat4 projection = Window::_editorCamera.Projection;
@@ -132,13 +131,8 @@ void Meshrender::Draw()
 	// camera/view transformation
 	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
 	SceneManager::vec_ShaderProgram[_index].setMat4("view", view);
-
 	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
 	model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
-
-
-	
-	
 	float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
 	// Local Rotate
 	/*
@@ -218,20 +212,10 @@ void Meshrender::Draw()
 			}
 		}
 	}
-
-
-
-
-
-
 }
-
-
 
 void Meshrender::CreateCube(RenderMode _m)
 {
-	
-
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -279,10 +263,6 @@ void Meshrender::CreateCube(RenderMode _m)
 
 
 
-
-
-
-
 unsigned int Meshrender::LoadTexture(const char* path)
 {
 	unsigned int  _texture;
@@ -313,4 +293,41 @@ unsigned int Meshrender::LoadTexture(const char* path)
 	stbi_image_free(data);
 
 	return _texture;
+}
+
+//  --------------------------------- Mouse Collision --------------------------------- 
+
+#include <World.h>
+void Meshrender::CreateMouseCollision()
+{
+	btVector3 localInertia(0, 0, 0);
+	//create a dynamic rigidbody
+	btCollisionShape* colShape = new btBoxShape(btVector3(transform->scale.x, transform->scale.y, transform->scale.z) / 2);
+	btScalar mass(0);
+	World::collisionShapes.push_back(colShape);
+	/// Create Dynamic Objects
+	btTransform startTransform;
+	startTransform.setIdentity();
+	btQuaternion quat;
+	quat.setEuler(-glm::radians(transform->rotation.y), glm::radians(transform->rotation.x), glm::radians(transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+	startTransform.setRotation(quat);
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+	if (isDynamic)
+		colShape->calculateLocalInertia(mass, localInertia);
+	startTransform.setOrigin(btVector3(transform->position.x, transform->position.y, transform->position.z));
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+	
+	body = new btRigidBody(rbInfo);
+	body->setCenterOfMassTransform(startTransform);
+
+	World::dynamicsWorld->addRigidBody(body);
+	World::dynamicsWorld->updateSingleAabb(body);
+}
+void Meshrender::ResetDynamic()
+{
+	World::dynamicsWorld->removeRigidBody(this->body);
+	Meshrender::CreateMouseCollision();
 }

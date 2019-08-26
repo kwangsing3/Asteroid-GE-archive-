@@ -39,7 +39,7 @@ public:
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
-	static glm::vec2 _mouseClickpos;
+	
 
 	WindowUI()
 	{
@@ -47,10 +47,6 @@ public:
 
 	}
 
-	static void SetMouseClickPos(double xpos, double ypos)
-	{
-		_mouseClickpos = glm::vec2(xpos, ypos);
-	}
 
 
 };
@@ -105,6 +101,7 @@ public:
 		glfwSetFramebufferSizeCallback(MainGLFWwindow, (GLFWframebuffersizefun)framebuffer_size_callback);
 		glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)mouse_callback);
 		glfwSetScrollCallback(MainGLFWwindow, (GLFWscrollfun)scroll_callback);
+
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(MainGLFWwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		// glad: load all OpenGL function pointers

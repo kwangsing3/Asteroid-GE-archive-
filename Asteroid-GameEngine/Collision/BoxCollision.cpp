@@ -23,12 +23,12 @@ void BoxCollision::CreateBox()
 
 	/// Create Dynamic Objects
 	btTransform startTransform;
-	 startTransform.setIdentity();
-	 btQuaternion quat;
+	startTransform.setIdentity();
+	btQuaternion quat;
 	 
 	quat.setEuler(-glm::radians(transform->rotation.y), glm::radians(transform->rotation.x), glm::radians(transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
 	
-	 startTransform.setRotation(quat);
+	startTransform.setRotation(quat);
 
 	
 
@@ -58,8 +58,13 @@ void BoxCollision::CreateBox()
 
 void BoxCollision::ResetDynamic()
 {
-	World::dynamicsWorld->removeRigidBody(this->body);
-	CreateBox();
+	btTransform _T;
+	_T.setOrigin(btVector3(transform->position.x, transform->position.y, transform->position.z));
+	btQuaternion quat;
+	quat.setEuler(-glm::radians(transform->rotation.y), glm::radians(transform->rotation.x), glm::radians(transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+	_T.setRotation(quat);
+	body->setWorldTransform(_T);
+	
 
 }
 //  已經可以讓物品掉落了    可是要想辦法跟 startTransform接起來    而且關於物理的程式碼非常亂

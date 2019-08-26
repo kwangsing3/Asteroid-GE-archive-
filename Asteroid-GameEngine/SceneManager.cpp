@@ -74,6 +74,7 @@ void SceneManager::OpenFile()
 			{
 				std::cout << "error:In Open File";
 			}
+			_Actor->meshrender->ResetDynamic();
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
@@ -81,6 +82,7 @@ void SceneManager::OpenFile()
 			ADD_Component::Add_BoxCollision(_Actor);    //調試用
 			float _f = tool.child("BoxCollision").attribute("Mass").as_float();
 			_Actor->boxcollision->_Mass = _f;
+			
 			_check++;
 		}
 		if (_check != _componentSize) { std::cout<< _char <<": Component_size error"<<std::endl; }

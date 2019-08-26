@@ -14,7 +14,7 @@ public:
 	//std::vector<glm::vec3> Vertices;
 
 
-	glm::vec4 _Color;
+	//glm::vec4 _Color;
 	unsigned int VBO, VAO;
 	//btTransform startTransform;
 	int phy_order;    //直接從Dynamic World 的Collision vector中 找到相應的對象
@@ -26,7 +26,7 @@ public:
 	{
 		transform = new Transform();
 		this->enabled = true;
-		_Color = { 0,1,0,1 };  //Green
+		//_Color = { 0,1,0,1 };  //Green
 		phy_order = -1;
 
 		this->CreateBox();
@@ -40,7 +40,7 @@ public:
 
 
 private:
-	btRigidBody* body;
+	btRigidBody* body;   //因為需要跨function用到 所以另外拉出來宣告
 	void CreateBox();
 };
 

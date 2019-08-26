@@ -8,8 +8,11 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 //#include <Window.h>
 //#include <SceneManager.h>
+
+#include "btBulletDynamicsCommon.h"
 
 
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder};
@@ -28,13 +31,11 @@ public:
 	unsigned int Texture;
 	virtual void Draw();
 	int _index = 0;
-
+	
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
 	
-
-
 	Meshrender(int m)
 	{
 		this->_mode = RenderMode(m);
@@ -44,23 +45,19 @@ public:
 		this->CreateCube(_mode);
 		this->VertexColor = glm::vec3(1, 1, 1);
 		//transform->name = (char*)"Cube";
+	    //  滑鼠判定的碰撞體
+		CreateMouseCollision();
 	}
-
-
-
+	
+	void ResetDynamic();
 private:
+	btRigidBody* body;
 	void CreateCube(RenderMode _m);
-
-
-
-
-
-
-
 	unsigned int LoadTexture(const char* path);
+	void CreateMouseCollision();
 };
-
 
 #endif //MESHRENDER_H
 
 
+//  現在正在為物體製作滑鼠點選的碰撞體
