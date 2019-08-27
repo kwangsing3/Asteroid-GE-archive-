@@ -23,31 +23,3 @@ glm::vec3 Raycast::GetScreenPosition(glm::vec3 _pos)
 }
 
 
-
-
-glm::vec3 Raycast::GetRaycastVector()
-{	
-	glm::vec4 lRayStart_NDC(
-		(Raycast::X_pos / Window::_Width - 0.5f) * 2.0f, // [0,1024] -> [-1,1]
-		(-Raycast::Y_pos / Window::_Height - 0.5f) * 2.0f, // [0, 768] -> [-1,1]
-		-1.0, // The near plane maps to Z=-1 in Normalized Device Coordinates
-		1.0f
-	);
-	glm::vec4 lRayEnd_NDC(
-		(Raycast::X_pos / Window::_Width - 0.5f) * 2.0f,
-		(Raycast::Y_pos / Window::_Height - 0.5f) * 2.0f,
-		0.0,
-		1.0f
-	);
-
-	glm::mat4 M = glm::inverse(Window::_editorCamera.Projection * Window::_editorCamera.GetViewMatrix());
-	glm::vec4 lRayStart_world = M * lRayStart_NDC; lRayStart_world/=lRayStart_world.w;
-	glm::vec4 lRayEnd_world   = M * lRayEnd_NDC  ; lRayEnd_world  /=lRayEnd_world.w;
-
-	glm::vec3 lRayDir_world(lRayEnd_world - lRayStart_world);
-	//if(lRayDir_world.length!=0)
-		//lRayDir_world = glm::normalize(lRayDir_world);
-
-	return lRayStart_world;
-}
-

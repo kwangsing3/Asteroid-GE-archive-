@@ -114,6 +114,21 @@ void WindowUI::Renamecur_actor(SelectObject * cur_actor)
 	if (cur_actor != NULL)
 		cur_actor->Is_renaming = true;
 }
+void WindowUI::SelectThisActor(Actor * _actor)
+{
+	_currentSelectObject = &_headSelectObject;
+	while (_currentSelectObject->next!=NULL)
+	{
+		if (_currentSelectObject->_actor == _actor)
+		{
+			WindowUI::cur_SelectObject = _currentSelectObject;  
+			WindowUI::_InspectorManager.ShowInspector(_currentSelectObject);
+			break;
+		}
+			
+		if(_currentSelectObject->next!=NULL)_currentSelectObject = _currentSelectObject->next;
+	}
+}
 void WindowUI::ShowInspector(SelectObject * selectobject)
 {
 	cur_SelectObject = new SelectObject();

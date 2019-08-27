@@ -17,7 +17,7 @@ public:
 	}
 	static glm::vec3 GetWorldPosition(float alpha);
 	static glm::vec3 GetScreenPosition(glm::vec3 _pos);
-	static glm::vec3 GetRaycastVector();
+
 	static void SetMousePosition(float xpos,float ypos)
 	{
 		X_pos = xpos; Y_pos = ypos;

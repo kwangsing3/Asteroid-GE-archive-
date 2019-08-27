@@ -20,9 +20,10 @@
 #include "btBulletDynamicsCommon.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 unsigned int loadCubemap(vector<std::string> faces);
 
 
@@ -47,7 +48,7 @@ int main()
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
-	Window *_mainWindow=new Window(framebuffer_size_callback, mouse_callback, scroll_callback);
+	Window *_mainWindow=new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
 	_mainWindow->DeBug_Mode = true;
 
 	_cur_World =new World();
@@ -286,7 +287,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 {	
 	if (firstMouse)
 	{
@@ -294,25 +295,27 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		lastY = ypos;
 		firstMouse = false;
 	}
-
 	float xoffset = xpos - lastX;
 	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
 	lastX = xpos;
 	lastY = ypos;
-	
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);   
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
+}
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
 		Raycast::SetMousePosition(lastX, lastY);
-		glm::vec3 out_end = Raycast::MousePosInWorld + Raycast::GetRaycastVector() *1000.0f;
+
 
 		btCollisionWorld::ClosestRayResultCallback RayCallback(
 			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z)
@@ -321,20 +324,23 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z),
 			RayCallback
 		);
-	
+
 		if (RayCallback.hasHit()) {
 			std::ostringstream oss;
-			oss << "mesh " << (int)RayCallback.m_collisionObject->getUserPointer();
-			std::cout<< oss.str();
+			oss << "mesh " << RayCallback.m_collisionObject;
+			//_cur_World->dynamicsWorld.
+			for (int i = 0; i < SceneManager::Objects.size(); i++)
+			{
+				if (SceneManager::Objects[i]->meshrender!=NULL&&RayCallback.m_collisionObject == SceneManager::Objects[i]->meshrender->body)
+					WindowUI::SelectThisActor(SceneManager::Objects[i]);
+			}
 		}
 		else {
 			std::cout << "background";
 		}
 
 	}
-
 }
-
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

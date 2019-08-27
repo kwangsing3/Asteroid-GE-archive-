@@ -324,10 +324,11 @@ void Meshrender::CreateMouseCollision()
 	body->setCenterOfMassTransform(startTransform);
 
 	World::dynamicsWorld->addRigidBody(body);
+
 	World::dynamicsWorld->updateSingleAabb(body);
 }
 void Meshrender::ResetDynamic()
 {
 	World::dynamicsWorld->removeRigidBody(this->body);
-	Meshrender::CreateMouseCollision();
+	Meshrender::CreateMouseCollision(); 
 }

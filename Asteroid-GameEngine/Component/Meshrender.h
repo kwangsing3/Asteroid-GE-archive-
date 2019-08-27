@@ -35,7 +35,7 @@ public:
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
-	
+	btRigidBody* body;
 	Meshrender(int m)
 	{
 		this->_mode = RenderMode(m);
@@ -51,7 +51,7 @@ public:
 	
 	void ResetDynamic();
 private:
-	btRigidBody* body;
+	
 	void CreateCube(RenderMode _m);
 	unsigned int LoadTexture(const char* path);
 	void CreateMouseCollision();

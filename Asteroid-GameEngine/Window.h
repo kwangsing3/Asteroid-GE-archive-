@@ -34,8 +34,9 @@ public:
 	static WindowUI _InspectorManager;
 	static void Deletecur_actor(SelectObject* cur_actor);
 	static void Renamecur_actor(SelectObject* cur_actor);
+	static void SelectThisActor(Actor* _actor);
 	void ShowInspector(SelectObject *actor);
-	void ListInspectorCur();
+	static void ListInspectorCur();
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
@@ -68,7 +69,7 @@ public:
 	static bool WindowShouldClose;
 
 
-	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback)
+	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback, void* mouse_Click_callback)
 	{
 		WindowShouldClose = false;
 		_Main_UI = new WindowUI();
@@ -101,7 +102,7 @@ public:
 		glfwSetFramebufferSizeCallback(MainGLFWwindow, (GLFWframebuffersizefun)framebuffer_size_callback);
 		glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)mouse_callback);
 		glfwSetScrollCallback(MainGLFWwindow, (GLFWscrollfun)scroll_callback);
-
+		glfwSetMouseButtonCallback(MainGLFWwindow, (GLFWmousebuttonfun)mouse_Click_callback);
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(MainGLFWwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		// glad: load all OpenGL function pointers
