@@ -1,15 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="2">
-<Objects name="New Cube Floor" meshrender="1" Component_size="1">
-<Position x="0" y="-0.140000001" z="0" />
-<Rotation x="0" y="-6" z="0" />
-<Scale x="8.65999985" y="0.25" z="6.21999979" />
-<MeshRender VertexColorX="0" VertexColorY="0.678571463" VertexColorZ="0.605560422" />
-</Objects>
-<Objects name="New Cube Top" meshrender="1" Component_size="1">
-<Position x="0" y="3.05999994" z="0" />
-<Rotation x="33" y="84" z="36" />
-<Scale x="1" y="1" z="1" />
-<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
-</Objects>
-</Scene>
+<Scene name="test" Objects_Size="0" />

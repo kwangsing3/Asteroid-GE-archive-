@@ -28,7 +28,7 @@ unsigned int loadCubemap(vector<std::string> faces);
 
 
 float lastX = 500.0f;
-float lastY =300.0f;
+float lastY = 300.0f;
 bool firstMouse = true;
 bool _mouseLucked = true;
 // timing
@@ -36,6 +36,10 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 const char* glsl_version = "#version 460";
 World* _cur_World;
+
+
+
+
 int main()
 {
 	   
@@ -222,14 +226,16 @@ int main()
 		_cur_World->UpdateFrame();
 
 		
-
-
+		_deb->drawLine(btVector3(0, 0, 0), btVector3(
+			Raycast::GetWorldPosition(0).x,
+			Raycast::GetWorldPosition(0).y,
+			Raycast::GetWorldPosition(0).z), btVector3(1, 1, 1));
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
 		glDisable(GL_DEPTH_TEST);	
 		//UI----------------------------------------------------------------------------------------------------------------------
 		
-		MyImGui::ShowMyImGUIDemoWindow(&show_demo_window, &Window::_Width, &Window::_Height, Window::_editorCamera.GetframeBuffer());
+		WindowUI::ShowMyImGUIDemoWindow(&show_demo_window, &Window::_Width, &Window::_Height, Window::_editorCamera.GetframeBuffer());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -270,9 +276,9 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
-		WindowUI::_InspectorManager.Deletecur_actor(WindowUI::cur_SelectObject);
+		WindowUI::Deletecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
-		WindowUI::_InspectorManager.Renamecur_actor(WindowUI::cur_SelectObject);
+		WindowUI::Renamecur_actor(WindowUI::cur_SelectObject);
 
 }
 
@@ -300,12 +306,16 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 
 	lastX = xpos;
 	lastY = ypos;
+	
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
-}
+
+	//記得拿掉
+	Raycast::SetMousePosition(lastX-Window::viewport_pos.x, lastY- Window::viewport_pos.y);
+}	
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	
@@ -331,14 +341,16 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			//_cur_World->dynamicsWorld.
 			for (int i = 0; i < SceneManager::Objects.size(); i++)
 			{
-				if (SceneManager::Objects[i]->meshrender!=NULL&&RayCallback.m_collisionObject == SceneManager::Objects[i]->meshrender->body)
+				if (SceneManager::Objects[i]->meshrender != NULL && RayCallback.m_collisionObject == SceneManager::Objects[i]->meshrender->body)
+				{
 					WindowUI::SelectThisActor(SceneManager::Objects[i]);
+					std::cout << SceneManager::Objects[i]->transform->name;
+				}
 			}
 		}
 		else {
-			std::cout << "background";
+			WindowUI::SelectThisActor(NULL);
 		}
-
 	}
 }
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called

@@ -16,7 +16,9 @@ public:
 
 	}
 	static glm::vec3 GetWorldPosition(float alpha);
+
 	static glm::vec3 GetScreenPosition(glm::vec3 _pos);
+	
 
 	static void SetMousePosition(float xpos,float ypos)
 	{

@@ -18,7 +18,6 @@
  unsigned int Window::_Height = 600;
  ImVec2  Window::viewport_pos;
  ImVec2  Window::viewport_size;
-
  Camera Window::_editorCamera(glm::vec3(0.0f,0.0f,3.0f));
  bool Window::WindowShouldClose = false;
  bool Window::DeBug_Mode=false;
@@ -33,8 +32,6 @@
 
 
 // ---------------------------UI---------------------------
-
-
 static void MainMenuBar();
 static void Menu_File();
 //static void ShowExampleAppLayout(bool* p_open);
@@ -43,26 +40,27 @@ static float _LogoutX = 854;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
 bool WindowUI::show_simple_overlay = true;
-static SelectObject _headSelectObject;
-static SelectObject *_currentSelectObject = &_headSelectObject;
-void Clear_ListBool(SelectObject* _headSelectObject)
+static SelectObject * _headSelectObject = new SelectObject();
+static SelectObject *_cSelectObject = _headSelectObject;
+
+void Clear_ListBool()
 {
-	SelectObject* _cur = _headSelectObject;
-	_cur->Is_selected = false;
-	_cur->Is_renaming = false;
-	while (_cur->next != NULL)
+	_cSelectObject = _headSelectObject;
+	_cSelectObject->Is_selected = false;
+	_cSelectObject->Is_renaming = false;
+	while (_cSelectObject->next != NULL)
 	{
-		if (_cur->next == NULL)
+		if (_cSelectObject->next == NULL)
 			return;
-		_cur->Is_selected = false;
-		_cur->Is_renaming = false;
-		_cur = _cur->next;
+		_cSelectObject->Is_selected = false;
+		_cSelectObject->Is_renaming = false;
+		_cSelectObject = _cSelectObject->next;
 	}
 	return;
 }
 
 SelectObject *WindowUI::cur_SelectObject;
-WindowUI WindowUI::_InspectorManager;
+
 
 
 void WindowUI::Deletecur_actor(SelectObject* cur_selectobject)
@@ -116,24 +114,30 @@ void WindowUI::Renamecur_actor(SelectObject * cur_actor)
 }
 void WindowUI::SelectThisActor(Actor * _actor)
 {
-	_currentSelectObject = &_headSelectObject;
-	while (_currentSelectObject->next!=NULL)
+	if (_actor != NULL)
 	{
-		if (_currentSelectObject->_actor == _actor)
+		_cSelectObject = _headSelectObject;
+		while (_cSelectObject->next != NULL)
 		{
-			WindowUI::cur_SelectObject = _currentSelectObject;  
-			WindowUI::_InspectorManager.ShowInspector(_currentSelectObject);
-			break;
+			if (_cSelectObject->_actor == _actor)
+			{
+				WindowUI::SelectThisObject(_cSelectObject);
+				break;
+			}
+
+			if (_cSelectObject->next != NULL)_cSelectObject = _cSelectObject->next;
 		}
-			
-		if(_currentSelectObject->next!=NULL)_currentSelectObject = _currentSelectObject->next;
+	}
+	else
+	{
+		WindowUI::ListInspectorCur(NULL);
 	}
 }
-void WindowUI::ShowInspector(SelectObject * selectobject)
+void WindowUI::SelectThisObject(SelectObject * selectobject)
 {
-	cur_SelectObject = new SelectObject();
+	Clear_ListBool();
+	selectobject->Is_selected = !selectobject->Is_selected;
 	cur_SelectObject = selectobject;
-	cur_SelectObject->_actor = selectobject->_actor;
 	static unsigned int AxisVAO, AxisVBO;
 	// Create Axis
 /*	float AxisVertices[] = {
@@ -146,43 +150,43 @@ void WindowUI::ShowInspector(SelectObject * selectobject)
 	};*/
 
 }
-void WindowUI::ListInspectorCur()
+void WindowUI::ListInspectorCur(SelectObject* _sel)
 {
-	if (cur_SelectObject != NULL)
+	if (_sel != NULL)
 	{
-		if (cur_SelectObject->_actor->transform != NULL && cur_SelectObject->_actor->transform->enabled)
+		if (_sel->_actor->transform != NULL && _sel->_actor->transform->enabled)
 		{
 
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				if (ImGui::DragFloat3("Position", (float*)&cur_SelectObject->_actor->transform->position, 0.01f)) { if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); cur_SelectObject->_actor->meshrender->ResetDynamic(); }
-				if (ImGui::DragFloat3("Rotation", (float*)&cur_SelectObject->_actor->transform->rotation, 1.0f) ){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); cur_SelectObject->_actor->meshrender->ResetDynamic();}
-				if (ImGui::DragFloat3("Scale", (float*)&cur_SelectObject->_actor->transform->scale, 0.01f)){if (cur_SelectObject->_actor->boxcollision != NULL)cur_SelectObject->_actor->boxcollision->ResetDynamic(); cur_SelectObject->_actor->meshrender->ResetDynamic();}
+				if (ImGui::DragFloat3("Position", (float*)&_sel->_actor->transform->position, 0.01f)) { if (_sel->_actor->boxcollision != NULL)_sel->_actor->boxcollision->ResetDynamic(); _sel->_actor->meshrender->ResetDynamic(); }
+				if (ImGui::DragFloat3("Rotation", (float*)&_sel->_actor->transform->rotation, 1.0f) ){if (_sel->_actor->boxcollision != NULL)_sel->_actor->boxcollision->ResetDynamic(); _sel->_actor->meshrender->ResetDynamic();}
+				if (ImGui::DragFloat3("Scale", (float*)&_sel->_actor->transform->scale, 0.01f)){if (_sel->_actor->boxcollision != NULL)_sel->_actor->boxcollision->ResetDynamic(); _sel->_actor->meshrender->ResetDynamic();}
 				
 			}
 		}
-		if (cur_SelectObject->_actor->_Dirlight != NULL && cur_SelectObject->_actor->_Dirlight->enabled)
+		if (_sel->_actor->_Dirlight != NULL && _sel->_actor->_Dirlight->enabled)
 		{
 			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				ImGui::ColorEdit3("Ambient", (float*)&cur_SelectObject->_actor->_Dirlight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&cur_SelectObject->_actor->_Dirlight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&cur_SelectObject->_actor->_Dirlight->Specular);
+				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_Dirlight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_Dirlight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_Dirlight->Specular);
 			}
 		}
-		if (cur_SelectObject->_actor->_PointLight != NULL && cur_SelectObject->_actor->_PointLight->enabled)
+		if (_sel->_actor->_PointLight != NULL && _sel->_actor->_PointLight->enabled)
 		{
 			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				ImGui::ColorEdit3("Ambient", (float*)&cur_SelectObject->_actor->_PointLight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&cur_SelectObject->_actor->_PointLight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&cur_SelectObject->_actor->_PointLight->Specular);
-				ImGui::DragFloat("Constant", &cur_SelectObject->_actor->_PointLight->Constant, 0.01f);
-				ImGui::DragFloat("linear", &cur_SelectObject->_actor->_PointLight->linear, 0.01f);
-				ImGui::DragFloat("quadratic", &cur_SelectObject->_actor->_PointLight->quadratic, 0.01f);
+				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_PointLight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_PointLight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_PointLight->Specular);
+				ImGui::DragFloat("Constant", &_sel->_actor->_PointLight->Constant, 0.01f);
+				ImGui::DragFloat("linear", &_sel->_actor->_PointLight->linear, 0.01f);
+				ImGui::DragFloat("quadratic", &_sel->_actor->_PointLight->quadratic, 0.01f);
 			}
 		}
-		if (cur_SelectObject->_actor->meshrender != NULL && cur_SelectObject->_actor->meshrender->enabled)
+		if (_sel->_actor->meshrender != NULL && _sel->_actor->meshrender->enabled)
 		{
 			if (ImGui::CollapsingHeader("MeshRender", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
@@ -192,34 +196,31 @@ void WindowUI::ListInspectorCur()
 				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
 
 				 ImVec4 color = ImVec4(
-					cur_SelectObject->_actor->meshrender->VertexColor.x *255.0f,
-					cur_SelectObject->_actor->meshrender->VertexColor.y *255.0f,
-					cur_SelectObject->_actor->meshrender->VertexColor.z *255.0f,
+					 _sel->_actor->meshrender->VertexColor.x *255.0f,
+					 _sel->_actor->meshrender->VertexColor.y *255.0f,
+					 _sel->_actor->meshrender->VertexColor.z *255.0f,
 					255.0f / 255.0f);
 				if (ImGui::ColorPicker4("##picker", (float*)&color, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview))
 				{
-					cur_SelectObject->_actor->meshrender->VertexColor.x = color.x;
-					cur_SelectObject->_actor->meshrender->VertexColor.y = color.y;
-					cur_SelectObject->_actor->meshrender->VertexColor.z = color.z;
+					_sel->_actor->meshrender->VertexColor.x = color.x;
+					_sel->_actor->meshrender->VertexColor.y = color.y;
+					_sel->_actor->meshrender->VertexColor.z = color.z;
 				}
 
 
 
 			}
 		}
-		if (cur_SelectObject->_actor->boxcollision != NULL && cur_SelectObject->_actor->boxcollision->enabled)
-		{
-			
+		if (_sel->_actor->boxcollision != NULL && _sel->_actor->boxcollision->enabled)
+		{	
 			if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
-				 float f0 = cur_SelectObject->_actor->boxcollision->_Mass;
+				 float f0 = _sel->_actor->boxcollision->_Mass;
 				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
 				{
-					cur_SelectObject->_actor->boxcollision->_Mass = f0;
-
-					cur_SelectObject->_actor->boxcollision->ResetDynamic();
+					_sel->_actor->boxcollision->_Mass = f0;
+					_sel->_actor->boxcollision->ResetDynamic();
 				}
-				
 			}
 		}
 	}
@@ -229,70 +230,17 @@ void WindowUI::ListInspectorCur()
 
 
 
-void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
+void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
-	//show_simple_overlay = p_open;
-	float lastX = *width / 2.0f;
-	float lastY = *height / 2.0f;
 
-	static bool no_titlebar = true;
-	static bool no_scrollbar = true;
-	static bool no_menu = false;
-	static bool no_move = true;
-	static bool no_resize = true;
-	static bool no_collapse = true;
-	static bool no_close = true;
-	static bool no_nav = false;
-	static bool no_background = true;
-	static bool no_bring_to_front = true;
-
-	ImGuiWindowFlags window_flags = 0;
-	if (no_titlebar)        window_flags |= ImGuiWindowFlags_NoTitleBar;
-	if (no_scrollbar)       window_flags |= ImGuiWindowFlags_NoScrollbar;
-	if (!no_menu)           window_flags |= ImGuiWindowFlags_MenuBar;
-	if (no_move)            window_flags |= ImGuiWindowFlags_NoMove;
-	if (no_resize)          window_flags |= ImGuiWindowFlags_NoResize;
-	if (no_collapse)        window_flags |= ImGuiWindowFlags_NoCollapse;
-	if (no_nav)             window_flags |= ImGuiWindowFlags_NoNav;
-	if (no_background)      window_flags |= ImGuiWindowFlags_NoBackground;
-	if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
-	if (no_close)           p_open = NULL; // Don't pass our bool* to Begin
-
-	//Main Background--------------------------------------------------------------------------------------
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
-	{
-		if (!ImGui::Begin("Main Background", p_open, window_flags|ImGuiWindowFlags_NoMouseInputs))
-		{
-			// Early out if the window is collapsed, as an optimization.
-			ImGui::End();
-			return;
-		}
-		if (!WindowUI::All_UIElement)      //正在解決UI繪圖位置的問題
-		{
-			Window::viewport_pos = ImGui::GetWindowPos();
-			Window::viewport_size = ImGui::GetWindowSize();                   
-			ImGui::GetWindowDrawList()->AddImage(
-				(void *)textureColorbuffer,
-				ImVec2(ImGui::GetCursorScreenPos()),
-				ImVec2(ImGui::GetCursorScreenPos().x + Window::viewport_size.x,
-					ImGui::GetCursorScreenPos().y + Window::viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
-		}
-		MainMenuBar();
-		ImGui::End();
-	}
 	//Main Background--------------------------------------------------------------------------------------
 	if (WindowUI::All_UIElement)
 	{
-		ImGuiWindowFlags window_flags2 = 0;
-		window_flags2 |= ImGuiWindowFlags_NoTitleBar;
-		window_flags2 |= ImGuiWindowFlags_NoMove;
-		window_flags2 |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 		//Main Editor------------------------------------------------------------------------------------------
 		ImGui::SetNextWindowPos(ImVec2(0, *height / 35), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(_maineditorX, _maineditorY), ImGuiCond_Always);
 		{
-			if (!ImGui::Begin("Main Editor", p_open, window_flags2))
+			if (!ImGui::Begin("Main Editor", p_open, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
@@ -303,12 +251,13 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 			{
 				if (ImGui::BeginTabItem("Editor"))
 				{
-					Window::viewport_pos = ImGui::GetWindowPos();
-					Window::viewport_size = ImGui::GetWindowSize();
+					Window::viewport_pos = ImVec2(50, 100);
+					Window::viewport_size = ImVec2(640 ,360);
 
 					ImGui::GetWindowDrawList()->AddImage(
-						(void *)textureColorbuffer, ImVec2(ImGui::GetCursorScreenPos()),
-						ImVec2(ImGui::GetCursorScreenPos().x + Window::viewport_size.x, ImGui::GetCursorScreenPos().y + Window::viewport_size.y - 80), ImVec2(0, 1), ImVec2(1, 0));
+						(void *)textureColorbuffer, 
+						ImVec2(50,100),ImVec2(50+640, 100+360),
+						ImVec2(0, 1), ImVec2(1, 0));
 						// 基於這個視窗的大小
 					ImGui::EndTabItem();
 				}
@@ -332,7 +281,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::SetNextWindowSize(ImVec2(_maineditorX, *height - _maineditorY), ImGuiCond_Always);
 		{
 
-			if (!ImGui::Begin("options", p_open, window_flags2))
+			if (!ImGui::Begin("options", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
@@ -361,28 +310,22 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::SetNextWindowPos(ImVec2(_maineditorX, *height / 35), ImGuiCond_Always);
 		ImGui::SetNextWindowSize(ImVec2(_SceneX, _SceneY), ImGuiCond_Always);
 		{
-
-			if (!ImGui::Begin("Scene", p_open, window_flags2))
+			if (!ImGui::Begin("Scene", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
 				return;
 			}
 			//------------------------------------------------------------------------------------------------
-
 			if (SceneManager::Objects.size() > 0)
 			{
-
 				//buf1 =(char*) "";
 				for (int n = 0; n < SceneManager::Objects.size(); n++)
 				{
 					char * buf1 = new char[64]();
-					_currentSelectObject->_actor = SceneManager::Objects[n];
-					if (_currentSelectObject->Is_renaming)
+					_cSelectObject->_actor = SceneManager::Objects[n];
+					if (_cSelectObject->Is_renaming)
 					{
-
-						//buf1 = SceneManager::Objects[n]->transform->name;
-
 						if (ImGui::InputText("", buf1, 64))
 						{
 							SceneManager::Objects[n]->transform->name = buf1;
@@ -392,22 +335,19 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 					{
 						std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
 						const char* newchar = _newname.c_str();
-						if (ImGui::Selectable(newchar, _currentSelectObject->Is_selected))
+						if (ImGui::Selectable(newchar, _cSelectObject->Is_selected))
 						{
 							if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
-								Clear_ListBool(&_headSelectObject);
-							_currentSelectObject->Is_selected = !_currentSelectObject->Is_selected;
-							WindowUI::_InspectorManager.ShowInspector(_currentSelectObject);
+								WindowUI::SelectThisObject(_cSelectObject);
 						}
 					}
-					if (_currentSelectObject->next == NULL)
-						_currentSelectObject->next = new SelectObject();
-					_currentSelectObject = _currentSelectObject->next;
+					if (_cSelectObject->next == NULL)
+						_cSelectObject->next = new SelectObject();
+					_cSelectObject = _cSelectObject->next;
 				}
-				_currentSelectObject = &_headSelectObject;
+				_cSelectObject = _headSelectObject;
 			}
-			else
-				Clear_ListBool(&_headSelectObject);
+		
 
 			/*
 			Your IDs will collide if you have the same name multiple times at same point of hierarchy.
@@ -428,7 +368,7 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::SetNextWindowSize(ImVec2(_SceneX, *height - _SceneY), ImGuiCond_Always);
 		{
 
-			if (!ImGui::Begin("Asset", p_open, window_flags2))
+			if (!ImGui::Begin("Asset", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
@@ -469,45 +409,47 @@ void MyImGui::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned 
 		ImGui::SetNextWindowSize(ImVec2(*width - (_maineditorX + _SceneX), *height), ImGuiCond_Always);
 		{
 
-			if (!ImGui::Begin("Inspector", p_open, window_flags2))
+			if (!ImGui::Begin("Inspector", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
 				return;
 			}
-			WindowUI::_InspectorManager.ListInspectorCur();
+			WindowUI::ListInspectorCur(WindowUI::cur_SelectObject);
 			//------------------------------------------------------------------------------------------------
 			ImGui::End();
 
 		}
 	}
 
-	//////備忘錄
-	/*
-	glm::mat4 projection = Window::_editorCamera.Projection;
-	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
-	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
-	
-	glm::vec3 _world(0,0,0);
-	
-	glm::vec4 clipSpacePos = projection * (view * glm::vec4(_world, 1.0));
-	glm::vec3 ndcSpacePos = glm::vec3(clipSpacePos.x, clipSpacePos.y, clipSpacePos.z) / clipSpacePos.w;
-
-	glm::vec2 windowSpacePos = (glm::vec2(((ndcSpacePos.x + 1.0) / 2.0) * io.DisplaySize.x, ((1.0 - ndcSpacePos.y) / 2.0) *io.DisplaySize.x));
-	   Ans: windowSpacePos.x, Window::WINDOW_HEIGHT-windowSpacePos.y
-
-	這是利用世界座標轉到螢幕座標的方法     或是使用glm::project  Cube.cpp裡面有
-	https://stackoverflow.com/questions/8491247/c-opengl-convert-world-coords-to-screen2d-coords
-	*/
-
-	//記事簿
-
+	//Main Background--------------------------------------------------------------------------------------
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(*width, *height), ImGuiCond_Always);
+	{
+		if (!ImGui::Begin("Main Background", p_open, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoBringToFrontOnFocus))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+		if (!WindowUI::All_UIElement)
+		{
+			Window::viewport_pos = ImGui::GetWindowPos();
+			Window::viewport_size = ImGui::GetWindowSize();
+			ImGui::GetWindowDrawList()->AddImage(
+				(void *)textureColorbuffer,
+				ImVec2(ImGui::GetCursorScreenPos()),
+				ImVec2(ImGui::GetCursorScreenPos().x + Window::viewport_size.x,
+					ImGui::GetCursorScreenPos().y + Window::viewport_size.y), ImVec2(0, 1), ImVec2(1, 0));
+		}
+		MainMenuBar();
+		ImGui::End();
+	}
 	//調試用
 	if (Window::DeBug_Mode)
 	{
 	
 	}
-
 
 
 	ShowSimpleOverlay(&WindowUI::show_simple_overlay);

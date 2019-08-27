@@ -31,12 +31,12 @@ class WindowUI
 public:
 
 	static SelectObject *cur_SelectObject;
-	static WindowUI _InspectorManager;
+	
 	static void Deletecur_actor(SelectObject* cur_actor);
 	static void Renamecur_actor(SelectObject* cur_actor);
 	static void SelectThisActor(Actor* _actor);
-	void ShowInspector(SelectObject *actor);
-	static void ListInspectorCur();
+	static void SelectThisObject(SelectObject *actor);
+	static void ListInspectorCur(SelectObject* _sel);
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
@@ -48,7 +48,7 @@ public:
 
 	}
 
-
+	static void ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer);
 
 };
 
@@ -135,23 +135,6 @@ private:
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-namespace MyImGui
-{
-	void ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer);
-
-}
 
 
 #endif // !WINDOW_H
