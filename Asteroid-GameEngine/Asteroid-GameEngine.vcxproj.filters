@@ -33,9 +33,6 @@
     <ClCompile Include="Component\Meshrender.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Component\PointLight .cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="Component\Transform.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
@@ -85,6 +82,12 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\PointLight.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
@@ -302,6 +305,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="GLDebugDrawer.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

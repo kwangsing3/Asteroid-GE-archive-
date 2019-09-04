@@ -50,16 +50,22 @@ public:
 	float MouseSensitivity;
 	float Zoom;
 
+	int _ViewportSetting;
 
 	unsigned int framebuffer;
 	unsigned int textureColorbuffer;
+	//unsigned int textureColorBufferMultiSampled;
+	unsigned int intermediateFBO;
+	unsigned int screenTexture;
 	unsigned int rbo;
+
 	bool Projection_3D;
 	glm::mat4 SwitchCamera3D(bool *_mode);
 	void SwitchCamera3D(bool _mode);
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 	{
+		_ViewportSetting = 2;
 		Projection_3D = true;
 		enabled = true;
 		transform.position = position;

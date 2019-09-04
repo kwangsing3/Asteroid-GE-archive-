@@ -16,12 +16,13 @@ public:
 	BoxCollision* boxcollision;
 	bool enabled;
 	void translate(glm::vec3 position);
-
+	void removeActor();
 	//bool IsSelected;
 
 	Actor()
 	{
 		transform = new Transform();
+		transform->_actor = this;
 		transform->name = (char*)"Actor";
 		enabled = true;
 		

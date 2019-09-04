@@ -3,7 +3,7 @@
 #include <Window.h>
 #include <GraphicEngine/imgui.h>
 
-glm::vec3 Raycast::MousePosInWorld = glm::vec3{0,0,0};
+glm::vec3 Raycast::MousePosInWorld = glm::vec3{ 0,0,0 };
 float Raycast::X_pos = 0;
 float Raycast::Y_pos = 0;
 
@@ -12,7 +12,7 @@ float Raycast::Y_pos = 0;
 glm::vec3 Raycast::GetWorldPosition(float alpha)
 {
 	//ImGuiIO& io = ImGui::GetIO();
-	return glm::unProject(glm::vec3(Raycast::X_pos, Window::viewport_size.y - 1.0f - Raycast::Y_pos, alpha), Window::_editorCamera.GetViewMatrix(), Window::_editorCamera.Projection, glm::vec4(0.0, 0.0, Window::viewport_size.x, Window::viewport_size.y));
+	return glm::unProject(glm::vec3(Raycast::X_pos, Window::_Height - 1.0f - Raycast::Y_pos, alpha), Window::_editorCamera.GetViewMatrix(), Window::_editorCamera.Projection, glm::vec4(0.0, 0.0, Window::_Width, Window::_Height));
 	// 看來GLFW自帶的函數G輸入的位置Y數值會稍微下面一點
 	//應該是對的                                    ? Z:1;                                           ↑只是要知道這個的值應該是多少
 }

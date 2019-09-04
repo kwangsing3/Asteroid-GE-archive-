@@ -13,4 +13,7 @@ btSequentialImpulseConstraintSolver* World::solver;
 
 // The world.
 btDiscreteDynamicsWorld* World::dynamicsWorld;
+
 btAlignedObjectArray<btCollisionShape*>  World::collisionShapes;
+bool World::_PlayMode;
+//unsigned int World::depthMapFBO;

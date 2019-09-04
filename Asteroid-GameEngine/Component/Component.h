@@ -6,16 +6,23 @@
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
-
+#include <glm/glm.hpp>
+#include "Xml/pugixml.hpp"
+class Actor;
 class Component
 {
 
 public:
+
 	bool enabled;
 	int ID;
+	Actor* _actor;
 	
 	static std::vector<int> vec_ID;    // 放在這裡不安全  應該要歸類在別的地方
-	virtual void Draw() {};
+
+	virtual void SaveFile(pugi::xml_node _node) {}
+	virtual void OpenFile(pugi::xml_node _node) {}
+
 	Component()
 	{
 		enabled = false;	
@@ -23,7 +30,7 @@ public:
 		unsigned seed;
 		seed = (unsigned)time(NULL); // 取得時間序列
 		srand(seed); // 以時間序列當亂數種子
-
+		
 		do
 		{
 			//ID = randint(9999 - 1000 + 1) + 1000;

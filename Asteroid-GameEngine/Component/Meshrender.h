@@ -13,15 +13,15 @@
 //#include <SceneManager.h>
 
 #include "btBulletDynamicsCommon.h"
+class Shader;
 
-
-enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder};
+enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder,Line};
 enum RenderMode { RMode2D, RMode3D };
 
 class Meshrender :public Component
 {
 public:
-	Transform *transform;
+	
 	glm::vec3 VertexColor;
 	Shape _shape;
 	RenderMode _mode;
@@ -29,30 +29,47 @@ public:
 	//---------------------------------
 	unsigned int VBO, VAO;
 	unsigned int Texture;
-	virtual void Draw();
-	int _index = 0;
+	void Draw(Shader _shader);
+	
 	
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
 	btRigidBody* body;
-	Meshrender(int m)
+	Meshrender(Actor* _a)
 	{
-		this->_mode = RenderMode(m);
-		this->transform = new Transform();
-		this->transform->name = (char*)"Cube";
+		_actor = _a;
+		this->_mode = RenderMode(1);
 		this->enabled = true;
 		this->CreateCube(_mode);
 		this->VertexColor = glm::vec3(1, 1, 1);
+		
 		//transform->name = (char*)"Cube";
 	    //  滑鼠判定的碰撞體
 		CreateMouseCollision();
 	}
+
+	Meshrender(Actor* _a, glm::vec3 from, glm::vec3  to)
+	{
+		_actor = _a;
+		this->_mode = RenderMode(1);
+		this->enabled = true;
+		this->CreateLine(from, to, glm::vec3(1,0,0));
+		this->VertexColor = glm::vec3(1, 1, 1);
+
+		//transform->name = (char*)"Cube";
+		//  滑鼠判定的碰撞體
+		//CreateMouseCollision();
+	}
 	
-	void ResetDynamic();
+	void SaveFile(pugi::xml_node _node) override;
+	void OpenFile(pugi::xml_node _node) override;
+	void UpdateCollision();
+
 private:
 	
 	void CreateCube(RenderMode _m);
+	void CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color);
 	unsigned int LoadTexture(const char* path);
 	void CreateMouseCollision();
 };

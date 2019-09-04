@@ -6,7 +6,7 @@
 #include <ADD_Component.h>
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
-#include "Xml/pugixml.hpp"
+
 #include <Component/Meshrender.h>
 #include <Collision/BoxCollision.h>
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
@@ -26,10 +26,14 @@ public:
 
 	SceneManager()
 	{
-		Shader _SimpleShader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
-		Shader _StandardShader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs");
+		/*0*/Shader _SimpleShader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
+		/*1*/Shader _StandardShader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs");
+		/*2*/Shader _DepthShader("Shader/shadow_mapping_depth.vs", "Shader/shadow_mapping_depth.fs", "Shader/point_shadows_depth.gs");
+		/*3*/Shader _ShadowdShader("Shader/shadow_mapping.vs", "Shader/shadow_mapping.fs");
 		SceneManager::vec_ShaderProgram.push_back(_SimpleShader);
 		SceneManager::vec_ShaderProgram.push_back(_StandardShader);
+		SceneManager::vec_ShaderProgram.push_back(_DepthShader);
+		SceneManager::vec_ShaderProgram.push_back(_ShadowdShader);
 	}
 private:
 

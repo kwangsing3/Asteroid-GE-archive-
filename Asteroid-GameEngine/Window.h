@@ -31,7 +31,7 @@ class WindowUI
 public:
 
 	static SelectObject *cur_SelectObject;
-	
+
 	static void Deletecur_actor(SelectObject* cur_actor);
 	static void Renamecur_actor(SelectObject* cur_actor);
 	static void SelectThisActor(Actor* _actor);
@@ -40,7 +40,7 @@ public:
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
-	
+
 
 	WindowUI()
 	{
@@ -58,10 +58,11 @@ class Window
 {
 public:
 	static GLFWwindow* MainGLFWwindow;
+	bool isFullscreen;
 	static unsigned int _Width;
 	static unsigned int _Height;
-	static ImVec2 viewport_pos;
-	static ImVec2 viewport_size;
+	//static ImVec2 viewport_pos;
+	//static ImVec2 viewport_size;
 	static Camera _editorCamera;
 	static bool DeBug_Mode;
 	static std::vector<int> vec_ID;
@@ -71,7 +72,10 @@ public:
 
 	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback, void* mouse_Click_callback)
 	{
+		//viewport_pos = ImVec2(0, 0);
+		//viewport_size = ImVec2(0, 0);
 		WindowShouldClose = false;
+		isFullscreen = false;
 		_Main_UI = new WindowUI();
 		//Xml_SettingImport();
 		{
@@ -90,13 +94,26 @@ public:
 			this->DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
 			_XMLstream.close();
 		}
-		MainGLFWwindow = glfwCreateWindow(Window::_Width, Window::_Height, "LearnOpenGL", NULL, NULL);
+
+		GLFWmonitor* primary = glfwGetPrimaryMonitor();
+
+
+		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+		_Width = mode->width;
+		_Height = mode->height;
+		MainGLFWwindow = glfwCreateWindow(Window::_Width, Window::_Height, "Asteroid-GameEngine", isFullscreen ? monitor : NULL, NULL);
 		if (MainGLFWwindow == NULL)
 		{
 			std::cout << "Failed to create GLFW window" << std::endl;
 			glfwTerminate();
 			//return;
 		}
+		glfwMaximizeWindow(MainGLFWwindow);
+		//glfwHideWindow(MainGLFWwindow);
+		//glfwSetWindowMonitor(MainGLFWwindow, monitor, 0, 0, _Width, _Height, mode->refreshRate);
+
+
 
 		glfwMakeContextCurrent(MainGLFWwindow);
 		glfwSetFramebufferSizeCallback(MainGLFWwindow, (GLFWframebuffersizefun)framebuffer_size_callback);
@@ -112,7 +129,7 @@ public:
 			std::cout << "Failed to initialize GLAD" << std::endl;
 			//return;
 		}
-		
+		//--------------Camera-----------------------------------
 		if (this->_Main_UI->_mode == Mode_3D)
 		{
 			this->_editorCamera.SwitchCamera3D(true);
@@ -123,13 +140,14 @@ public:
 		}
 		this->_editorCamera.EnableFrameBuffer(true);
 
+
 		/*調試用函數*/
 
 
 
 	}
 
-private: 
+private:
 
 
 };

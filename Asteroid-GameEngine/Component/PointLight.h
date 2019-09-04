@@ -9,17 +9,18 @@ class PointLight:public Component
 {
 public:
 	
-	Transform* transform;
+	
 	glm::vec3 Ambient;
 	glm::vec3 Diffuse;
 	glm::vec3 Specular;
 	float Constant;
 	float linear;
 	float quadratic;
-	PointLight()
+	
+	PointLight(Actor* _ac)
 	{
-		transform = new Transform();
-		transform->name = (char*) "PointLight";
+		_actor = _ac;
+		
 		enabled = true;
 		Ambient = { 0.05f, 0.05f, 0.05f };
 		Diffuse = { 0.8f, 0.8f, 0.8f };
@@ -28,7 +29,8 @@ public:
 		linear = 0.09f;
 		quadratic = 0.032f;
 	}
-	
+	void SaveFile(pugi::xml_node _node) override;
+	void OpenFile(pugi::xml_node _node) override;
 };
 
 

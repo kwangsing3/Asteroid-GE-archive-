@@ -1,5 +1,5 @@
 ﻿
-#include <ADD_Component.h>
+#include<ADD_Component.h>
 #include <Component/Meshrender.h>
 
 #include <Component/DirectionalLight.h>
@@ -15,101 +15,55 @@ Actor * ADD_Component::Add_Actor()
 	return _Actor;
 }
 
-Actor* ADD_Component::Add_Cube(Actor* _actor)
+Meshrender* ADD_Component::Add_Meshrender(Actor* _actor)
 {
-	if (_actor)// 經由按鈕製造的項目會跑這行
-	{
-		if (_actor->meshrender == NULL)
-		{
-			_actor->meshrender = new Meshrender(1);
-
-			SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
-		}
-		_actor->meshrender->transform = _actor->transform;
-		
-		return _actor;
-	}
-
-	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->meshrender = new Meshrender(1);
-	_newactor->transform->name = (char*)"Cube";
-
-	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
-
-	return _newactor;
+	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	Meshrender* _mesh = new Meshrender(_actor);
+	_actor->meshrender = _mesh;
+	SceneManager::vec_ObjectsToRender.push_back(_mesh);
+	//_ac->transform->name = (char*)"Cube";
+	return _mesh;
 }
-Actor* ADD_Component::Add_Cube2D(Actor* _actor)
+
+Meshrender * ADD_Component::Add_Line(Actor* _actor, glm::vec3 from, glm::vec3 to)
 {
-	if (_actor)
-	{
-		_actor->meshrender = new Meshrender(0);
-
-		SceneManager::vec_ObjectsToRender.push_back(_actor->meshrender);
-		_actor->meshrender->transform = _actor->transform;
-		return _actor;
-	}
-	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->meshrender = new Meshrender(0);
-	_newactor->transform->name = (char*)"Cube";
-
-	SceneManager::vec_ObjectsToRender.push_back(_newactor->meshrender);
-	return _newactor;
+	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	Meshrender* _mesh = new Meshrender(_actor,from,to);
+	_actor->meshrender = _mesh;
+	SceneManager::vec_ObjectsToRender.push_back(_mesh);
+	//_ac->transform->name = (char*)"Cube";
+	return _mesh;
 }
-Actor* ADD_Component::Add_DirectionalLight(Actor* _actor)
+
+DirectionalLight* ADD_Component::Add_DirectionalLight(Actor* _actor)
 {
-	if (_actor)
-	{
-		_actor->_Dirlight = new DirectionalLight();
-		_actor->_Dirlight->transform = _actor->transform;
-		SceneManager::vec_DirectionlLight.push_back(_actor->_Dirlight);
-		return _actor;
-	}
-	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->_Dirlight = new DirectionalLight();
-	_newactor->transform->name = (char*)"DirectionalLight";
+	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	DirectionalLight* _DirLight = new DirectionalLight(_actor);
+//	_ac->transform->name = (char*)"Directional Light";
+	SceneManager::vec_DirectionlLight.push_back(_DirLight);
+	_ac->_Dirlight = _DirLight;
+	//_ac->transform->rotation = { -0.2f, -1.0f, -0.3f };
+	return _DirLight;
+}
+PointLight* ADD_Component::Add_PointLight(Actor* _actor)
+{
+	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	PointLight* _PoLight = new PointLight(_actor);
+	//_ac->transform->name = (char*)"Point Light";
+	SceneManager::vec_PointLight.push_back(_PoLight);
+	_ac->_PointLight = _PoLight;
+	return _PoLight;
+}
+BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor)
+{
+	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	BoxCollision* _box = new BoxCollision(_actor);
+	//_ac->transform->name = (char*)"Cube";
+	_ac->boxcollision = _box;
 	
-	SceneManager::vec_DirectionlLight.push_back(_newactor->_Dirlight);
-	return _newactor;
-}
-Actor* ADD_Component::Add_PointLight(Actor* _actor)
-{
-	if (_actor)
-	{
-		_actor->_PointLight = new PointLight();
-		_actor->_PointLight->transform = _actor->transform;
-		SceneManager::vec_PointLight.push_back(_actor->_PointLight);
-		return _actor;
-	}
-	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->_PointLight = new PointLight();
-	_newactor->transform->name = (char*)"PointLight";
-
-	SceneManager::vec_PointLight.push_back(_newactor->_PointLight);
-	return _newactor;
-}
-Actor* ADD_Component::Add_BoxCollision(Actor* _actor)
-{
-	if (_actor)
-	{
-		_actor->boxcollision = new BoxCollision();
-		_actor->boxcollision->transform = _actor->transform;
-		_actor->boxcollision->ResetDynamic();
-		
-		return _actor;
-	}
-
-	Actor* _newactor = ADD_Component::Add_Actor();
-	_newactor->boxcollision = new BoxCollision();
-	_newactor->transform->name = (char*)"Cube (With Collision)";
-	_newactor->boxcollision->ResetDynamic();
-	return _newactor;
+	return _box;
 }
 
-Actor* ADD_Component::Add_BoxCollision2D(Actor* _actor)
-{
-
-	return NULL;
-}
 
 
 

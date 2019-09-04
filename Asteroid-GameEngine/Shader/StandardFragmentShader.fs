@@ -58,6 +58,7 @@ uniform PointLight pointLights[PLight_Length];
 
 uniform SpotLight spotLight;
 uniform Material material;
+uniform vec3 Color;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);

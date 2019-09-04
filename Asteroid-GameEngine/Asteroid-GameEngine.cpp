@@ -42,20 +42,22 @@ World* _cur_World;
 
 int main()
 {
-	   
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
-	Window *_mainWindow=new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
+	Window *_mainWindow = new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
 	_mainWindow->DeBug_Mode = true;
 
-	_cur_World =new World();
+	SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建   目前需要在world的類別前宣告
+	_cur_World = new World();
 	//UI 初始化-------------
 	{
 		IMGUI_CHECKVERSION();
@@ -65,10 +67,11 @@ int main()
 		io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
 		io.Fonts->Build();
 
-		// Setup Dear ImGui style
-		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
 
+		// Setup Dear ImGui style
+		//ImGui::StyleColorsDark();
+		//ImGui::StyleColorsClassic();
+		ImGui::StyleColorsLight();
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(_mainWindow->MainGLFWwindow, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
@@ -83,26 +86,27 @@ int main()
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-    glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_MULTISAMPLE);
 	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);               //先把反面剃除拿掉
 	//glEnable(GL_FRAMEBUFFER_SRGB); //gamma校正
 	// build and compile our shader zprogram
 	// ------------------------------------
-	
 
 
 
 
-	
+
+
 	/*    Axis的資料
 	float coordinate[] = {
-		-5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f, -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,  -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,// left  
-		-5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f, -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,  -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,// right 
-		-5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f, -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f,  -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f  // top   
+		-5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f, -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,  -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,// left
+		-5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f, -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,  -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,// right
+		-5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f, -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f,  -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f  // top
 	};
 	*/
 	unsigned int AxisVAO, AxisVBO;
@@ -154,7 +158,7 @@ int main()
 		  2.5f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top 
 		  -2.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
 		  -2.5f, 0.0f,  -2.5f,  0.7f,0.7f,0.7f   // top 
-	};    
+	};
 
 	glGenVertexArrays(1, &AxisVAO);
 	glGenBuffers(1, &AxisVBO);
@@ -169,18 +173,16 @@ int main()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建
-	//---------------------------------------
-	//bool use_UI = true;  //調試用函數	
 
-	//the ground is a cube of side 100 at position y = -56.
-    //the sphere will hit it at y = -6, with center at -5    //   測試用地板
-	
+	//---------------------------------------
+
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
 	//記得拿掉
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
+
+
 
 	while (!Window::WindowShouldClose)
 	{
@@ -191,10 +193,10 @@ int main()
 		// -----
 		processInput(_mainWindow->MainGLFWwindow);
 		//  Game scene	
-		glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
+		//glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());		
 		// render
 		// ------
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClearColor(0.2f, 0.2f, 0.24f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		//Draw Croodinate  基本座標(白)
@@ -205,44 +207,42 @@ int main()
 			SceneManager::vec_ShaderProgram[0].setMat4("view", view);
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(0, 0, 0));
-			if (WindowUI::_mode==Mode_2D) 
+			if (WindowUI::_mode == Mode_2D)
 				model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
 			else
 				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
 			SceneManager::vec_ShaderProgram[0].setMat4("model", model);
 
-			SceneManager::vec_ShaderProgram[0].setVec3("Color",1,1,1);
-			
+			SceneManager::vec_ShaderProgram[0].setVec3("Color", 1, 1, 1);
+
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
 		}
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();	
+		ImGui::NewFrame();
 
 		//世界的畫面刷新
 
 		_cur_World->UpdateFrame();
+		//_deb->drawLine(btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(0, 0,0),btVector3(1,0,0));
 
-		
-		_deb->drawLine(btVector3(0, 0, 0), btVector3(
-			Raycast::GetWorldPosition(0).x,
-			Raycast::GetWorldPosition(0).y,
-			Raycast::GetWorldPosition(0).z), btVector3(1, 1, 1));
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, 0); // 返回默认
-		glDisable(GL_DEPTH_TEST);	
+		// 正在解決MSAA 抗鋸齒  想辦法把抗鋸齒用到幀緩衝上
+
+
+		glDisable(GL_DEPTH_TEST);
 		//UI----------------------------------------------------------------------------------------------------------------------
-		
+
 		WindowUI::ShowMyImGUIDemoWindow(&show_demo_window, &Window::_Width, &Window::_Height, Window::_editorCamera.GetframeBuffer());
+
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(_mainWindow->MainGLFWwindow);
 		glfwPollEvents();
 	}
-	
+
 	// optional: de-allocate all resources once they've outlived their purpose:
 	// ------------------------------------------------------------------------
 	//glDeleteVertexArrays(1, &VAO);
@@ -294,7 +294,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
-{	
+{
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -306,7 +306,7 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 
 	lastX = xpos;
 	lastY = ypos;
-	
+
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);
@@ -314,37 +314,40 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 
 	//記得拿掉
-	Raycast::SetMousePosition(lastX-Window::viewport_pos.x, lastY- Window::viewport_pos.y);
-}	
+
+}
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
-		Raycast::SetMousePosition(lastX, lastY);
+		Raycast::SetMousePosition(lastX, lastY + Window::_Height / 45);
 
 
 		btCollisionWorld::ClosestRayResultCallback RayCallback(
 			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z)
 		);
+		RayCallback.m_collisionFilterMask = 1;
+		RayCallback.m_collisionFilterGroup = 1;
+
 		_cur_World->dynamicsWorld->rayTest(
 			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z),
 			RayCallback
 		);
 
+
 		if (RayCallback.hasHit()) {
 			std::ostringstream oss;
 			oss << "mesh " << RayCallback.m_collisionObject;
 			//_cur_World->dynamicsWorld.
-			for (int i = 0; i < SceneManager::Objects.size(); i++)
+			for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 			{
-				if (SceneManager::Objects[i]->meshrender != NULL && RayCallback.m_collisionObject == SceneManager::Objects[i]->meshrender->body)
+				if (SceneManager::vec_ObjectsToRender[i]->_actor->meshrender != NULL && RayCallback.m_collisionObject == SceneManager::vec_ObjectsToRender[i]->body)
 				{
-					WindowUI::SelectThisActor(SceneManager::Objects[i]);
-					std::cout << SceneManager::Objects[i]->transform->name;
+					WindowUI::SelectThisActor(SceneManager::vec_ObjectsToRender[i]->_actor);
+					std::cout << SceneManager::vec_ObjectsToRender[i]->_actor->transform->name;
+
 				}
 			}
 		}

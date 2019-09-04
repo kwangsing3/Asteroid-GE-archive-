@@ -8,8 +8,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <Window.h>
+#include <shader_m.h>
 #include <SceneManager.h>
-
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "GraphicEngine/imgui.h"
 #include "GraphicEngine/imgui_impl_glfw.h"
@@ -17,48 +19,48 @@
 
 
 float CubeVertices[] = {
-	// positions          // normals           // texture coords
-			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-
-			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-			 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-
-			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-			-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-
-			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-			 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+	// Back face
+		  -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, // Bottom-left
+		  0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, // top-right
+		  0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+		  0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,  // top-right
+		  -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,  // bottom-left
+		  -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,// top-left
+		  // Front face
+		  -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+		  0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // bottom-right
+		  0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // top-right
+		  0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top-right
+		  -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,  // top-left
+		  -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom-left
+		  // Left face
+		  -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+		  -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
+		  -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left
+		  -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+		  -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  // bottom-right
+		  -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+		  // Right face
+		  0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+		  0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+		  0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right         
+		  0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right
+		  0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-left
+		  0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left     
+		  // Bottom face
+		  -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+		  0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, // top-left
+		  0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,// bottom-left
+		  0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom-left
+		  -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom-right
+		  -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+		  // Top face
+		  -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
+		  0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+		  0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right     
+		  0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+		  -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
+		  -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f // bottom-left        
 };
 float PlaneVertices[] = {
 	// positions          // normals           // texture coords
@@ -70,98 +72,123 @@ float PlaneVertices[] = {
 			-0.5f, -0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 };
 
-void Meshrender::Draw()
+void Meshrender::Draw(Shader _shader)
 {
-	SceneManager::vec_ShaderProgram[_index].use();
-	SceneManager::vec_ShaderProgram[_index].setVec3("viewPos", Window::_editorCamera.transform.position);
-	SceneManager::vec_ShaderProgram[_index].setFloat("material.shininess", 32.0f);
-	//Directional Light
-	for (int i = 0; i < 8; i++)
+
+	///Shader Setting
 	{
-		if (i + 1 > SceneManager::vec_DirectionlLight.size())
+		_shader.use();
+		_shader.setVec3("viewPos", Window::_editorCamera.transform.position);
+
+		_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
+		/* 
+		//Directional Light
+		for (int i = 0; i < 8; i++)
 		{
-			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
-			continue;
+			if (i + 1 > SceneManager::vec_DirectionlLight.size())
+			{
+				_shader.setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0, 0, 0));
+				_shader.setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+				_shader.setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+				_shader.setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+				continue;
+			}
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->_actor->transform->rotation);
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
 		}
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->transform->rotation);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
-		SceneManager::vec_ShaderProgram[_index].setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
-	}
-	//Point Light
-	for (int i = 0; i < 8; i++)
-	{
-		if (i + 1 > SceneManager::vec_PointLight.size())
+		//Point Light
+		for (int i = 0; i < 8; i++)
 		{
-			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
-			SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
-			SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
-			SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0);
-			continue;
+			if (i + 1 > SceneManager::vec_PointLight.size())
+			{
+				_shader.setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
+				_shader.setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+				_shader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+				_shader.setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+				_shader.setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
+				_shader.setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
+				_shader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0);
+				continue;
+			}
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->_actor->transform->position);
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
+			_shader.setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
+			_shader.setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
+			_shader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
+			// spotLight
+			/*_shader.setVec3("spotLight.position", Window::_editorCamera.transform.position);
+			_shader.setVec3("spotLight.direction", Window::_editorCamera.Front);
+			_shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+			_shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+			_shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+			_shader.setFloat("spotLight.constant", 1.0f);
+			_shader.setFloat("spotLight.linear", 0.09);
+			_shader.setFloat("spotLight.quadratic", 0.032);
+			_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 		}
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->transform->position);
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
-		SceneManager::vec_ShaderProgram[_index].setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
-		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
-		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
-		SceneManager::vec_ShaderProgram[_index].setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
+		*/
+		glm::mat4 projection = Window::_editorCamera.Projection;
+		glm::mat4 view = Window::_editorCamera.GetViewMatrix();
+		_shader.setMat4("projection", projection);
+		_shader.setMat4("view", view);
+		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
+		model = glm::translate(model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+		glm::quat MyQuaternion;
+		glm::vec3 EulerAngles(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
+		MyQuaternion = glm::quat(EulerAngles);
+		glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
+		model = model * RotationMatrix;
+		model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
+		_shader.setMat4("model", model);
+		_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
+
+		///shadow
+		glm::mat4 shadowProj, lightView;
+		glm::mat4 lightSpaceMatrix;
+		glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+		//lightPos.x = sin(glfwGetTime()) * 3.0f;
+		//lightPos.z = cos(glfwGetTime()) * 2.0f;
+		//lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
+		lightPos.z = sin(glfwGetTime() * 0.5) * 3.0;
+		///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+		float near_plane = 1.0f;
+		float far_plane = 25.0f;
+		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+		std::vector<glm::mat4> shadowTransforms;
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		
+		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		lightSpaceMatrix = shadowProj * lightView;
+		// render scene from light's point of view
+		_shader.setVec3("viewPos", Window::_editorCamera.transform.position);
+		for (unsigned int i = 0; i < 6; ++i)
+			_shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		_shader.setFloat("far_plane", far_plane);
+		_shader.setVec3("lightPos", lightPos);
+		_shader.setInt("shadows", 1); // enable/disable shadows by pressing 'SPACE'
+		_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
 	}
-	// spotLight
-	/*SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.position", Window::_editorCamera.transform.position);
-	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.direction", Window::_editorCamera.Front);
-	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.constant", 1.0f);
-	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.linear", 0.09);
-	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.quadratic", 0.032);
-	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-	SceneManager::vec_ShaderProgram[_index].setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
+	///Shader Setting
 	//Draw Popline
 	glBindVertexArray(VAO);
-	glm::mat4 projection = Window::_editorCamera.Projection;
-	SceneManager::vec_ShaderProgram[_index].setMat4("projection", projection);
-	// camera/view transformation
-	glm::mat4 view = Window::_editorCamera.GetViewMatrix();
-	SceneManager::vec_ShaderProgram[_index].setMat4("view", view);
-	glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
-	model = glm::translate(model, glm::vec3(this->transform->position.x, this->transform->position.y, this->transform->position.z));
-	float angle[3] = { this->transform->rotation.x ,this->transform->rotation.y ,this->transform->rotation.z };
-	// Local Rotate
-	/*
-	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
-	*/
-	
-	//Global Rotate
-	model = glm::rotate(model, -glm::radians(angle[1]), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, glm::radians(angle[0]), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(angle[2]), glm::vec3(0, 0, 1));
-	
-
-
-	model = glm::scale(model, glm::vec3(this->transform->scale.x, this->transform->scale.y, this->transform->scale.z));
-	SceneManager::vec_ShaderProgram[_index].setMat4("model", model);
-
-	SceneManager::vec_ShaderProgram[_index].setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
-	if (_index == 1)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, this->Texture);
-	}
-	glDrawArrays(GL_TRIANGLES, 0, this->_mode == Mode_3D?36:6);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->Texture);
+	glDrawArrays(this->_shape==Line? GL_LINES:GL_TRIANGLES, 0, this->_mode == Mode_3D?36:6);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Debug Popline
-	if (Window::DeBug_Mode &&false/*直接指定*/)
+	/*
+	if (Window::DeBug_Mode &&false直接指定)
 	{
 		for (int i = 0; i < Vectices_Debug.size(); i++)
 		{
@@ -190,17 +217,17 @@ void Meshrender::Draw()
 			static bool _ts = true;
 			_ts = true;
 			glm::vec3 windowSpacePos = glm::project(Worldvectices_Debug[i], Window::_editorCamera.GetViewMatrix(), projection, glm::vec4(0, 0, Window::_Width, Window::_Height));
-			ImVec2 _nextwindowpos = ImVec2(windowSpacePos.x*Window::viewport_size.x / Window::_Width, (Window::_Height - windowSpacePos.y)*Window::viewport_size.y / Window::_Height);
+			ImVec2 _nextwindowpos = ImVec2(windowSpacePos.x*Window::_Width / Window::_Width, (Window::_Height - windowSpacePos.y)*Window::_Height / Window::_Height);
 
-			if ((_nextwindowpos.x > Window::viewport_pos.x + Window::viewport_size.x) || (_nextwindowpos.x < Window::viewport_pos.x) || (_nextwindowpos.y > Window::viewport_pos.y + Window::viewport_size.y) || (_nextwindowpos.y < Window::viewport_pos.y))
+			if ((_nextwindowpos.x > 0 + Window::_Width) || (_nextwindowpos.x < 0) || (_nextwindowpos.y > 0 + Window::_Height) || (_nextwindowpos.y < 0))
 				continue;
 			ImGui::SetNextWindowPos(_nextwindowpos, ImGuiCond_Always);
 
 
-			char s[sizeof(&this->ID) + sizeof(&this->transform->name) + sizeof(&i)];
+			char s[sizeof(&this->ID) + sizeof(&this->_actor->transform->name) + sizeof(&i)];
 			//char n[sizeof(i)];
 			//sprintf(n,"%d",i);
-			sprintf(s, "%d%s%d", this->ID, this->transform->name, i);
+			sprintf(s, "%d%s%d", this->ID, this->_actor->transform->name, i);
 			//strcat(s, this->transform->name);
 			//strcat(s, n);
 			ImGui::SetNextWindowBgAlpha(0.2f);
@@ -211,9 +238,8 @@ void Meshrender::Draw()
 				ImGui::End();
 			}
 		}
-	}
+	}*/
 }
-
 void Meshrender::CreateCube(RenderMode _m)
 {
 	glGenVertexArrays(1, &VAO);
@@ -227,7 +253,6 @@ void Meshrender::CreateCube(RenderMode _m)
 	{
 		glBufferData(GL_ARRAY_BUFFER, sizeof(PlaneVertices), PlaneVertices, GL_STATIC_DRAW);
 	}
-
 	glBindVertexArray(VAO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -238,10 +263,9 @@ void Meshrender::CreateCube(RenderMode _m)
 
 	glBindVertexArray(0);
 	Texture = LoadTexture("Texture\\White.png");
-	SceneManager::vec_ShaderProgram[_index].use();
-	SceneManager::vec_ShaderProgram[_index].setInt("texture1", 0);
+	//SceneManager::vec_ShaderProgram[_index].use();
+	//SceneManager::vec_ShaderProgram[_index].setInt("texture1", 0);
 	//Debug Mode
-
 
 	if (_m == RMode3D)
 	{
@@ -259,9 +283,11 @@ void Meshrender::CreateCube(RenderMode _m)
 	}
 
 	Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
+
+
+
+
 }
-
-
 
 unsigned int Meshrender::LoadTexture(const char* path)
 {
@@ -295,27 +321,29 @@ unsigned int Meshrender::LoadTexture(const char* path)
 	return _texture;
 }
 
-//  --------------------------------- Mouse Collision --------------------------------- 
 
+//  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.h>
 void Meshrender::CreateMouseCollision()
 {
 	btVector3 localInertia(0, 0, 0);
 	//create a dynamic rigidbody
-	btCollisionShape* colShape = new btBoxShape(btVector3(transform->scale.x, transform->scale.y, transform->scale.z) / 2);
+	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
 	btScalar mass(0);
 	World::collisionShapes.push_back(colShape);
 	/// Create Dynamic Objects
 	btTransform startTransform;
 	startTransform.setIdentity();
 	btQuaternion quat;
-	quat.setEuler(-glm::radians(transform->rotation.y), glm::radians(transform->rotation.x), glm::radians(transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+	//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+	quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
 	startTransform.setRotation(quat);
+
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
 	bool isDynamic = (mass != 0.f);
 	if (isDynamic)
 		colShape->calculateLocalInertia(mass, localInertia);
-	startTransform.setOrigin(btVector3(transform->position.x, transform->position.y, transform->position.z));
+	startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
@@ -323,12 +351,73 @@ void Meshrender::CreateMouseCollision()
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
 
-	World::dynamicsWorld->addRigidBody(body);
+	int f = body->getCollisionFlags();
+	body->setCollisionFlags(f | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+	
+	int _group = 1;
+	int _mask = 1;
 
-	World::dynamicsWorld->updateSingleAabb(body);
+	World::dynamicsWorld->addRigidBody(body, _group,_mask);
+	//World::dynamicsWorld->updateSingleAabb(body);
+
+
+
 }
-void Meshrender::ResetDynamic()
+void Meshrender::SaveFile(pugi::xml_node _node)
 {
-	World::dynamicsWorld->removeRigidBody(this->body);
-	Meshrender::CreateMouseCollision(); 
+	if (_node == NULL|| this->_actor->meshrender==NULL) return;
+	_node.append_attribute("meshrender") = 1;
+	pugi::xml_node _n = _node.append_child("MeshRender");
+	_n.append_attribute("VertexColorX") = this->_actor->meshrender->VertexColor.x;
+	_n.append_attribute("VertexColorY") = this->_actor->meshrender->VertexColor.y;
+	_n.append_attribute("VertexColorZ") = this->_actor->meshrender->VertexColor.z;
+}
+void Meshrender::OpenFile(pugi::xml_node _node)
+{
+	if (_node == NULL || this->_actor->meshrender == NULL) return;
+	pugi::xml_node _n = _node.child("MeshRender");
+	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
+}
+void Meshrender::UpdateCollision()
+{
+	World::dynamicsWorld->removeCollisionObject(this->body);
+	CreateMouseCollision();
+}
+
+void Meshrender::CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color)
+{
+	this->_shape = Line;
+	// Vertex data
+	GLfloat points[12];
+
+	points[0] = from.x;
+	points[1] = from.y;
+	points[2] = from.z;
+	points[3] = color.x;
+	points[4] = color.y;
+	points[5] = color.z;
+
+	points[6] = to.x;
+	points[7] = to.y;
+	points[8] = to.z;
+	points[9] = color.x;
+	points[10] = color.y;
+	points[11] = color.z;
+
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glBindVertexArray(0);
+
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_LINES, 0, 2);
+	glBindVertexArray(0);
 }
