@@ -56,9 +56,9 @@ public:
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		SceneManager::vec_ShaderProgram[3].use();
-		SceneManager::vec_ShaderProgram[3].setInt("diffuseTexture", 0);
-		SceneManager::vec_ShaderProgram[3].setInt("depthMap", 1);
+		SceneManager::vec_ShaderProgram[1].use();
+		SceneManager::vec_ShaderProgram[1].setInt("diffuseTexture", 0);
+		SceneManager::vec_ShaderProgram[1].setInt("depthMap", 1);
 	}
 	void UpdateFrame()
 	{
@@ -103,7 +103,7 @@ public:
 		this->dynamicsWorld->debugDrawWorld();
 		//glCullFace(GL_FRONT);
 		///Shadw
-		/*glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
@@ -114,14 +114,15 @@ public:
 		//glCullFace(GL_BACK);
 		// Draw Pipeline
 		glViewport(0, 0, Window::_Width, Window::_Height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[3]);
+			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[1]);
 		}
+		
 		//this->dynamicsWorld->debugDrawWorld();
 	}
 

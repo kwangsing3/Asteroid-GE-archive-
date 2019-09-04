@@ -1,2 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="0" />
+<Scene name="test" Objects_Size="4">
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="0" y="-1.96000004" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="100" y="0.100000001" z="100" />
+<MeshRender VertexColorX="0.22621192" VertexColorY="0.325304747" VertexColorZ="0.482300878" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="0" y="2.17000008" z="0" />
+<Rotation x="51" y="71.5" z="36.4000015" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
+<Objects name="New DirectionalLight" _Dirlight="1" Component_size="1">
+<Position x="0" y="0" z="0" />
+<Rotation x="65.0999985" y="21.2000008" z="-37.5999985" />
+<Scale x="1" y="1" z="1" />
+<Ambient X="1" Y="0.999989986" Z="0.999989986" />
+<Diffuse X="0" Y="0.102111235" Z="0.823008835" />
+<Specular X="0" Y="0.85840708" Z="0.153287008" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="-3.25999999" y="-1.14999998" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
+</Scene>

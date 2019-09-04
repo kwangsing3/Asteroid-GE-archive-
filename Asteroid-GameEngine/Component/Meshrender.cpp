@@ -79,9 +79,8 @@ void Meshrender::Draw(Shader _shader)
 	{
 		_shader.use();
 		_shader.setVec3("viewPos", Window::_editorCamera.transform.position);
-
 		_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
-		/* 
+		
 		//Directional Light
 		for (int i = 0; i < 8; i++)
 		{
@@ -129,9 +128,9 @@ void Meshrender::Draw(Shader _shader)
 			_shader.setFloat("spotLight.linear", 0.09);
 			_shader.setFloat("spotLight.quadratic", 0.032);
 			_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 		}
-		*/
+		
 		glm::mat4 projection = Window::_editorCamera.Projection;
 		glm::mat4 view = Window::_editorCamera.GetViewMatrix();
 		_shader.setMat4("projection", projection);
@@ -175,7 +174,7 @@ void Meshrender::Draw(Shader _shader)
 			_shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 		_shader.setFloat("far_plane", far_plane);
 		_shader.setVec3("lightPos", lightPos);
-		_shader.setInt("shadows", 1); // enable/disable shadows by pressing 'SPACE'
+		_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
 		_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
 	}
 	///Shader Setting
