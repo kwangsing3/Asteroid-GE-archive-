@@ -56,7 +56,7 @@ public:
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		SceneManager::vec_ShaderProgram[1].use();
+		SceneManager::vec_ShaderProgram[1].use();                                //要想辦法改掉   應該要直接串給MeshRender的主要Shader上 
 		SceneManager::vec_ShaderProgram[1].setInt("diffuseTexture", 0);
 		SceneManager::vec_ShaderProgram[1].setInt("depthMap", 1);
 	}

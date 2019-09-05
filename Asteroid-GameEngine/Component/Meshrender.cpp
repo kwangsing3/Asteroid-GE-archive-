@@ -149,28 +149,36 @@ void Meshrender::Draw(Shader _shader)
 		///shadow
 		glm::mat4 shadowProj, lightView;
 		glm::mat4 lightSpaceMatrix;
-		glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+		glm::vec3 lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->rotation : glm::vec3(0,0,0);
+
+		/*
+			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要0.3f
+		*/
+
 		//lightPos.x = sin(glfwGetTime()) * 3.0f;
 		//lightPos.z = cos(glfwGetTime()) * 2.0f;
 		//lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
-		lightPos.z = sin(glfwGetTime() * 0.5) * 3.0;
+		//lightPos.z = sin(glfwGetTime() * 0.5) * 3.0;
 		///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 		float near_plane = 1.0f;
 		float far_plane = 25.0f;
 		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 		std::vector<glm::mat4> shadowTransforms;
-		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		if (SceneManager::vec_DirectionlLight.size() > 0)
+		{
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		}
 		
 		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 		lightSpaceMatrix = shadowProj * lightView;
 		// render scene from light's point of view
 		_shader.setVec3("viewPos", Window::_editorCamera.transform.position);
-		for (unsigned int i = 0; i < 6; ++i)
+		for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
 			_shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 		_shader.setFloat("far_plane", far_plane);
 		_shader.setVec3("lightPos", lightPos);
@@ -262,8 +270,8 @@ void Meshrender::CreateCube(RenderMode _m)
 
 	glBindVertexArray(0);
 	Texture = LoadTexture("Texture\\White.png");
-	//SceneManager::vec_ShaderProgram[_index].use();
-	//SceneManager::vec_ShaderProgram[_index].setInt("texture1", 0);
+	SceneManager::vec_ShaderProgram[1].use();
+	SceneManager::vec_ShaderProgram[1].setInt("material.diffuse",0);
 	//Debug Mode
 
 	if (_m == RMode3D)
