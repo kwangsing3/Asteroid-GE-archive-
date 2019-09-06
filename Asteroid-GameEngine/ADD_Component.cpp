@@ -18,7 +18,7 @@ Actor * ADD_Component::Add_Actor()
 Meshrender* ADD_Component::Add_Meshrender(Actor* _actor)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
-	Meshrender* _mesh = new Meshrender(_actor);
+	Meshrender* _mesh = new Meshrender(_actor,Cube);
 	_actor->meshrender = _mesh;
 	SceneManager::vec_ObjectsToRender.push_back(_mesh);
 	//_ac->transform->name = (char*)"Cube";

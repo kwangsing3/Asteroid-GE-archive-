@@ -3,8 +3,8 @@
 #include <Component/Component.h>
 #include <Component/Meshrender.h>
 #include <vector>
-#include "btBulletDynamicsCommon.h"
 
+class btRigidBody;
 
 class BoxCollision: public Component
 {

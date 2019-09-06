@@ -29,14 +29,14 @@ unsigned int loadCubemap(vector<std::string> faces);
 
 float lastX = 500.0f;
 float lastY = 300.0f;
-bool firstMouse = true;
+bool isClickingPivot = true;
 bool _mouseLucked = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 const char* glsl_version = "#version 460";
 World* _cur_World;
-
+Actor* _pivot;
 
 
 
@@ -170,14 +170,14 @@ int main()
 	glBindVertexArray(0);
 
 	//---------------------------------------
-
+	
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
 	//記得拿掉
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
 
-	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
+	
 
 	while (!Window::WindowShouldClose)
 	{
@@ -290,15 +290,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
+	
+
 	float xoffset = xpos - lastX;
 	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
+	if (isClickingPivot && _pivot != NULL)
+	{
+		_pivot->transform->Translate(glm::vec3(_pivot->transform->position.x+ xoffset/800, _pivot->transform->position.y+ yoffset/800, _pivot->transform->position.z));
+	}
 	lastX = xpos;
 	lastY = ypos;
 
@@ -314,12 +313,14 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
+	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+		
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
+		
 		Raycast::SetMousePosition(lastX, lastY + Window::_Height / 45);
-
-
 		btCollisionWorld::ClosestRayResultCallback RayCallback(
 			btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z)
 		);
@@ -336,19 +337,34 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			std::ostringstream oss;
 			oss << "mesh " << RayCallback.m_collisionObject;
 			//_cur_World->dynamicsWorld.
-			for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
+			if (RayCallback.m_collisionObject->_actor->meshrender->_shape == Pivot)
 			{
-				if (SceneManager::vec_ObjectsToRender[i]->_actor->meshrender != NULL && RayCallback.m_collisionObject == SceneManager::vec_ObjectsToRender[i]->body)
+				if (RayCallback.m_collisionObject == RayCallback.m_collisionObject->_actor->meshrender->body[0])
 				{
-					WindowUI::SelectThisActor(SceneManager::vec_ObjectsToRender[i]->_actor);
-					std::cout << SceneManager::vec_ObjectsToRender[i]->_actor->transform->name;
-
+					std::cout << "It's X-Axis";
 				}
+				else if (RayCallback.m_collisionObject == RayCallback.m_collisionObject->_actor->meshrender->body[1])
+				{
+					std::cout << "It's Y-Axis";
+				}
+					
+				else if (RayCallback.m_collisionObject == RayCallback.m_collisionObject->_actor->meshrender->body[2])
+				{
+					std::cout << "It's Z-Axis";
+				}	
+				_pivot = RayCallback.m_collisionObject->_actor;
+				isClickingPivot = true;
 			}
+			WindowUI::SelectThisActor(RayCallback.m_collisionObject->_actor);
 		}
 		else {
 			WindowUI::SelectThisActor(NULL);
 		}
+	}
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	{
+		isClickingPivot = false;
+		_pivot = NULL;
 	}
 }
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called

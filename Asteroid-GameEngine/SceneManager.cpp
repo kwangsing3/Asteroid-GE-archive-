@@ -12,7 +12,7 @@ std::vector<Actor*> SceneManager::Objects;
 void SceneManager::OpenFile()
 {
 	SceneManager::NewScene();
-
+	
 	std::cout << "Open File Function" << std::endl;
 	pugi::xml_document _doc;
 	std::ifstream _XMLstream;
@@ -136,4 +136,5 @@ void SceneManager::NewScene()
 
 	Objects.clear();
 	World::dynamicsWorld->getCollisionObjectArray().clear();
+	ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 }

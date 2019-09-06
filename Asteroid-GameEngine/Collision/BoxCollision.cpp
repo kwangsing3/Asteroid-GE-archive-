@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <World.h>
-
+#include "btBulletDynamicsCommon.h"
 void BoxCollision::SaveFile(pugi::xml_node _node)
 {
 	if (_node == NULL || this->_actor->boxcollision == NULL) return;

@@ -16,7 +16,7 @@
 #include "GraphicEngine/imgui.h"
 #include "GraphicEngine/imgui_impl_glfw.h"
 #include "GraphicEngine/imgui_impl_opengl3.h"
-
+#include "btBulletDynamicsCommon.h"
 
 float CubeVertices[] = {
 	// Back face
@@ -91,15 +91,29 @@ float PIVOTVERTICES[] = {
 		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
 		-0.1f,0.0f,0.8f,  0.0f,0.0f,1.0f,// Z-Axis
 };
+void Meshrender::SaveFile(pugi::xml_node _node)
+{
+	if (_node == NULL || this->_actor->meshrender == NULL) return;
+	_node.append_attribute("meshrender") = 1;
+	pugi::xml_node _n = _node.append_child("MeshRender");
+	_n.append_attribute("VertexColorX") = this->_actor->meshrender->VertexColor.x;
+	_n.append_attribute("VertexColorY") = this->_actor->meshrender->VertexColor.y;
+	_n.append_attribute("VertexColorZ") = this->_actor->meshrender->VertexColor.z;
+}
+void Meshrender::OpenFile(pugi::xml_node _node)
+{
+	if (_node == NULL || this->_actor->meshrender == NULL) return;
+	pugi::xml_node _n = _node.child("MeshRender");
+	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
+}
+
 void Meshrender::Draw(Shader _shader)
 {
-
 	///Shader Setting
 	{
 		_shader.use();
 		_shader.setVec3("viewPos", Window::_editorCamera.transform.position);
 		_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
-		
 		//Directional Light
 		for (int i = 0; i < 8; i++)
 		{
@@ -164,16 +178,13 @@ void Meshrender::Draw(Shader _shader)
 		model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 		_shader.setMat4("model", model);
 		_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
-
 		///shadow
 		glm::mat4 shadowProj, lightView;
 		glm::mat4 lightSpaceMatrix;
 		glm::vec3 lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->rotation : glm::vec3(0,0,0);
-
 		/*
 			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
 		*/
-
 		//lightPos.x = sin(glfwGetTime()) * 3.0f;
 		//lightPos.z = cos(glfwGetTime()) * 2.0f;
 		//lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;
@@ -268,55 +279,57 @@ void Meshrender::Draw(Shader _shader)
 		}
 	}*/
 }
-void Meshrender::CreateCube(RenderMode _m)
+
+void Meshrender::CreateShape(Shape _shape)
 {
+	this->_shape = _shape;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	if (_m == RMode3D)
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(CubeVertices), CubeVertices, GL_STATIC_DRAW);
-	}
-	else
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(PlaneVertices), PlaneVertices, GL_STATIC_DRAW);
-	}
-	glBindVertexArray(VAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	//if (_m == RMode3D)
+	//{
 
+	//}
+	glBindVertexArray(VAO);
+	switch (_shape)
+	{
+	case Plane:
+		break;
+	case Cube:
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(CubeVertices), CubeVertices, GL_STATIC_DRAW);
+		break;
+	case Sphere:
+		break;
+	case Capsule:
+		break;
+	case Cylinder:
+		break;
+	case Line:
+		break;
+	case Pivot:
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		// color attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(PIVOTVERTICES), PIVOTVERTICES, GL_STATIC_DRAW);
+		break;
+	default:
+		break;
+	}
 	glBindVertexArray(0);
+
 	Texture = LoadTexture("Texture\\White.png");
 	SceneManager::vec_ShaderProgram[1].use();
-	SceneManager::vec_ShaderProgram[1].setInt("material.diffuse",0);
-	//Debug Mode
-
-	if (_m == RMode3D)
-	{
-		for (int i = 0; i < sizeof(CubeVertices) / sizeof(CubeVertices[0]); i = i + 8)
-		{
-			Vectices_Debug.push_back(glm::vec3(CubeVertices[i], CubeVertices[i + 1], CubeVertices[i + 2]));
-		}
-	}
-	else
-	{
-		for (int i = 0; i < sizeof(PlaneVertices) / sizeof(PlaneVertices[0]); i = i + 8)
-		{
-			Vectices_Debug.push_back(glm::vec3(PlaneVertices[i], PlaneVertices[i + 1], PlaneVertices[i + 2]));
-		}
-	}
-
+	SceneManager::vec_ShaderProgram[1].setInt("material.diffuse", 0);
 	Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
-
-
-
-
 }
-
 unsigned int Meshrender::LoadTexture(const char* path)
 {
 	unsigned int  _texture;
@@ -354,94 +367,56 @@ int Collision_flag=0;
 #include <World.h>
 void Meshrender::CreateMouseCollision()
 {
-	btVector3 localInertia(0, 0, 0);
-	//create a dynamic rigidbody
-	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
-	btScalar mass(0);
-	World::collisionShapes.push_back(colShape);
-	/// Create Dynamic Objects
-	btTransform startTransform;
-	startTransform.setIdentity();
-	btQuaternion quat;
-	//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
-	quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
-	startTransform.setRotation(quat);
-
-	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.f);
-	if (isDynamic)
-		colShape->calculateLocalInertia(mass, localInertia);
-	startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-	
-	body = new btRigidBody(rbInfo);
-	body->setCenterOfMassTransform(startTransform);
-
-	Collision_flag =  _needdebug ? body->getCollisionFlags() : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-	body->setCollisionFlags(Collision_flag);
-	
-	int _group = 1;
-	int _mask = 1;
-
-	World::dynamicsWorld->addRigidBody(body, _group,_mask);
-	//World::dynamicsWorld->updateSingleAabb(body);
-
-
-
-}
-void Meshrender::CreateShape(Shape _shape)
-{
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//if (_m == RMode3D)
-	//{
-		
-	//}
-	glBindVertexArray(VAO);
-	switch (_shape)
+	if (_shape==Pivot)
 	{
-	case Plane:
-		break;
-	case Cube:
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(CubeVertices), CubeVertices, GL_STATIC_DRAW);
-		break;
-	case Sphere:
-		break;
-	case Capsule:
-		break;
-	case Cylinder:
-		break;
-	case Line:
-		break;
-	case Pivot:
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		// color attribute
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(PIVOTVERTICES), PIVOTVERTICES, GL_STATIC_DRAW);
-		break;
-	default:
-		break;
+		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
+		startTransform[0].setOrigin(btVector3(this->_actor->transform->position.x+0.5f, this->_actor->transform->position.y, this->_actor->transform->position.z));
+		startTransform[1].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y+0.5f, this->_actor->transform->position.z));
+		startTransform[2].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z+0.5f));
+		btQuaternion quat[3];
+		quat[0].setEulerZYX(glm::radians(90.0f), 0, 0); quat[1].setEulerZYX(0, glm::radians(90.0f), 0); quat[2].setEulerZYX(0, 0, glm::radians(90.0f));
+		for (int i = 0; i < 3; i++)
+		{
+			btVector3 localInertia(0, 0, 0);
+			//create a dynamic rigidbody
+			btCollisionShape* colShape = new btCapsuleShape(0.08f, 0.55f);
+			btScalar mass(0);
+			World::collisionShapes.push_back(colShape);
+			/// Create Dynamic Objects
+			//btTransform startTransform;
+			//startTransform.setIdentity();
+			//startTransform.setOrigin(btVector3(this->_actor->transform->position.x+(i % 3+1), this->_actor->transform->position.y*(i % 3), this->_actor->transform->position.z*(i % 3 - 1)));
+			//btQuaternion quat;
+			//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+			//quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z*(i%3-1)), glm::radians(-this->_actor->transform->rotation.y*(i % 3)), glm::radians(this->_actor->transform->rotation.x*(i % 3 + 1)));
+			startTransform[i].setRotation(quat[i]);
+
+			//rigidbody is dynamic if and only if mass is non zero, otherwise static
+			bool isDynamic = (mass != 0.f);
+			if (isDynamic)
+				colShape->calculateLocalInertia(mass, localInertia);
+			//startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+			//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform[i]);
+			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+
+			body[i] = new btRigidBody(rbInfo);
+			body[i]->setCenterOfMassTransform(startTransform[i]);
+			body[i]->_actor = this->_actor;
+			//int f = body->getCollisionFlags();
+			//body->setCollisionFlags(f | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+
+			int _group = 1;
+			int _mask = 1;
+
+			World::dynamicsWorld->addRigidBody(body[i], _group, _mask);
+		}
 	}
-	glBindVertexArray(0);
-}
-void Meshrender::CreatePivotVollision()
-{
-	for (int i = 0; i < 3; i++)
+	else
 	{
 		btVector3 localInertia(0, 0, 0);
 		//create a dynamic rigidbody
-		btCollisionShape* colShape = new btCapsuleShape(2,1);
+		btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
 		btScalar mass(0);
 		World::collisionShapes.push_back(colShape);
 		/// Create Dynamic Objects
@@ -449,7 +424,7 @@ void Meshrender::CreatePivotVollision()
 		startTransform.setIdentity();
 		btQuaternion quat;
 		//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
-		quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z*(i%3-1)), glm::radians(-this->_actor->transform->rotation.y*(i % 3)), glm::radians(this->_actor->transform->rotation.x*(i % 3 + 1)));
+		quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
 		startTransform.setRotation(quat);
 
 		//rigidbody is dynamic if and only if mass is non zero, otherwise static
@@ -461,90 +436,29 @@ void Meshrender::CreatePivotVollision()
 		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
-		body = new btRigidBody(rbInfo);
-		body->setCenterOfMassTransform(startTransform);
+		body[0] = new btRigidBody(rbInfo);
+		body[0]->setCenterOfMassTransform(startTransform);
 
-		//int f = body->getCollisionFlags();
-		//body->setCollisionFlags(f | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+		Collision_flag = _needdebug ? body[0]->getCollisionFlags() : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+		body[0]->setCollisionFlags(Collision_flag);
 
 		int _group = 1;
 		int _mask = 1;
 
-		World::dynamicsWorld->addRigidBody(body, _group, _mask);
+		World::dynamicsWorld->addRigidBody(body[0], _group, _mask);
+		body[0]->_actor = this->_actor;
+		//World::dynamicsWorld->updateSingleAabb(body);
 	}
 }
-void Meshrender::SaveFile(pugi::xml_node _node)
-{
-	if (_node == NULL|| this->_actor->meshrender==NULL) return;
-	_node.append_attribute("meshrender") = 1;
-	pugi::xml_node _n = _node.append_child("MeshRender");
-	_n.append_attribute("VertexColorX") = this->_actor->meshrender->VertexColor.x;
-	_n.append_attribute("VertexColorY") = this->_actor->meshrender->VertexColor.y;
-	_n.append_attribute("VertexColorZ") = this->_actor->meshrender->VertexColor.z;
-}
-void Meshrender::OpenFile(pugi::xml_node _node)
-{
-	if (_node == NULL || this->_actor->meshrender == NULL) return;
-	pugi::xml_node _n = _node.child("MeshRender");
-	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
-}
+
+
+
 void Meshrender::UpdateCollision()
 {
-	World::dynamicsWorld->removeCollisionObject(this->body);
-	/*Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-	body->setCollisionFlags(Collision_flag);
-	btTransform transform;
-	transform.setIdentity();
-	btVector3 _pos(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z);
-	transform.setOrigin(_pos);
-	btQuaternion _rot;
-	_rot.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
-	transform.setRotation(_rot);
-	this->body->setCollisionFlags(_needdebug ? Collision_flag : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
-	this->body->setWorldTransform(transform);
-	//this->body->getMotionState()->setWorldTransform(transform);
-
-	this->body->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
-	this->body->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
-	this->body->clearForces();*/
+	World::dynamicsWorld->removeCollisionObject(body[0]);
+	if (_shape == Pivot)
+	{
+		World::dynamicsWorld->removeCollisionObject(body[1]); World::dynamicsWorld->removeCollisionObject(body[2]);
+	}
 	CreateMouseCollision();
-	
-}
-
-void Meshrender::CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color)
-{
-	this->_shape = Line;
-	// Vertex data
-	GLfloat points[12];
-
-	points[0] = from.x;
-	points[1] = from.y;
-	points[2] = from.z;
-	points[3] = color.x;
-	points[4] = color.y;
-	points[5] = color.z;
-
-	points[6] = to.x;
-	points[7] = to.y;
-	points[8] = to.z;
-	points[9] = color.x;
-	points[10] = color.y;
-	points[11] = color.z;
-
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glBindVertexArray(0);
-
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_LINES, 0, 2);
-	glBindVertexArray(0);
 }
