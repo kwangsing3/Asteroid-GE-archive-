@@ -187,7 +187,10 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
 
 				ImGui::ColorEdit4("Diffuse", (float*)&_sel->_actor->meshrender->VertexColor);
-
+				if (ImGui::Checkbox("Debug", &_sel->_actor->meshrender->_needdebug))
+				{
+					_sel->_actor->meshrender->UpdateCollision();
+				}
 
 			}
 		}

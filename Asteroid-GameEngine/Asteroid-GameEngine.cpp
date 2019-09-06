@@ -14,8 +14,8 @@
 #include <model.h>     //導入模型
 #include <SceneManager.h>
 #include <World.h>
-#include <GLDebugDrawer.h>
-#include<Raycast.h>
+#include <GraphicEngine/GLDebugDrawer.h>
+#include <Raycast.h>
 //#include<ADD_Component.h>
 #include "btBulletDynamicsCommon.h"
 
@@ -103,13 +103,7 @@ int main()
 
 
 
-	/*    Axis的資料
-	float coordinate[] = {
-		-5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f, -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,  -5.0f,0.0f,0.0f,   5.0f,0.0f,0.0f,// left
-		-5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f, -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,  -5.0f,0.0f,-5.0f,   5.0f,0.0f,-5.0f,// right
-		-5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f, -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f,  -5.0f,0.0f,5.0f,   5.0f,0.0f,5.0f  // top
-	};
-	*/
+	
 	unsigned int AxisVAO, AxisVBO;
 	//  座標的點數資料
 	float coordinate[] = {
@@ -183,7 +177,7 @@ int main()
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
 
-
+	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 
 	while (!Window::WindowShouldClose)
 	{
@@ -231,7 +225,7 @@ int main()
 
 		// 正在解決MSAA 抗鋸齒  想辦法把抗鋸齒用到幀緩衝上
 
-
+		
 		glDisable(GL_DEPTH_TEST);
 		//UI----------------------------------------------------------------------------------------------------------------------
 

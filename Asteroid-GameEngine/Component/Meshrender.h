@@ -15,7 +15,7 @@
 #include "btBulletDynamicsCommon.h"
 class Shader;
 
-enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder,Line};
+enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, Pivot};
 enum RenderMode { RMode2D, RMode3D };
 
 class Meshrender :public Component
@@ -30,8 +30,9 @@ public:
 	unsigned int VBO, VAO;
 	unsigned int Texture;
 	void Draw(Shader _shader);
+	bool _needdebug = false;
 	
-	
+
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
@@ -61,6 +62,18 @@ public:
 		//  滑鼠判定的碰撞體
 		//CreateMouseCollision();
 	}
+	Meshrender(Actor* _a, Shape _shape)
+	{
+		_actor = _a;
+		this->_mode = RenderMode(1);
+		this->enabled = true;
+		this->CreateShape(_shape);
+		this->VertexColor = glm::vec3(1, 1, 1);
+		CreatePivotVollision();
+		//transform->name = (char*)"Cube";
+		//  滑鼠判定的碰撞體
+		//CreateMouseCollision();
+	}
 	
 	void SaveFile(pugi::xml_node _node) override;
 	void OpenFile(pugi::xml_node _node) override;
@@ -72,6 +85,8 @@ private:
 	void CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color);
 	unsigned int LoadTexture(const char* path);
 	void CreateMouseCollision();
+	void CreateShape(Shape _shape);
+	void CreatePivotVollision();
 };
 
 #endif //MESHRENDER_H

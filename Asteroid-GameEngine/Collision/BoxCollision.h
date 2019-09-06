@@ -22,15 +22,15 @@ public:
 	int _Mask;
 	int _Group;
 	btRigidBody* body;   //因為需要跨function用到 所以另外拉出來宣告
-	bool _needdebug;
+	bool _needdebug = false;
 	BoxCollision(Actor* _a)
 	{
-		_needdebug = true;
+		
 		_actor = _a;
 		this->enabled = true;
 		//_Color = { 0,1,0,1 };  //Green
 		//phy_order = -1;
-		_Mass = 0.0f;
+		_Mass = 1.0f;
 		_Mask = _Group = 2;
 		this->CreateBox();
 	}

@@ -239,7 +239,7 @@
     <ClInclude Include="Component\Meshrender.h" />
     <ClInclude Include="Component\PointLight.h" />
     <ClInclude Include="Component\Transform.h" />
-    <ClInclude Include="GLDebugDrawer.h" />
+    <ClInclude Include="GraphicEngine\GLDebugDrawer.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />
     <ClInclude Include="GraphicEngine\imgui_impl_glfw.h" />
@@ -252,6 +252,7 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="Physics Engine\clew\clew.h" />
+    <ClInclude Include="Pivot.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="shader_m.h" />

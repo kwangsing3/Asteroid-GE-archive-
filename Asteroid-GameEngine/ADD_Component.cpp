@@ -25,11 +25,12 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor)
 	return _mesh;
 }
 
-Meshrender * ADD_Component::Add_Line(Actor* _actor, glm::vec3 from, glm::vec3 to)
+Meshrender * ADD_Component::Add_Pivot(Actor* _actor)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
-	Meshrender* _mesh = new Meshrender(_actor,from,to);
+	Meshrender* _mesh = new Meshrender(_actor,Pivot);
 	_actor->meshrender = _mesh;
+	_mesh->_shape = Pivot;
 	SceneManager::vec_ObjectsToRender.push_back(_mesh);
 	//_ac->transform->name = (char*)"Cube";
 	return _mesh;

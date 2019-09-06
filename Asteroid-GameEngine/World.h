@@ -1,11 +1,20 @@
 ﻿#ifndef WORLD_H
 #define WORLD_H
-
+#pragma once
 #include "btBulletDynamicsCommon.h"
 #include <SceneManager.h>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <glm/gtx/euler_angles.hpp>
+
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <Math/Math.h>
 #include <Window.h>
+// 為了方便釐清， 先做新的Class 來當作Pivot
+
+
 class World
 {
 public:
@@ -19,6 +28,8 @@ public:
 	unsigned int depthCubemap;
 	static btAlignedObjectArray<btCollisionShape*> collisionShapes;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	
+	
 	World()
 	{
 		//Bullet Physics creation
@@ -32,7 +43,7 @@ public:
 		this->dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
 		_PlayMode = false;
 		// Shadow buffer
-
+		//_pivot = new Pivot();
 		 // configure depth map FBO
 	// -----------------------
 		//const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
@@ -100,7 +111,7 @@ public:
 				}
 			}
 		}
-		this->dynamicsWorld->debugDrawWorld();
+		
 		//glCullFace(GL_FRONT);
 		///Shadw
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -115,13 +126,18 @@ public:
 		// Draw Pipeline
 		glViewport(0, 0, Window::_Width, Window::_Height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		
+
+		this->dynamicsWorld->debugDrawWorld();
 
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[1]);
+			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==Pivot?0:1]); // 這是暫時的  記得要改 非常難看  而且非常難懂
 		}
+		
 		
 		//this->dynamicsWorld->debugDrawWorld();
 	}
@@ -130,7 +146,8 @@ public:
 
 };
 
-//  應該要整理個function來位移   以後要是要移動的話就靠那個fun移動
+
+
 
 #endif // !WORLD_H
 

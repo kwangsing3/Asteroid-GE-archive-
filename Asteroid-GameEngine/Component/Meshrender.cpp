@@ -71,7 +71,26 @@ float PlaneVertices[] = {
 			-0.5f,  0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
 			-0.5f, -0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 };
-
+float PIVOTVERTICES[] = {
+		0.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
+		0.8f,0.1f,0.0f,   1.0f,0.0f,0.0f,
+		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
+		0.8f,-0.1f,0.0f,  1.0f,0.0f,0.0f,// X-Axis
+		0.0f,0.0f,0.0f,   0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,   0.0f,1.0f,0.0f,
+		0.0f,1.0f,0.0f,   0.0f,1.0f,0.0f,
+		0.1f,0.8f,0.0f,   0.0f,1.0f,0.0f,
+		0.0f,0.1f,0.0f,   0.0f,1.0f,0.0f,
+		-0.1f,0.8f,0.0f,  0.0f,1.0f,0.0f,// Y-Axis
+		0.0f,0.0f,0.0f,   0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
+		0.1f,0.0f,0.8f,   0.0f,0.0f,1.0f,
+		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
+		-0.1f,0.0f,0.8f,  0.0f,0.0f,1.0f,// Z-Axis
+};
 void Meshrender::Draw(Shader _shader)
 {
 
@@ -152,7 +171,7 @@ void Meshrender::Draw(Shader _shader)
 		glm::vec3 lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->rotation : glm::vec3(0,0,0);
 
 		/*
-			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要0.3f
+			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
 		*/
 
 		//lightPos.x = sin(glfwGetTime()) * 3.0f;
@@ -190,7 +209,9 @@ void Meshrender::Draw(Shader _shader)
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->Texture);
-	glDrawArrays(this->_shape==Line? GL_LINES:GL_TRIANGLES, 0, this->_mode == Mode_3D?36:6);
+
+	glDrawArrays(this->_shape==Pivot? GL_LINES:GL_TRIANGLES, 0,  36);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Debug Popline
@@ -328,7 +349,7 @@ unsigned int Meshrender::LoadTexture(const char* path)
 	return _texture;
 }
 
-
+int Collision_flag=0;
 //  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.h>
 void Meshrender::CreateMouseCollision()
@@ -358,8 +379,8 @@ void Meshrender::CreateMouseCollision()
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
 
-	int f = body->getCollisionFlags();
-	body->setCollisionFlags(f | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+	Collision_flag =  _needdebug ? body->getCollisionFlags() : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	body->setCollisionFlags(Collision_flag);
 	
 	int _group = 1;
 	int _mask = 1;
@@ -369,6 +390,88 @@ void Meshrender::CreateMouseCollision()
 
 
 
+}
+void Meshrender::CreateShape(Shape _shape)
+{
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//if (_m == RMode3D)
+	//{
+		
+	//}
+	glBindVertexArray(VAO);
+	switch (_shape)
+	{
+	case Plane:
+		break;
+	case Cube:
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(CubeVertices), CubeVertices, GL_STATIC_DRAW);
+		break;
+	case Sphere:
+		break;
+	case Capsule:
+		break;
+	case Cylinder:
+		break;
+	case Line:
+		break;
+	case Pivot:
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		// color attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(PIVOTVERTICES), PIVOTVERTICES, GL_STATIC_DRAW);
+		break;
+	default:
+		break;
+	}
+	glBindVertexArray(0);
+}
+void Meshrender::CreatePivotVollision()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		btVector3 localInertia(0, 0, 0);
+		//create a dynamic rigidbody
+		btCollisionShape* colShape = new btCapsuleShape(2,1);
+		btScalar mass(0);
+		World::collisionShapes.push_back(colShape);
+		/// Create Dynamic Objects
+		btTransform startTransform;
+		startTransform.setIdentity();
+		btQuaternion quat;
+		//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+		quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z*(i%3-1)), glm::radians(-this->_actor->transform->rotation.y*(i % 3)), glm::radians(this->_actor->transform->rotation.x*(i % 3 + 1)));
+		startTransform.setRotation(quat);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+		if (isDynamic)
+			colShape->calculateLocalInertia(mass, localInertia);
+		startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+
+		body = new btRigidBody(rbInfo);
+		body->setCenterOfMassTransform(startTransform);
+
+		//int f = body->getCollisionFlags();
+		//body->setCollisionFlags(f | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+
+		int _group = 1;
+		int _mask = 1;
+
+		World::dynamicsWorld->addRigidBody(body, _group, _mask);
+	}
 }
 void Meshrender::SaveFile(pugi::xml_node _node)
 {
@@ -388,7 +491,24 @@ void Meshrender::OpenFile(pugi::xml_node _node)
 void Meshrender::UpdateCollision()
 {
 	World::dynamicsWorld->removeCollisionObject(this->body);
+	/*Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	body->setCollisionFlags(Collision_flag);
+	btTransform transform;
+	transform.setIdentity();
+	btVector3 _pos(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z);
+	transform.setOrigin(_pos);
+	btQuaternion _rot;
+	_rot.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
+	transform.setRotation(_rot);
+	this->body->setCollisionFlags(_needdebug ? Collision_flag : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+	this->body->setWorldTransform(transform);
+	//this->body->getMotionState()->setWorldTransform(transform);
+
+	this->body->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+	this->body->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
+	this->body->clearForces();*/
 	CreateMouseCollision();
+	
 }
 
 void Meshrender::CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color)

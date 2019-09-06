@@ -85,7 +85,8 @@ void SceneManager::SaveFile()
 	pugi::xml_node root = doc.append_child("Scene");
 	//給節點增加屬性，並賦值
 	root.append_attribute("name") = "test";
-
+	pugi::xml_node _cur = root.append_child("EditCamera");
+	
 
 	int component_size = 0;
 	for (int i = 0; i < Objects.size(); i++)

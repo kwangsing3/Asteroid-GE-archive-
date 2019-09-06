@@ -21,6 +21,7 @@ void BoxCollision::OpenFile(pugi::xml_node _node)
 
 }
 
+int Collision_flags = 0;
 
 void BoxCollision::CreateBox()
 {
@@ -51,8 +52,9 @@ void BoxCollision::CreateBox()
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
-	int f = body->getCollisionFlags();
-	body->setCollisionFlags(f | _needdebug ? NULL: btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+
+	Collision_flags = body->getCollisionFlags();
+	body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 	body->setCustomDebugColor(btVector3(1,1,1));
 
 	World::dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
@@ -66,19 +68,21 @@ void BoxCollision::CreateBox()
 
 void BoxCollision::UpdateCollision()
 {
-	btTransform transform;
+	World::dynamicsWorld->removeCollisionObject(this->body);
+	/*btTransform transform;
 	transform.setIdentity();
 	btVector3 _pos(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z);
 	transform.setOrigin(_pos);
-	btQuaternion _rot(glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));
+	btQuaternion _rot;
+	_rot.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
 	transform.setRotation(_rot);
-
+	this->body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 	this->body->setWorldTransform(transform);
-	this->body->getMotionState()->setWorldTransform(transform);
+	//this->body->getMotionState()->setWorldTransform(transform);
 
 	this->body->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 	this->body->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
-	this->body->clearForces();
+	this->body->clearForces();*/
 	this->UpdateState();
 }
 

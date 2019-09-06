@@ -13,7 +13,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include <SceneManager.h>
 #include <LinearMath/btIDebugDraw.h>
 
 // Helper class; draws the world as seen by Bullet.
@@ -32,6 +32,9 @@ public:
 
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
+		SceneManager::vec_ShaderProgram[0].use();
+		glm::vec3 model(1.0f);
+		SceneManager::vec_ShaderProgram[0].setVec3("model", model);
 		// Vertex data
 		GLfloat points[12];
 

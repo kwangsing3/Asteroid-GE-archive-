@@ -10,7 +10,7 @@ class ADD_Component
 public:
 	static Actor* Add_Actor();
 	static Meshrender* Add_Meshrender(Actor* _actor = nullptr);
-	static Meshrender* Add_Line(Actor * _actor, glm::vec3 from, glm::vec3 to);
+	static Meshrender* Add_Pivot(Actor* _actor = nullptr);
 	static DirectionalLight* Add_DirectionalLight(Actor* _actor = nullptr);
 	static PointLight* Add_PointLight(Actor* _actor = nullptr);
 
