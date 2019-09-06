@@ -14,7 +14,7 @@
 class btRigidBody;
 
 class Shader;
-enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, Pivot};
+enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, NONE};
 enum RenderMode { RMode2D, RMode3D };
 
 class Meshrender :public Component
@@ -27,14 +27,14 @@ public:
 	//---------------------------------
 	unsigned int VBO, VAO;
 	unsigned int Texture;
-	void Draw(Shader _shader);
+	virtual void Draw(Shader _shader);
 	bool _needdebug = false;
 	
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
-	btRigidBody* body[3];
-
+	btRigidBody* body;
+	Meshrender() { std::cout<<"error: it couldn't be add without constructors "; }
 	Meshrender(Actor* _a, Shape _shape)
 	{
 		_actor = _a;
@@ -42,14 +42,15 @@ public:
 		this->enabled = true;
 		this->CreateShape(_shape);
 		this->VertexColor = glm::vec3(1, 1, 1);
-		CreateMouseCollision();
+		if(_shape!=NONE)
+			CreateMouseCollision();
 		//transform->name = (char*)"Cube";
 		//  滑鼠判定的碰撞體
 		//CreateMouseCollision();
 	}
 	void SaveFile(pugi::xml_node _node) override;
 	void OpenFile(pugi::xml_node _node) override;
-	void UpdateCollision();
+	virtual void UpdateCollision();
 
 private:
 	//void CreateCube(RenderMode _m);

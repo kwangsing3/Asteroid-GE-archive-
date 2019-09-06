@@ -307,9 +307,6 @@
     <ClInclude Include="Math\Math.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Pivot.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicEngine\GLDebugDrawer.h">
       <Filter>標頭檔</Filter>
     </ClInclude>

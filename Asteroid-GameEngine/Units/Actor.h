@@ -17,7 +17,7 @@ public:
 	Meshrender* meshrender;
 	BoxCollision* boxcollision;
 	bool enabled;
-	void translate(glm::vec3 position);
+	
 	void removeActor();
 	//bool IsSelected;
 

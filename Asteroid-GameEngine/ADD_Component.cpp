@@ -8,6 +8,20 @@
 #include <SceneManager.h>
 
 
+
+//------------------------------------------------------------Pivot------------------------------------------------------------
+#include <Window.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <btBulletCollisionCommon.h>
+#include <World.h>
+
+//------------------------------------------------------------Pivot------------------------------------------------------------
+
+
 Actor * ADD_Component::Add_Actor()
 {
 	Actor* _Actor = new Actor();
@@ -15,10 +29,10 @@ Actor * ADD_Component::Add_Actor()
 	return _Actor;
 }
 
-Meshrender* ADD_Component::Add_Meshrender(Actor* _actor)
+Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
-	Meshrender* _mesh = new Meshrender(_actor,Cube);
+	Meshrender* _mesh = new Meshrender(_actor, _sha);
 	_actor->meshrender = _mesh;
 	SceneManager::vec_ObjectsToRender.push_back(_mesh);
 	//_ac->transform->name = (char*)"Cube";
@@ -28,10 +42,10 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor)
 Meshrender * ADD_Component::Add_Pivot(Actor* _actor)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
-	Meshrender* _mesh = new Meshrender(_actor,Pivot);
-	_actor->meshrender = _mesh;
-	_mesh->_shape = Pivot;
-	SceneManager::vec_ObjectsToRender.push_back(_mesh);
+	Meshrender* _mesh = new Meshrender(_actor, Cube);
+	//_actor->meshrender = _mesh;
+	
+	//SceneManager::vec_ObjectsToRender.push_back(_mesh);
 	//_ac->transform->name = (char*)"Cube";
 	return _mesh;
 }
@@ -64,10 +78,6 @@ BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor)
 	
 	return _box;
 }
-
-
-
-
 
 
 

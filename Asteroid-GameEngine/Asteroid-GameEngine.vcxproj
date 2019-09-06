@@ -252,7 +252,6 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="Physics Engine\clew\clew.h" />
-    <ClInclude Include="Pivot.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="shader_m.h" />

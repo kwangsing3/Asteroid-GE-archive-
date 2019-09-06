@@ -71,26 +71,7 @@ float PlaneVertices[] = {
 			-0.5f,  0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
 			-0.5f, -0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 };
-float PIVOTVERTICES[] = {
-		0.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
-		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
-		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
-		0.8f,0.1f,0.0f,   1.0f,0.0f,0.0f,
-		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
-		0.8f,-0.1f,0.0f,  1.0f,0.0f,0.0f,// X-Axis
-		0.0f,0.0f,0.0f,   0.0f,1.0f,0.0f,
-		0.0f,1.0f,0.0f,   0.0f,1.0f,0.0f,
-		0.0f,1.0f,0.0f,   0.0f,1.0f,0.0f,
-		0.1f,0.8f,0.0f,   0.0f,1.0f,0.0f,
-		0.0f,0.1f,0.0f,   0.0f,1.0f,0.0f,
-		-0.1f,0.8f,0.0f,  0.0f,1.0f,0.0f,// Y-Axis
-		0.0f,0.0f,0.0f,   0.0f,0.0f,1.0f,
-		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
-		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
-		0.1f,0.0f,0.8f,   0.0f,0.0f,1.0f,
-		0.0f,0.0f,1.0f,   0.0f,0.0f,1.0f,
-		-0.1f,0.0f,0.8f,  0.0f,0.0f,1.0f,// Z-Axis
-};
+
 void Meshrender::SaveFile(pugi::xml_node _node)
 {
 	if (_node == NULL || this->_actor->meshrender == NULL) return;
@@ -221,7 +202,7 @@ void Meshrender::Draw(Shader _shader)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->Texture);
 
-	glDrawArrays(this->_shape==Pivot? GL_LINES:GL_TRIANGLES, 0,  36);
+	glDrawArrays(GL_TRIANGLES, 0,  36);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -312,14 +293,7 @@ void Meshrender::CreateShape(Shape _shape)
 		break;
 	case Line:
 		break;
-	case Pivot:
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		// color attribute
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(PIVOTVERTICES), PIVOTVERTICES, GL_STATIC_DRAW);
-		break;
+	
 	default:
 		break;
 	}
@@ -367,98 +341,47 @@ int Collision_flag=0;
 #include <World.h>
 void Meshrender::CreateMouseCollision()
 {
-	if (_shape==Pivot)
-	{
-		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
-		startTransform[0].setOrigin(btVector3(this->_actor->transform->position.x+0.5f, this->_actor->transform->position.y, this->_actor->transform->position.z));
-		startTransform[1].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y+0.5f, this->_actor->transform->position.z));
-		startTransform[2].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z+0.5f));
-		btQuaternion quat[3];
-		quat[0].setEulerZYX(glm::radians(90.0f), 0, 0); quat[1].setEulerZYX(0, glm::radians(90.0f), 0); quat[2].setEulerZYX(0, 0, glm::radians(90.0f));
-		for (int i = 0; i < 3; i++)
-		{
-			btVector3 localInertia(0, 0, 0);
-			//create a dynamic rigidbody
-			btCollisionShape* colShape = new btCapsuleShape(0.08f, 0.55f);
-			btScalar mass(0);
-			World::collisionShapes.push_back(colShape);
-			/// Create Dynamic Objects
-			//btTransform startTransform;
-			//startTransform.setIdentity();
-			//startTransform.setOrigin(btVector3(this->_actor->transform->position.x+(i % 3+1), this->_actor->transform->position.y*(i % 3), this->_actor->transform->position.z*(i % 3 - 1)));
-			//btQuaternion quat;
-			//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
-			//quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z*(i%3-1)), glm::radians(-this->_actor->transform->rotation.y*(i % 3)), glm::radians(this->_actor->transform->rotation.x*(i % 3 + 1)));
-			startTransform[i].setRotation(quat[i]);
+	btVector3 localInertia(0, 0, 0);
+	//create a dynamic rigidbody
+	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
+	btScalar mass(0);
+	World::collisionShapes.push_back(colShape);
+	/// Create Dynamic Objects
+	btTransform startTransform;
+	startTransform.setIdentity();
+	btQuaternion quat;
+	//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+	quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
+	startTransform.setRotation(quat);
 
-			//rigidbody is dynamic if and only if mass is non zero, otherwise static
-			bool isDynamic = (mass != 0.f);
-			if (isDynamic)
-				colShape->calculateLocalInertia(mass, localInertia);
-			//startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-			//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform[i]);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+	if (isDynamic)
+		colShape->calculateLocalInertia(mass, localInertia);
+	startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
-			body[i] = new btRigidBody(rbInfo);
-			body[i]->setCenterOfMassTransform(startTransform[i]);
-			body[i]->_actor = this->_actor;
-			//int f = body->getCollisionFlags();
-			//body->setCollisionFlags(f | btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+	body = new btRigidBody(rbInfo);
+	body->setCenterOfMassTransform(startTransform);
 
-			int _group = 1;
-			int _mask = 1;
+	Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	body->setCollisionFlags(Collision_flag);
 
-			World::dynamicsWorld->addRigidBody(body[i], _group, _mask);
-		}
-	}
-	else
-	{
-		btVector3 localInertia(0, 0, 0);
-		//create a dynamic rigidbody
-		btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
-		btScalar mass(0);
-		World::collisionShapes.push_back(colShape);
-		/// Create Dynamic Objects
-		btTransform startTransform;
-		startTransform.setIdentity();
-		btQuaternion quat;
-		//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
-		quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
-		startTransform.setRotation(quat);
+	int _group = 1;
+	int _mask = 1;
 
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
-		if (isDynamic)
-			colShape->calculateLocalInertia(mass, localInertia);
-		startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-
-		body[0] = new btRigidBody(rbInfo);
-		body[0]->setCenterOfMassTransform(startTransform);
-
-		Collision_flag = _needdebug ? body[0]->getCollisionFlags() : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-		body[0]->setCollisionFlags(Collision_flag);
-
-		int _group = 1;
-		int _mask = 1;
-
-		World::dynamicsWorld->addRigidBody(body[0], _group, _mask);
-		body[0]->_actor = this->_actor;
-		//World::dynamicsWorld->updateSingleAabb(body);
-	}
+	World::dynamicsWorld->addRigidBody(body, _group, _mask);
+	body->_actor = this->_actor;
+	//World::dynamicsWorld->updateSingleAabb(body);
 }
 
 
 
 void Meshrender::UpdateCollision()
 {
-	World::dynamicsWorld->removeCollisionObject(body[0]);
-	if (_shape == Pivot)
-	{
-		World::dynamicsWorld->removeCollisionObject(body[1]); World::dynamicsWorld->removeCollisionObject(body[2]);
-	}
+	if (body == NULL) return;
+	World::dynamicsWorld->removeCollisionObject(body);
 	CreateMouseCollision();
 }

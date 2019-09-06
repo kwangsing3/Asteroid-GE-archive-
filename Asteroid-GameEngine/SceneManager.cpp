@@ -57,7 +57,7 @@ void SceneManager::OpenFile()
 		}
 		if (tool.attribute("meshrender").as_int())
 		{
-			ADD_Component::Add_Meshrender(_Actor)->OpenFile(tool);
+			ADD_Component::Add_Meshrender(_Actor,Cube)->OpenFile(tool);
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
@@ -136,5 +136,5 @@ void SceneManager::NewScene()
 
 	Objects.clear();
 	World::dynamicsWorld->getCollisionObjectArray().clear();
-	ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
+	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 }

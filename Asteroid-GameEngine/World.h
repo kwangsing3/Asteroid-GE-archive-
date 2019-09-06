@@ -135,7 +135,7 @@ public:
 		{
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==Pivot?0:1]); // 這是暫時的  記得要改 非常難看  而且非常難懂
+			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==NONE?0:1]); // 這是暫時的  記得要改 非常難看  而且非常難懂
 		}
 		
 		

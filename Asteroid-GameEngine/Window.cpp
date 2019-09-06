@@ -300,7 +300,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			if (ImGui::Button("新增一個方塊物件"))
 			{
 				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac);
+				ADD_Component::Add_Meshrender(_ac,Cube);
 				_ac->transform->name = (char*) "New Cube";
 			}
 
@@ -456,7 +456,7 @@ static void MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Add Component"))
 		{
-			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject->_actor); }
+			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject->_actor,Cube); }
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_DirectionalLight(WindowUI::cur_SelectObject->_actor); }
