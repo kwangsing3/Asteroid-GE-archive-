@@ -33,7 +33,8 @@ static void ShowSimpleOverlay(bool* p_open);
 bool WindowUI::show_simple_overlay = false;
 static SelectObject * _headSelectObject = new SelectObject();
 static SelectObject *_cSelectObject = _headSelectObject;
-
+float WindowUI::UI_Left_X;
+float WindowUI::UI_Right_X;
 
 void Clear_ListBool()
 {
@@ -118,6 +119,7 @@ void WindowUI::SelectThisActor(Actor * _actor)
 	}
 	else
 	{
+		cur_SelectObject = NULL;
 		WindowUI::ListInspectorCur(NULL);
 	}
 }
@@ -126,6 +128,7 @@ void WindowUI::SelectThisObject(SelectObject * selectobject)
 	Clear_ListBool();
 	selectobject->Is_selected = !selectobject->Is_selected;
 	cur_SelectObject = selectobject;
+	if (World::_piv != NULL)World::_piv->AttachObject(selectobject->_actor);
 	static unsigned int AxisVAO, AxisVBO;
 	// Create Axis
 /*	float AxisVertices[] = {
@@ -144,7 +147,6 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 	{
 		if (_sel->_actor->transform != NULL && _sel->_actor->transform->enabled)
 		{
-
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
 			{
 
@@ -200,7 +202,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				ImGui::Checkbox("ADDingX", &_sel->_actor->meshrender->ADDingX);
 				ImGui::Checkbox("ADDingY", &_sel->_actor->meshrender->ADDingY);
 				ImGui::Checkbox("ADDingZ", &_sel->_actor->meshrender->ADDingZ);
-
+				ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable);
 			}
 		}
 		if (_sel->_actor->boxcollision != NULL && _sel->_actor->boxcollision->enabled)
@@ -279,7 +281,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			Please read the FAQ!     避免ID衝突
 			*/
 
-
+			UI_Left_X = ImGui::GetWindowWidth()+ ImGui::GetWindowPos().x;
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = ImGui::GetWindowHeight();
 			//delete [] array;
@@ -361,6 +363,8 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				return;
 			}
 			WindowUI::ListInspectorCur(WindowUI::cur_SelectObject);
+
+			UI_Right_X = ImGui::GetWindowPos().x;
 			//------------------------------------------------------------------------------------------------
 			ImGui::End();
 

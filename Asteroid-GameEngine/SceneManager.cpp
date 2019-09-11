@@ -85,7 +85,7 @@ void SceneManager::SaveFile()
 	pugi::xml_node root = doc.append_child("Scene");
 	//給節點增加屬性，並賦值
 	root.append_attribute("name") = "test";
-	pugi::xml_node _cur = root.append_child("EditCamera");
+
 	
 
 	int component_size = 0;
@@ -132,9 +132,17 @@ void SceneManager::NewScene()
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender.clear();
-
-
 	Objects.clear();
-	World::dynamicsWorld->getCollisionObjectArray().clear();
+
+	
+	for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
+	{
+		SceneManager::vec_ObjectsToRender[i]->DeleteCollisionShape(SceneManager::vec_ObjectsToRender[i]->body);
+	}
+	
+
+	
+	World::_piv = NULL;
+	World::_piv = new _Pivot(ADD_Component::Add_Actor());
 	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 }

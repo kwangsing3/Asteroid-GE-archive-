@@ -41,10 +41,12 @@ public:
 	static bool All_UIElement;
 	static Game_Mode _mode;
 
-
+	static float UI_Left_X;
+	static float UI_Right_X;
 	WindowUI()
 	{
-
+		UI_Left_X = 0;
+		UI_Right_X = 0;
 
 	}
 

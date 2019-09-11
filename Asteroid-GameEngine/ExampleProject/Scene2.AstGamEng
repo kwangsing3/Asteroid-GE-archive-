@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="6">
+<Scene name="test" Objects_Size="7">
+
+<Objects name="Actor" meshrender="1" Component_size="1">
+<Position x="-2.87000012" y="-1.28499985" z="1.55499983" />
+<Rotation x="51" y="71.5" z="36.4000015" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
 <Objects name="New Cube" meshrender="1" Component_size="1">
 <Position x="-4.4000001" y="-1.57000005" z="0" />
 <Rotation x="0" y="-3" z="0" />
@@ -7,7 +14,7 @@
 <MeshRender VertexColorX="0.22621192" VertexColorY="0.325304747" VertexColorZ="0.482300878" />
 </Objects>
 <Objects name="New Cube" meshrender="1" Component_size="1">
-<Position x="4.05000019" y="-1.58000004" z="0" />
+<Position x="-2.87000012" y="-1.28499985" z="1.55499983" />
 <Rotation x="51" y="71.5" z="36.4000015" />
 <Scale x="1" y="1" z="1" />
 <MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />

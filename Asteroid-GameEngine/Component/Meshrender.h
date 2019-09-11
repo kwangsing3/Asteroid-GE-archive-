@@ -30,9 +30,9 @@ public:
 	unsigned int Texture;
 	virtual void Draw(Shader _shader);
 	bool _needdebug = false;
-	bool ADDingX = false;
-	bool ADDingY = false;
-	bool ADDingZ = false;
+	bool ADDingX = false;     bool ADDingY = false;     bool ADDingZ = false;
+	bool _visable = true;
+	
 	RotateType _rotatetype = RotateType01;
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
@@ -56,14 +56,14 @@ public:
 	void OpenFile(pugi::xml_node _node) override;
 	void SwitchRotateType(RotateType _ro);
 	virtual void UpdateCollision();
-
+	void DeleteCollisionShape(btRigidBody* rigidBody);
 private:
 	//void CreateCube(RenderMode _m);
 	//void CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color);
 	unsigned int LoadTexture(const char* path);
 	void CreateMouseCollision();
 	void CreateShape(Shape _shape);
-
+	
 	//void CreatePivotVollision();
 };
 
