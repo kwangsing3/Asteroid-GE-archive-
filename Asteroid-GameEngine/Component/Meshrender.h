@@ -15,6 +15,7 @@ class btRigidBody;
 
 class Shader;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, NONE};
+enum RotateType { RotateType01, RotateType02, RotateType03, RotateType04, RotateType05, RotateType06, RotateType07, RotateType08};
 enum RenderMode { RMode2D, RMode3D };
 
 class Meshrender :public Component
@@ -29,7 +30,10 @@ public:
 	unsigned int Texture;
 	virtual void Draw(Shader _shader);
 	bool _needdebug = false;
-	
+	bool ADDingX = false;
+	bool ADDingY = false;
+	bool ADDingZ = false;
+	RotateType _rotatetype = RotateType01;
 	std::vector<glm::vec3> Vectices_Debug;        //相對座標       (基於Meshrender.cpp裡面的CubeVertices)
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
@@ -50,6 +54,7 @@ public:
 	}
 	void SaveFile(pugi::xml_node _node) override;
 	void OpenFile(pugi::xml_node _node) override;
+	void SwitchRotateType(RotateType _ro);
 	virtual void UpdateCollision();
 
 private:
@@ -58,6 +63,7 @@ private:
 	unsigned int LoadTexture(const char* path);
 	void CreateMouseCollision();
 	void CreateShape(Shape _shape);
+
 	//void CreatePivotVollision();
 };
 

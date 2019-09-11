@@ -111,7 +111,6 @@ public:
 				}
 			}
 		}
-		
 		//glCullFace(GL_FRONT);
 		///Shadw
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -125,20 +124,15 @@ public:
 		//glCullFace(GL_BACK);
 		// Draw Pipeline
 		glViewport(0, 0, Window::_Width, Window::_Height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		
-
 		this->dynamicsWorld->debugDrawWorld();
-
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==NONE?0:1]); // 這是暫時的  記得要改 非常難看  而且非常難懂
 		}
-		
-		
 		//this->dynamicsWorld->debugDrawWorld();
 	}
 

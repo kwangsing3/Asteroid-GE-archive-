@@ -12,7 +12,7 @@
 #include <SceneManager.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
-
+#include <Math/Math.h>
 #include "GraphicEngine/imgui.h"
 #include "GraphicEngine/imgui_impl_glfw.h"
 #include "GraphicEngine/imgui_impl_opengl3.h"
@@ -71,6 +71,7 @@ float PlaneVertices[] = {
 			-0.5f,  0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
 			-0.5f, -0.5f, -0.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 };
+int RenderVerticesLength = 0;
 
 void Meshrender::SaveFile(pugi::xml_node _node)
 {
@@ -87,6 +88,15 @@ void Meshrender::OpenFile(pugi::xml_node _node)
 	pugi::xml_node _n = _node.child("MeshRender");
 	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
 }
+
+void Meshrender::SwitchRotateType(RotateType _ro)
+{
+	this->_actor->transform->Translate(glm::vec3(0,0,0));
+	this->_actor->transform->Rotate(glm::vec3(0, 0, 0));
+	this->_actor->transform->Scale(glm::vec3(1, 1, 1));
+	this->_rotatetype = _ro;
+}
+
 
 void Meshrender::Draw(Shader _shader)
 {
@@ -144,18 +154,36 @@ void Meshrender::Draw(Shader _shader)
 			_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
 			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 		}
-		
 		glm::mat4 projection = Window::_editorCamera.Projection;
 		glm::mat4 view = Window::_editorCamera.GetViewMatrix();
 		_shader.setMat4("projection", projection);
 		_shader.setMat4("view", view);
 		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
+
+		if (ADDingX) this->_actor->transform->rotation.x += 0.5f;
+		if (ADDingY) this->_actor->transform->rotation.y += 0.5f;
+		if (ADDingZ) this->_actor->transform->rotation.z += 0.5f;
+
 		model = glm::translate(model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 		glm::quat MyQuaternion;
 		glm::vec3 EulerAngles(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
 		MyQuaternion = glm::quat(EulerAngles);
 		glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
+			
+
 		model = model * RotationMatrix;
+			// 只有XY是相對旋轉，其他Z是世界旋轉    //有複雜的相對關係
+			// 不會受到位置影響
+
+	
+
+
+
+
+
+
+
+
 		model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 		_shader.setMat4("model", model);
 		_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
@@ -175,7 +203,7 @@ void Meshrender::Draw(Shader _shader)
 		float far_plane = 25.0f;
 		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 		std::vector<glm::mat4> shadowTransforms;
-		if (SceneManager::vec_DirectionlLight.size() > 0)
+		if (SceneManager::vec_DirectionlLight.size() > 0)  //目前只有Directional Light有效果
 		{
 			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
 			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
@@ -184,7 +212,6 @@ void Meshrender::Draw(Shader _shader)
 			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
 			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
 		}
-		
 		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 		lightSpaceMatrix = shadowProj * lightView;
 		// render scene from light's point of view
@@ -203,7 +230,6 @@ void Meshrender::Draw(Shader _shader)
 	glBindTexture(GL_TEXTURE_2D, this->Texture);
 
 	glDrawArrays(GL_TRIANGLES, 0,  36);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Debug Popline
@@ -267,10 +293,6 @@ void Meshrender::CreateShape(Shape _shape)
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//if (_m == RMode3D)
-	//{
-
-	//}
 	glBindVertexArray(VAO);
 	switch (_shape)
 	{
@@ -284,6 +306,7 @@ void Meshrender::CreateShape(Shape _shape)
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(CubeVertices), CubeVertices, GL_STATIC_DRAW);
+		glBindVertexArray(0);
 		break;
 	case Sphere:
 		break;
@@ -297,12 +320,13 @@ void Meshrender::CreateShape(Shape _shape)
 	default:
 		break;
 	}
-	glBindVertexArray(0);
+
+
 
 	Texture = LoadTexture("Texture\\White.png");
 	SceneManager::vec_ShaderProgram[1].use();
 	SceneManager::vec_ShaderProgram[1].setInt("material.diffuse", 0);
-	Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
+	//Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
 }
 unsigned int Meshrender::LoadTexture(const char* path)
 {
@@ -385,3 +409,5 @@ void Meshrender::UpdateCollision()
 	World::dynamicsWorld->removeCollisionObject(body);
 	CreateMouseCollision();
 }
+
+

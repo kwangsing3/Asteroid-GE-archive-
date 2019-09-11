@@ -84,10 +84,10 @@
     <ClCompile Include="World.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Math.cpp">
+    <ClCompile Include="Component\PointLight.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Component\PointLight.cpp">
+    <ClCompile Include="Math\Math.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
@@ -304,10 +304,10 @@
     <ClInclude Include="World.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Math.h">
+    <ClInclude Include="GraphicEngine\GLDebugDrawer.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicEngine\GLDebugDrawer.h">
+    <ClInclude Include="Math\Math.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

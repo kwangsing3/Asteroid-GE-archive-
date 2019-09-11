@@ -46,9 +46,10 @@ public:
 	Actor* _lowwerActor;
 	bool _attaching = false;
 	bool Drag[3] = { false,false,false };
-
+	bool _DragMode[3] = {false,false,false};
 	_Pivot(Actor* _a)
 	{
+		SwitchDragMode(0);
 		_actor = _a;
 		_actor->meshrender = new Meshrender(_a,NONE);
 		this->_mode = RenderMode(1);
@@ -135,8 +136,20 @@ public:
 		this->UpdateCollision();
 		if (_attaching)
 			this->_lowwerActor->transform->Translate(this->_actor->transform->position);
-		std::cout << "X:"<< this->_lowwerActor->transform->position.x<< " Y:"<< this->_lowwerActor->transform->position.y<< " Z:"<< this->_lowwerActor->transform->position.z;
-		std::cout << "" << std::endl;
+	}
+	void Rotate(glm::vec3 _rot)
+	{
+		this->_actor->transform->rotation = _rot;
+		this->UpdateCollision();
+		if (_attaching)
+			this->_lowwerActor->transform->Rotate(this->_actor->transform->rotation);
+	}
+	void Scale(glm::vec3 _sca)
+	{
+		this->_actor->transform->scale = _sca;
+		this->UpdateCollision();
+		if (_attaching)
+			this->_lowwerActor->transform->Scale(this->_actor->transform->scale);
 	}
 	void AttachObject(Actor* _ac)
 	{
@@ -144,7 +157,24 @@ public:
 		this->_attaching = true;
 		this->Translate(_ac->transform->position);
 	}
-
+	void SwitchDragMode(int i)
+	{
+		_DragMode[0] = false; _DragMode[1] = false; _DragMode[2] = false;
+		switch (i)
+		{
+		case 0:
+			_DragMode[0] = true;
+			break;
+		case 1:
+			_DragMode[1] = true;
+			break;
+		case 2:
+			_DragMode[2] = true;
+			break;
+		default:
+			break;
+		}
+	}
 	
 
 private:
@@ -152,47 +182,89 @@ private:
 	void CreateMouseCollision()
 	{
 		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
-		startTransform[0].setOrigin(btVector3(this->_actor->transform->position.x + 0.5f, this->_actor->transform->position.y, this->_actor->transform->position.z));
-		startTransform[1].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y + 0.5f, this->_actor->transform->position.z));
-		startTransform[2].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z + 0.5f));
-		btQuaternion quat[3];
-		quat[0].setEulerZYX(glm::radians(90.0f), 0, 0); quat[1].setEulerZYX(0, glm::radians(90.0f), 0); quat[2].setEulerZYX(0, 0, glm::radians(90.0f));
-		for (int i = 0; i < 3; i++)
-		{
-			btVector3 localInertia(0, 0, 0);
-			//create a dynamic rigidbody
-			btCollisionShape* colShape = new btCapsuleShape(0.08f, 0.55f);
-			btScalar mass(0);
-			World::collisionShapes.push_back(colShape);
-			/// Create Dynamic Objects
-			//btTransform startTransform;
-			//startTransform.setIdentity();
-			//startTransform.setOrigin(btVector3(this->_actor->transform->position.x+(i % 3+1), this->_actor->transform->position.y*(i % 3), this->_actor->transform->position.z*(i % 3 - 1)));
-			//btQuaternion quat;
-			//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
-			//quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z*(i%3-1)), glm::radians(-this->_actor->transform->rotation.y*(i % 3)), glm::radians(this->_actor->transform->rotation.x*(i % 3 + 1)));
-			startTransform[i].setRotation(quat[i]);
 
-			//rigidbody is dynamic if and only if mass is non zero, otherwise static
-			bool isDynamic = (mass != 0.f);
-			if (isDynamic)
-				colShape->calculateLocalInertia(mass, localInertia);
-			//startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-			//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-			btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform[i]);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+		glm::mat4 _pos[3];  _pos[0] = glm::mat4(1.0f); _pos[1] = glm::mat4(1.0f); _pos[2] = glm::mat4(1.0f);
+		
+		_pos[1] = glm::rotate(_pos[1], glm::radians(-this->_actor->transform->rotation.y), glm::vec3(0, 1, 0));
+		_pos[1] = glm::rotate(_pos[1], glm::radians(this->_actor->transform->rotation.x), glm::vec3(1, 0, 0));
+		_pos[1] = glm::rotate(_pos[1], glm::radians(this->_actor->transform->rotation.z), glm::vec3(0, 0, 1));
+		
+		_pos[0] = glm::translate(_pos[0], glm::vec3(this->_actor->transform->position.x + .5f, this->_actor->transform->position.y, this->_actor->transform->position.z));
+		_pos[1] = glm::translate(_pos[1], glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y + .5f, this->_actor->transform->position.z));
+		_pos[2] = glm::translate(_pos[2], glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z + .5f));
 
-			body[i] = new btRigidBody(rbInfo);
-			body[i]->setCenterOfMassTransform(startTransform[i]);
-			body[i]->_actor = this->_actor;
-			Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-			body[i]->setCollisionFlags(Collision_flag);
+		startTransform[0].setFromOpenGLMatrix(glm::value_ptr(_pos[0])); startTransform[1].setFromOpenGLMatrix(glm::value_ptr(_pos[1])); startTransform[2].setFromOpenGLMatrix(glm::value_ptr(_pos[2]));
 
-			int _group = 1;
-			int _mask = 1;
+		//glm::vec3 _pos0(this->_actor->transform->position.x + .5f, this->_actor->transform->position.y, this->_actor->transform->position.z);
+		//_pos0 = glm::rotate(this->_actor->transform->rotation.x ,glm::vec3(1,0,0)) * _pos0;
 
-			World::dynamicsWorld->addRigidBody(body[i], _group, _mask);
-		}
+		/*btQuaternion quat;
+		//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
+		quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
+		
+		startTransform[0].setRotation(quat);
+		startTransform[1].setRotation(quat);
+		startTransform[2].setRotation(quat);
+		
+		startTransform[0].setOrigin(btVector3(this->_actor->transform->position.x + .5f, this->_actor->transform->position.y, this->_actor->transform->position.z));
+		startTransform[1].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y + .5f, this->_actor->transform->position.z));
+		startTransform[2].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z + .5f));*/
+		btVector3 localInertia(0, 0, 0);
+		//create a dynamic rigidbody
+		btCollisionShape* colShape0 = new btCapsuleShapeX(0.08f, 0.55f);
+		btScalar mass(0);
+		World::collisionShapes.push_back(colShape0);
+		bool isDynamic = (mass != 0.f);
+		if (isDynamic)
+			colShape0->calculateLocalInertia(mass, localInertia);
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform[0]);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape0, localInertia);
+		body[0] = new btRigidBody(rbInfo);
+		//body[0]->setCenterOfMassTransform(startTransform[0]);
+		body[0]->_actor = this->_actor;
+		Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+		body[0]->setCollisionFlags(Collision_flag);
+		int _group = 1;
+		int _mask = 1;
+		World::dynamicsWorld->addRigidBody(body[0], _group, _mask);
+		
+		
+		btVector3 localInertia1(0, 0, 0);
+		//create a dynamic rigidbody
+		btCollisionShape* colShape1 = new btCapsuleShape(0.08f, 0.55f);
+		btScalar mass1(0);
+		World::collisionShapes.push_back(colShape1);
+		isDynamic = (mass1 != 0.f);
+		if (isDynamic)
+			colShape1->calculateLocalInertia(mass1, localInertia);
+		btDefaultMotionState* myMotionState1 = new btDefaultMotionState(startTransform[1]);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo1(mass1, myMotionState1, colShape1, localInertia1);
+		body[1] = new btRigidBody(rbInfo1);
+		//body[1]->setCenterOfMassTransform(startTransform[1]);
+		body[1]->_actor = this->_actor;
+		Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+		body[1]->setCollisionFlags(Collision_flag);
+		
+		World::dynamicsWorld->addRigidBody(body[1], _group, _mask);
+		
+		
+		btVector3 localInertia2(0, 0, 0);
+		//create a dynamic rigidbody
+		btCollisionShape* colShape2 = new btCapsuleShapeZ(0.08f, 0.55f);
+		btScalar mass2(0);
+		World::collisionShapes.push_back(colShape2);
+		isDynamic = (mass2 != 0.f);
+		if (isDynamic)
+			colShape2->calculateLocalInertia(mass2, localInertia);
+		btDefaultMotionState* myMotionState2 = new btDefaultMotionState(startTransform[2]);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo2(mass2, myMotionState2, colShape2, localInertia2);
+		body[2] = new btRigidBody(rbInfo2);
+		//body[2]->setCenterOfMassTransform(startTransform[2]);
+		body[2]->_actor = this->_actor;
+		Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+		body[2]->setCollisionFlags(Collision_flag);
+		
+		World::dynamicsWorld->addRigidBody(body[2], _group, _mask);
 	}
 	void UpdateCollision() override
 	{
@@ -203,6 +275,9 @@ private:
 	}
 } ;
 _Pivot* _piv;
+
+
+
 
 int main()
 {
@@ -229,8 +304,8 @@ int main()
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); //(void)io;
 		ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
-		io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
-		io.Fonts->Build();
+//		io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
+//		io.Fonts->Build();
 
 
 		// Setup Dear ImGui style
@@ -336,7 +411,7 @@ int main()
 	//---------------------------------------
 	
 	//記得拿掉
-	//SceneManager::OpenFile();//調試用函數
+	SceneManager::OpenFile();//調試用函數
 	//記得拿掉
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
@@ -424,7 +499,13 @@ void processInput(GLFWwindow *window)
 		Window::WindowShouldClose = true;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
+	{
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+			Window::_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
+		else
+			_piv->SwitchDragMode(0);
+	}
+		
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -432,14 +513,22 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(UP, deltaTime);
+	{
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+			Window::_editorCamera.ProcessKeyboard(UP, deltaTime);
+		else
+			_piv->SwitchDragMode(1);
+	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		Window::_editorCamera.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
 		WindowUI::Deletecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
 		WindowUI::Renamecur_actor(WindowUI::cur_SelectObject);
-
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+	{
+			_piv->SwitchDragMode(2);
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -459,14 +548,39 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 
 	float xoffset = xpos - lastX;
 	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-	if (isClickingPivot && _piv->_actor != NULL)
+	if (isClickingPivot && _piv != NULL)
 	{
-		if(_piv->Drag[0])
-			_piv->Translate(glm::vec3(_piv->_actor->transform->position.x + xoffset / 200, _piv->_actor->transform->position.y, _piv->_actor->transform->position.z));
-		else if(_piv->Drag[1])
-			_piv->Translate(glm::vec3(_piv->_actor->transform->position.x, _piv->_actor->transform->position.y + yoffset / 200, _piv->_actor->transform->position.z));
-		else if(_piv->Drag[2])
-			_piv->Translate(glm::vec3(_piv->_actor->transform->position.x , _piv->_actor->transform->position.y, _piv->_actor->transform->position.z + xoffset / 200));
+		if (_piv->Drag[0])
+		{
+			if(_piv->_DragMode[0])
+				_piv->Translate(glm::vec3(_piv->_actor->transform->position.x + xoffset / 200, _piv->_actor->transform->position.y, _piv->_actor->transform->position.z));
+			else if (_piv->_DragMode[1])
+				_piv->Rotate(glm::vec3(_piv->_actor->transform->rotation.x + xoffset / 20, _piv->_actor->transform->rotation.y, _piv->_actor->transform->rotation.z));
+			else if (_piv->_DragMode[2])
+				_piv->Scale(glm::vec3(_piv->_actor->transform->scale.x + xoffset / 200, _piv->_actor->transform->scale.y, _piv->_actor->transform->scale.z));
+		}
+		else if (_piv->Drag[1])
+		{
+			
+			if (_piv->_DragMode[0])
+				_piv->Translate(glm::vec3(_piv->_actor->transform->position.x , _piv->_actor->transform->position.y + yoffset / 200, _piv->_actor->transform->position.z));
+			else if (_piv->_DragMode[1])
+				_piv->Rotate(glm::vec3(_piv->_actor->transform->rotation.x, _piv->_actor->transform->rotation.y + yoffset / 20, _piv->_actor->transform->rotation.z));
+			else if (_piv->_DragMode[2])
+				_piv->Scale(glm::vec3(_piv->_actor->transform->scale.x, _piv->_actor->transform->scale.y + yoffset / 200, _piv->_actor->transform->scale.z));
+		}
+			
+		else if (_piv->Drag[2])
+		{
+			
+			if (_piv->_DragMode[0])
+				_piv->Translate(glm::vec3(_piv->_actor->transform->position.x , _piv->_actor->transform->position.y, _piv->_actor->transform->position.z + xoffset / 200));
+			else if (_piv->_DragMode[1])
+				_piv->Rotate(glm::vec3(_piv->_actor->transform->rotation.x , _piv->_actor->transform->rotation.y, _piv->_actor->transform->rotation.z + xoffset / 20));
+			else if (_piv->_DragMode[2])
+				_piv->Scale(glm::vec3(_piv->_actor->transform->scale.x , _piv->_actor->transform->scale.y, _piv->_actor->transform->scale.z + xoffset / 200));
+		}
+			
 		
 	}
 	lastX = xpos;
@@ -523,7 +637,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			}
 			else
 			{
-				_piv->AttachObject(RayCallback.m_collisionObject->_actor);
+				if(_piv!=NULL)_piv->AttachObject(RayCallback.m_collisionObject->_actor);
 				WindowUI::SelectThisActor(RayCallback.m_collisionObject->_actor);
 			}
 			

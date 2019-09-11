@@ -191,6 +191,15 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				{
 					_sel->_actor->meshrender->UpdateCollision();
 				}
+				static int _curco = 0;
+				const char* _rotype[] = {"RotateType01","RotateType02","RotateType03","RotateType04","RotateType05","RotateType06","RotateType07","RotateType08" };
+				if (ImGui::Combo("RotateType",&_curco, _rotype, IM_ARRAYSIZE(_rotype)))
+				{
+					_sel->_actor->meshrender->SwitchRotateType(RotateType(_curco));
+				}
+				ImGui::Checkbox("ADDingX", &_sel->_actor->meshrender->ADDingX);
+				ImGui::Checkbox("ADDingY", &_sel->_actor->meshrender->ADDingY);
+				ImGui::Checkbox("ADDingZ", &_sel->_actor->meshrender->ADDingZ);
 
 			}
 		}
