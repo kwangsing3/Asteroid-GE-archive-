@@ -15,7 +15,7 @@
 #include <Window.h>
 #include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
-
+#include <GraphicEngine/GLDebugDrawer.h>
 class _Pivot : public Meshrender
 {
 	bool _needdebug = true;
@@ -278,9 +278,14 @@ public:
 		}
 		//this->dynamicsWorld->debugDrawWorld();
 	}
+
 	virtual void initPhysics()
 	{
 		createEmptyDynamicsWorld();
+
+
+		GLDebugDrawer* _deb = new GLDebugDrawer();
+		this->m_dynamicsWorld->setDebugDrawer(_deb);
 	}
 	void CreateDepthMap()
 	{

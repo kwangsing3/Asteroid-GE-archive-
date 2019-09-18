@@ -357,7 +357,7 @@ unsigned int Meshrender::LoadTexture(const char* path)
 int Collision_flag=0;
 //  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.h>
-btCollisionShape* colShape;
+//btCollisionShape* colShape;
 void Meshrender::CreateMouseCollision()
 {
 	btVector3 localInertia(0, 0, 0);

@@ -25,11 +25,11 @@
 // Each frame, call it :
 // mydebugdrawer.SetMatrices(ViewMatrix, ProjectionMatrix);
 // dynamicsWorld->debugDrawWorld();
-GLuint VBO, VAO;
+
 class GLDebugDrawer : public btIDebugDraw {
 public:
 
-
+	GLuint VBO, VAO;
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
 		SceneManager::vec_ShaderProgram[0].use();

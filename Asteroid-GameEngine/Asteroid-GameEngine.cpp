@@ -14,7 +14,7 @@
 #include <model.h>     //導入模型
 #include <SceneManager.h>
 #include <World.h>
-#include <GraphicEngine/GLDebugDrawer.h>
+
 #include <Raycast.h>
 //#include<ADD_Component.h>
 #include "btBulletDynamicsCommon.h"
@@ -163,8 +163,7 @@ int main()
 	//記得拿掉
 	//SceneManager::OpenFile();//調試用函數
 	//記得拿掉
-	GLDebugDrawer* _deb = new GLDebugDrawer();
-	Window::_Mainworld->m_dynamicsWorld->setDebugDrawer(_deb);
+	
 	
 
 	while (!Window::WindowShouldClose)

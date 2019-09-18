@@ -12,7 +12,7 @@
 //#include <Window.h>
 //#include <SceneManager.h>
 class btRigidBody;
-
+class btCollisionShape;
 class Shader;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, NONE};
 enum RotateType { RotateType01, RotateType02, RotateType03, RotateType04, RotateType05, RotateType06, RotateType07, RotateType08};
@@ -38,7 +38,7 @@ public:
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
 	btRigidBody* body;
-
+	btCollisionShape* colShape;
 	Meshrender() { std::cout<<"error: it couldn't be add without constructors "; }
 	Meshrender(Actor* _a, Shape _shape)
 	{

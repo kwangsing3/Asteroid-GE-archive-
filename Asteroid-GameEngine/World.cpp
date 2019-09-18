@@ -58,7 +58,6 @@ void _Pivot::CreateMouseCollision()
 
 void _Pivot::UpdateCollision()
 {
-	
 	DeleteCollision();
 	CreateMouseCollision();
 }

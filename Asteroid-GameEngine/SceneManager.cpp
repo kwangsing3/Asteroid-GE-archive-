@@ -140,9 +140,9 @@ void SceneManager::NewScene()
 	Window::_Mainworld->exitPhysics();
 	Window::_Mainworld->initPhysics();
 	World::_PlayMode = false;
+	delete World::_piv;
+	World::_piv =new _Pivot(new Actor());
 	
-	World::_piv = NULL ? World::_piv : new _Pivot(new Actor());
-	Objects.push_back(World::_piv->_actor);
 	
 	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 }
