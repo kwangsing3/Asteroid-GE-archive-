@@ -359,7 +359,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			);
 
 
-			if (RayCallback.hasHit()) {
+			if (RayCallback.hasHit()) 
+			{
 				std::ostringstream oss;
 				oss << "mesh " << RayCallback.m_collisionObject;
 				//_cur_World->dynamicsWorld.
@@ -377,17 +378,18 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				}
 				else
 				{
-					if (World::_piv != NULL)
-						World::_piv->AttachObject(RayCallback.m_collisionObject->_actor);
+					if (World::_piv != NULL && World::_piv->_lowwerActor != RayCallback.m_collisionObject->_actor)
+						//World::_piv->AttachObject(RayCallback.m_collisionObject->_actor);
 					WindowUI::SelectThisActor(RayCallback.m_collisionObject->_actor);
 				}
 			}
 			else
 			{
-				if (World::_piv != NULL)World::_piv->AttachObject(NULL);
+				//if (World::_piv != NULL)World::_piv->AttachObject(NULL);
 				WindowUI::SelectThisActor(NULL);
 			}
-		}	
+		}
+		
 	}
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 	{

@@ -38,6 +38,7 @@ public:
 	std::vector<glm::vec3> Worldvectices_Debug;   //世界座標
 	std::vector<glm::vec3> Spacevectices_Debug;   //螢幕座標
 	btRigidBody* body;
+
 	Meshrender() { std::cout<<"error: it couldn't be add without constructors "; }
 	Meshrender(Actor* _a, Shape _shape)
 	{
@@ -46,6 +47,7 @@ public:
 		this->enabled = true;
 		this->CreateShape(_shape);
 		this->VertexColor = glm::vec3(1, 1, 1);
+
 		if(_shape!=NONE)
 			CreateMouseCollision();
 		//transform->name = (char*)"Cube";

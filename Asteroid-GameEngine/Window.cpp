@@ -129,6 +129,7 @@ void WindowUI::SelectThisActor(Actor * _actor)
 	{
 		cur_SelectObject = NULL;
 		WindowUI::ListInspectorCur(NULL);
+		if (World::_piv != NULL) World::_piv->AttachObject(NULL);
 	}
 }
 void WindowUI::SelectThisObject(SelectObject * selectobject)
@@ -137,7 +138,11 @@ void WindowUI::SelectThisObject(SelectObject * selectobject)
 	selectobject->Is_selected = !selectobject->Is_selected;
 	cur_SelectObject = selectobject;
 
-	if (World::_piv != NULL) World::_piv->AttachObject(selectobject->_actor);
+	if (World::_piv != NULL)
+	{
+		World::_piv->AttachObject(NULL);
+		World::_piv->AttachObject(selectobject->_actor);
+	}
 }
 void WindowUI::ListInspectorCur(SelectObject* _sel)
 {
@@ -477,7 +482,7 @@ static void MainMenuBar()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add BoxCollision")) 
 			{ 
-				if (WindowUI::cur_SelectObject != NULL||WindowUI::cur_SelectObject->_actor != NULL)
+				if (WindowUI::cur_SelectObject != NULL&&WindowUI::cur_SelectObject->_actor != NULL)
 					ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject->_actor); 
 					
 			}

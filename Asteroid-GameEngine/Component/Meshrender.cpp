@@ -357,13 +357,19 @@ unsigned int Meshrender::LoadTexture(const char* path)
 int Collision_flag=0;
 //  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.h>
+btCollisionShape* colShape;
 void Meshrender::CreateMouseCollision()
 {
 	btVector3 localInertia(0, 0, 0);
 	//create a dynamic rigidbody
-	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
+	if (colShape == NULL)
+	{
+		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
+		Window::_Mainworld->m_collisionShapes.push_back(colShape);
+	}
+
+	
 	btScalar mass(0);
-	Window::_Mainworld->m_collisionShapes.push_back(colShape);
 	/// Create Dynamic Objects
 	btTransform startTransform;
 	startTransform.setIdentity();

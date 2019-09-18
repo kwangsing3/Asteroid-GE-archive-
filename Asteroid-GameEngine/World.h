@@ -25,6 +25,10 @@ public:
 	bool _attaching = false;
 	bool Drag[3] = { false,false,false };
 	bool _DragMode[3] = { false,false,false };
+	std::vector<btCollisionShape*> colshape;
+	int _group = 1;
+	int _mask = 1;
+	
 	_Pivot(Actor* _a)
 	{
 		_visable = false;
@@ -39,6 +43,10 @@ public:
 		//CreateMouseCollision();
 		//transform->name = (char*)"Cube";
 		//  滑鼠判定的碰撞體
+		//initshapes
+		
+	
+
 		CreateMouseCollision();
 	}
 	void CreatePivot()
@@ -137,6 +145,8 @@ public:
 		if (_ac!=NULL)
 		{
 			this->_visable = true;
+			AddCollision();
+			
 			this->_lowwerActor = _ac;
 			this->_attaching = true;
 			this->Translate(_ac->transform->position);
@@ -148,7 +158,7 @@ public:
 			this->_visable = false;
 			this->_lowwerActor = NULL;
 			this->_attaching = false;
-			UpdateCollision();
+			DeleteCollision();
 		}
 	}
 	void SwitchDragMode(int i)
@@ -173,7 +183,10 @@ private:
 	int Collision_flag = 0;
 	void CreateMouseCollision();
 	void UpdateCollision() override;
-	
+	void DeleteCollision();
+	void AddCollision();
+
+
 };
 
 
