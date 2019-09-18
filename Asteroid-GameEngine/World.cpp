@@ -1,15 +1,6 @@
 #include <World.h>
 
-btBroadphaseInterface* World::broadphase;
-// Set up the collision configuration and dispatcher
-btDefaultCollisionConfiguration* World::collisionConfiguration;
-btCollisionDispatcher* World::dispatcher;
-// The actual physics solver
-btSequentialImpulseConstraintSolver* World::solver;
-// The world.
-btDiscreteDynamicsWorld* World::dynamicsWorld;
 
-btAlignedObjectArray<btCollisionShape*>  World::collisionShapes;
 bool World::_PlayMode;
 _Pivot* World::_piv;
 //unsigned int World::depthMapFBO;
@@ -47,7 +38,7 @@ void _Pivot::CreateMouseCollision()
 			}
 			btScalar mass(0);
 			startTransform[i].setRotation(quat);
-			World::collisionShapes.push_back(colShape0);
+			Window::_Mainworld->m_collisionShapes.push_back(colShape0);
 			bool isDynamic = (mass != 0.f);
 			if (isDynamic)
 				colShape0->calculateLocalInertia(mass, localInertia);
@@ -60,17 +51,16 @@ void _Pivot::CreateMouseCollision()
 			body[i]->setCollisionFlags(Collision_flag);
 			int _group = 1;
 			int _mask = 1;
-			World::dynamicsWorld->addRigidBody(body[i], _group, _mask);
+			Window::_Mainworld->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
 		}
 	}
 }
-
 void _Pivot::UpdateCollision()
 {
 	
-	if (body[0] != NULL)World::dynamicsWorld->removeCollisionObject(body[0]);
-	if (body[1] != NULL)World::dynamicsWorld->removeCollisionObject(body[1]);
-	if (body[2] != NULL)World::dynamicsWorld->removeCollisionObject(body[2]);
+	if (body[0] != NULL)Window::_Mainworld->deleteRigidBody(body[0]);
+	if (body[1] != NULL)Window::_Mainworld->deleteRigidBody(body[1]);
+	if (body[2] != NULL)Window::_Mainworld->deleteRigidBody(body[2]);
 
 	if(this->_visable)CreateMouseCollision();
 }

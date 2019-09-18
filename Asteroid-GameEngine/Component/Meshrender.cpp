@@ -89,7 +89,7 @@ void Meshrender::OpenFile(pugi::xml_node _node)
 	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
 }
 
-void Meshrender::SwitchRotateType(RotateType _ro)
+void Meshrender::SwitchRotateType(RotateType _ro)   //這是測試旋轉函數用的函數
 {
 	this->_actor->transform->Translate(glm::vec3(0,0,0));
 	this->_actor->transform->Rotate(glm::vec3(0, 0, 0));
@@ -363,7 +363,7 @@ void Meshrender::CreateMouseCollision()
 	//create a dynamic rigidbody
 	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
 	btScalar mass(0);
-	World::collisionShapes.push_back(colShape);
+	Window::_Mainworld->m_collisionShapes.push_back(colShape);
 	/// Create Dynamic Objects
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -390,7 +390,7 @@ void Meshrender::CreateMouseCollision()
 	int _group = 1;
 	int _mask = 1;
 
-	World::dynamicsWorld->addRigidBody(body, _group, _mask);
+	Window::_Mainworld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
 	body->_actor = this->_actor;
 	//World::dynamicsWorld->updateSingleAabb(body);
 }
@@ -399,13 +399,7 @@ void Meshrender::CreateMouseCollision()
 
 void Meshrender::UpdateCollision()
 {
-	DeleteCollisionShape(this->body);
+	Window::_Mainworld->deleteRigidBody(this->body);
 	CreateMouseCollision();
 }
 
-void Meshrender::DeleteCollisionShape(btRigidBody* rigidBody) {
-	delete rigidBody->getMotionState();
-	delete rigidBody->getCollisionShape();
-	World::dynamicsWorld->removeRigidBody(rigidBody);
-	delete rigidBody;
-}

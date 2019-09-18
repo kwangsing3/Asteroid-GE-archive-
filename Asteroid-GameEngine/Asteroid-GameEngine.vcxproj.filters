@@ -310,6 +310,42 @@
     <ClInclude Include="Math\Math.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\Common2dCanvasInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonCallbacks.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonCameraInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonExampleInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonFileIOInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonGraphicsAppInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonGUIHelperInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonMultiBodyBase.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonParameterInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonRenderInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonRigidBodyBase.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonWindowInterface.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp\color4.inl">

@@ -5,12 +5,13 @@
 #include <SceneManager.h>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #include <glm/gtx/euler_angles.hpp>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <Math/Math.h>
+
+#include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
 #include <Window.h>
 #include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
@@ -174,72 +175,43 @@ private:
 	void UpdateCollision() override;
 	
 };
-class World
+
+
+struct World : public CommonRigidBodyBase
 {
-public:
-	static btBroadphaseInterface* broadphase;
-	static btDefaultCollisionConfiguration* collisionConfiguration;  // Set up the collision configuration and dispatcher
-	static btCollisionDispatcher* dispatcher;
-	static btSequentialImpulseConstraintSolver* solver;   	// The actual physics solver
-	static btDiscreteDynamicsWorld* dynamicsWorld;    	// The world.
-	static bool _PlayMode;
 	unsigned int depthMapFBO;
 	unsigned int depthCubemap;
-	static btAlignedObjectArray<btCollisionShape*> collisionShapes;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-	static _Pivot* _piv;
-	World()
+	World(): CommonRigidBodyBase()
 	{
-		//Bullet Physics creation
-		// --------------------
-		// Build the broadphase
-		this->broadphase = new btDbvtBroadphase();
-		this->collisionConfiguration = new btDefaultCollisionConfiguration();
-		this->dispatcher = new btCollisionDispatcher(collisionConfiguration);
-		this->solver = new btSequentialImpulseConstraintSolver;
-		this->dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
+		//Bullet Physics creation// --------------------// Build the broadphase
 		_PlayMode = false;
-		// Shadow buffer
-		//_pivot = new Pivot();
-		 // configure depth map FBO
-	// -----------------------
+		SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建   目前需要在world的類別前宣告
+		initPhysics();
+		// -----------------------
 		//const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 		//unsigned int depthMapFBO;
-		glGenFramebuffers(1, &depthMapFBO);
-		// create depth texture
-
-		glGenTextures(1, &depthCubemap);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-		for (unsigned int i = 0; i < 6; ++i)
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		// attach depth texture as FBO's depth buffer
-		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		SceneManager::vec_ShaderProgram[1].use();                                //要想辦法改掉   應該要直接串給MeshRender的主要Shader上 
-		SceneManager::vec_ShaderProgram[1].setInt("diffuseTexture", 0);
-		SceneManager::vec_ShaderProgram[1].setInt("depthMap", 1);
-	// -----------------------
+		_piv = new _Pivot(new Actor());
+		// ----------------------- 
 		
+	}
+public:
+	static bool _PlayMode;
+	
+	static _Pivot* _piv;
+	virtual ~World()
+	{
+	
 	}
 	void UpdateFrame()
 	{
 		//Pyhscis Pipeline
 		if (this->_PlayMode)
 		{
-			this->dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
-			for (int i = 0; i < this->dynamicsWorld->getNumCollisionObjects(); i++)
+			this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
+			for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 			{
-				btCollisionObject* obj = this->dynamicsWorld->getCollisionObjectArray()[i];
+				btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
 				for (int j = 0; j < SceneManager::Objects.size(); j++)
 				{
 					if (SceneManager::Objects[j]->boxcollision != NULL && SceneManager::Objects[j]->boxcollision->body == obj)
@@ -283,9 +255,8 @@ public:
 		//glCullFace(GL_BACK);
 		// Draw Pipeline
 		glViewport(0, 0, Window::_Width, Window::_Height);
-	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		this->dynamicsWorld->debugDrawWorld();
+		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+		this->m_dynamicsWorld->debugDrawWorld();
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE1);
@@ -294,55 +265,34 @@ public:
 		}
 		//this->dynamicsWorld->debugDrawWorld();
 	}
-
-	virtual void exitPhysics()
+	virtual void initPhysics()
 	{
-		//removePickingConstraint();
-		//cleanup in the reverse order of creation/initialization
+		createEmptyDynamicsWorld();
+	}
+	void CreateDepthMap()
+	{
+		glGenFramebuffers(1, &depthMapFBO);
+		// create depth texture
 
-		//remove the rigidbodies from the dynamics world and delete them
-		btDiscreteDynamicsWorld* m_dynamicsWorld = this->dynamicsWorld;
-		if (m_dynamicsWorld)
-		{
-			int i;
-			for (i = m_dynamicsWorld->getNumConstraints() - 1; i >= 0; i--)
-			{
-				m_dynamicsWorld->removeConstraint(m_dynamicsWorld->getConstraint(i));
-			}
-			for (i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
-			{
-				btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
-				btRigidBody* body = btRigidBody::upcast(obj);
-				if (body && body->getMotionState())
-				{
-					delete body->getMotionState();
-				}
-				m_dynamicsWorld->removeCollisionObject(obj);
-				delete obj;
-			}
-		}
-		//delete collision shapes
-		for (int j = 0; j < m_collisionShapes.size(); j++)
-		{
-			btCollisionShape* shape = m_collisionShapes[j];
-			delete shape;
-		}
-		m_collisionShapes.clear();
+		glGenTextures(1, &depthCubemap);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+		for (unsigned int i = 0; i < 6; ++i)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		// attach depth texture as FBO's depth buffer                                            // Shadow buffer
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		delete m_dynamicsWorld;
-		m_dynamicsWorld = 0;
-
-		delete m_solver;
-		m_solver = 0;
-
-		delete m_broadphase;
-		m_broadphase = 0;
-
-		delete m_dispatcher;
-		m_dispatcher = 0;
-
-		delete m_collisionConfiguration;
-		m_collisionConfiguration = 0;
+		SceneManager::vec_ShaderProgram[1].use();                                //要想辦法改掉   應該要直接串給MeshRender的主要Shader上 
+		SceneManager::vec_ShaderProgram[1].setInt("diffuseTexture", 0);
+		SceneManager::vec_ShaderProgram[1].setInt("depthMap", 1);
 	}
 
 };

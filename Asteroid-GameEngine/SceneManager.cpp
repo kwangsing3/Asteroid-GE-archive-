@@ -18,7 +18,7 @@ void SceneManager::OpenFile()
 	std::ifstream _XMLstream;
 	try
 	{
-		_XMLstream.open("ExampleProject/Scene2.AstGamEng");
+		_XMLstream.open("ExampleProject/BasicExample.AstGamEng");
 		_doc.load(_XMLstream);
 	}
 	catch (const std::exception&)
@@ -72,7 +72,6 @@ void SceneManager::OpenFile()
 	_XMLstream.close();
 }
 
-
 void SceneManager::SaveFile()
 {
 	std::cout << "Save File Function" << std::endl;
@@ -94,6 +93,10 @@ void SceneManager::SaveFile()
 		pugi::xml_node _cur = root.append_child("Objects");
 		_cur.append_attribute("name") = Objects[i]->transform->name;
 		//_cur.append_attribute("ID") = Objects[i]->ID;
+
+		//過濾坐標軸
+		if (Objects[i]->meshrender != NULL && Objects[i]->meshrender->_shape == NONE)
+			continue;
 
 		component_size = 0;
 		if (Objects[i]->transform != NULL)
@@ -124,7 +127,7 @@ void SceneManager::SaveFile()
 	}
 	root.append_attribute("Objects_Size") = Objects.size();
 
-	doc.save_file("ExampleProject/Scene2.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
+	doc.save_file("ExampleProject/BasicExample.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
 }
 
 void SceneManager::NewScene()
@@ -134,15 +137,12 @@ void SceneManager::NewScene()
 	vec_ObjectsToRender.clear();
 	Objects.clear();
 
+	Window::_Mainworld->exitPhysics();
+	Window::_Mainworld->initPhysics();
+	World::_PlayMode = false;
 	
-	for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
-	{
-		SceneManager::vec_ObjectsToRender[i]->DeleteCollisionShape(SceneManager::vec_ObjectsToRender[i]->body);
-	}
+	World::_piv = NULL ? World::_piv : new _Pivot(new Actor());
+	Objects.push_back(World::_piv->_actor);
 	
-
-	
-	World::_piv = NULL;
-	World::_piv = new _Pivot(ADD_Component::Add_Actor());
 	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 }

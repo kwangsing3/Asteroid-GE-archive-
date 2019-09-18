@@ -22,7 +22,7 @@ struct SelectObject
 };
 enum  Game_Mode { Mode_2D, Mode_3D };
 
-
+class World;
 
 //   ---------------------------------UI---------------------------------
 
@@ -40,8 +40,10 @@ public:
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
-
+	
 	static float UI_Left_X;
+	static float UI_Left_Y;
+	//static float UI_Right_X;
 	static float UI_Right_X;
 	WindowUI()
 	{
@@ -70,14 +72,14 @@ public:
 	static std::vector<int> vec_ID;
 	static WindowUI *_Main_UI;
 	static bool WindowShouldClose;
-
+	
+	static World* _Mainworld;
 
 	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback, void* mouse_Click_callback)
 	{
-		//viewport_pos = ImVec2(0, 0);
-		//viewport_size = ImVec2(0, 0);
 		WindowShouldClose = false;
 		isFullscreen = false;
+
 		_Main_UI = new WindowUI();
 		//Xml_SettingImport();
 		{
@@ -95,11 +97,8 @@ public:
 			this->_Main_UI->_mode = Game_Mode(_doc.child("GlobalSettings").child("ProjectSetting").child("Game_Mode").attribute("Game_Mode").as_int());
 			this->DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
 			_XMLstream.close();
-		}
-
+		}	
 		GLFWmonitor* primary = glfwGetPrimaryMonitor();
-
-
 		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		_Width = mode->width;
@@ -114,9 +113,6 @@ public:
 		glfwMaximizeWindow(MainGLFWwindow);
 		//glfwHideWindow(MainGLFWwindow);
 		//glfwSetWindowMonitor(MainGLFWwindow, monitor, 0, 0, _Width, _Height, mode->refreshRate);
-
-
-
 		glfwMakeContextCurrent(MainGLFWwindow);
 		glfwSetFramebufferSizeCallback(MainGLFWwindow, (GLFWframebuffersizefun)framebuffer_size_callback);
 		glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)mouse_callback);
@@ -142,15 +138,16 @@ public:
 		}
 		this->_editorCamera.EnableFrameBuffer(true);
 
-
+		InitWorld();
 		/*調試用函數*/
 
-
+		
 
 	}
 
 private:
-
+	void InitWorld();
+	
 
 };
 

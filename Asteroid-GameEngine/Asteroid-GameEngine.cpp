@@ -35,7 +35,7 @@ bool _mouseLucked = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 const char* glsl_version = "#version 460";
-World* _cur_World;
+
 
 
 int main()
@@ -55,8 +55,8 @@ int main()
 	Window *_mainWindow = new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
 	_mainWindow->DeBug_Mode = true;
 
-	SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建   目前需要在world的類別前宣告
-	_cur_World = new World();
+	
+	
 	//UI 初始化-------------
 	{
 		IMGUI_CHECKVERSION();
@@ -164,7 +164,7 @@ int main()
 	//SceneManager::OpenFile();//調試用函數
 	//記得拿掉
 	GLDebugDrawer* _deb = new GLDebugDrawer();
-	_cur_World->dynamicsWorld->setDebugDrawer(_deb);
+	Window::_Mainworld->m_dynamicsWorld->setDebugDrawer(_deb);
 	
 
 	while (!Window::WindowShouldClose)
@@ -202,7 +202,7 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		//世界的畫面刷新
-		_cur_World->UpdateFrame();
+		Window::_Mainworld->UpdateFrame();
 		//_deb->drawLine(btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(0, 0,0),btVector3(1,0,0));
 
 		// 正在解決MSAA 抗鋸齒  想辦法把抗鋸齒用到幀緩衝上
@@ -344,7 +344,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
-		if (lastX>WindowUI::UI_Left_X&&lastX<WindowUI::UI_Right_X)
+		if (lastX>WindowUI::UI_Left_X&&lastX<WindowUI::UI_Right_X&&lastY>WindowUI::UI_Left_Y)
 		{
 			Raycast::SetMousePosition(lastX, lastY + Window::_Height / 45);
 			btCollisionWorld::ClosestRayResultCallback RayCallback(
@@ -353,7 +353,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			RayCallback.m_collisionFilterMask = 1;
 			RayCallback.m_collisionFilterGroup = 1;
 
-			_cur_World->dynamicsWorld->rayTest(
+			Window::_Mainworld->m_dynamicsWorld->rayTest(
 				btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z),
 				RayCallback
 			);

@@ -31,7 +31,7 @@ void BoxCollision::CreateBox()
 	btScalar mass(this->_Mass);
 	//colShape->setLocalScaling(btVector3(transform->scale.x, transform->scale.y, transform->scale.z));
    //btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
-	World::collisionShapes.push_back(colShape);
+	Window::_Mainworld->m_collisionShapes.push_back(colShape);
 
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -57,7 +57,7 @@ void BoxCollision::CreateBox()
 	body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 	body->setCustomDebugColor(btVector3(1,1,1));
 
-	World::dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
+	Window::_Mainworld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
 	
 
 	//World::dynamicsWorld->addRigidBody(body);
@@ -68,29 +68,8 @@ void BoxCollision::CreateBox()
 
 void BoxCollision::UpdateCollision()
 {
-	World::dynamicsWorld->removeCollisionObject(this->body);
-	/*btTransform transform;
-	transform.setIdentity();
-	btVector3 _pos(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z);
-	transform.setOrigin(_pos);
-	btQuaternion _rot;
-	_rot.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
-	transform.setRotation(_rot);
-	this->body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
-	this->body->setWorldTransform(transform);
-	//this->body->getMotionState()->setWorldTransform(transform);
+	Window::_Mainworld->deleteRigidBody(this->body);
 
-	this->body->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
-	this->body->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
-	this->body->clearForces();*/
-	this->UpdateState();
-}
-
-
-void BoxCollision::UpdateState()
-{
-	//Remove the rigid body from the dynamics world
-	//World::dynamicsWorld->removeRigidBody(this->body);
-	World::dynamicsWorld->removeCollisionObject(this->body);
 	CreateBox();
 }
+

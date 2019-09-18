@@ -118,7 +118,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;assimp-vc140-mt.lib;opengl32.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;assimp-vc140-mt.lib;opengl32.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;LinearMath_Debug.lib;BulletExampleBrowserLib_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)src\glfw-3.3.bin.WIN64\lib-vc2017;$(SolutionDir)Asteroid-GameEngine;$(SolutionDir)Asteroid-GameEngine\Physics Engine;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -252,6 +252,18 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="Physics Engine\clew\clew.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\Common2dCanvasInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonCallbacks.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonCameraInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonExampleInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonFileIOInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonGraphicsAppInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonGUIHelperInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonMultiBodyBase.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonParameterInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonRenderInterface.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonRigidBodyBase.h" />
+    <ClInclude Include="Physics Engine\CommonInterfaces\CommonWindowInterface.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="shader_m.h" />

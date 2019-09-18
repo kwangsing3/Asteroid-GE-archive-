@@ -61,7 +61,7 @@ uniform PointLight pointLights[PLight_Length];
 
 uniform SpotLight spotLight;
 uniform Material material;
-//uniform vec3 Color;
+uniform vec3 Color;
 
 //Shadow texture
 uniform sampler2D diffuseTexture;
@@ -142,7 +142,7 @@ void main()
     float shadow = shadows ? ShadowCalculation(fs_in.FragPos) : 0.0;                      
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;   
 
-	 FragColor = vec4(result*lighting, 1.0);
+	 FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
     
 }
 

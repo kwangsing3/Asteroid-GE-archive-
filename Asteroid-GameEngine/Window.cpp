@@ -16,12 +16,20 @@ unsigned int Window::_Height = 600;
 Camera Window::_editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool Window::WindowShouldClose = false;
 bool Window::DeBug_Mode = false;
+
+World* Window::_Mainworld;
+
 //關於專案設定
 bool WindowUI::All_UIElement = true;
 Game_Mode WindowUI::_mode = Mode_3D;
 std::vector<int> Window::vec_ID;
 WindowUI *Window::_Main_UI;
 
+void Window::InitWorld()
+{
+	this->_Mainworld = new World();
+	this->_Mainworld->CreateDepthMap();
+}
 // ---------------------------UI---------------------------
 static void MainMenuBar();
 static void Menu_File();
@@ -34,8 +42,8 @@ bool WindowUI::show_simple_overlay = false;
 static SelectObject * _headSelectObject = new SelectObject();
 static SelectObject *_cSelectObject = _headSelectObject;
 float WindowUI::UI_Left_X;
+float WindowUI::UI_Left_Y;
 float WindowUI::UI_Right_X;
-
 void Clear_ListBool()
 {
 	_cSelectObject = _headSelectObject;
@@ -128,18 +136,8 @@ void WindowUI::SelectThisObject(SelectObject * selectobject)
 	Clear_ListBool();
 	selectobject->Is_selected = !selectobject->Is_selected;
 	cur_SelectObject = selectobject;
-	if (World::_piv != NULL)World::_piv->AttachObject(selectobject->_actor);
-	static unsigned int AxisVAO, AxisVBO;
-	// Create Axis
-/*	float AxisVertices[] = {
-		//red			 //X-axis                          //arrow
-		1.0f,0.0f,0.0f,  -4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f,  4.0f,0.0f,0.0f, 3.0f,1.0f,0.0f, 4.0f,0.0f,0.0f, 3.0f,-1.0f,0.0f,
-		//green          //Y-axis
-		0.0f,1.0f,0.0f,  0.0f,-4.0f,0.0f,  0.0f,4.0f,0.0f,  0.0f,4.0f,0.0f, 1.0f,3.0f,0.0f, 0.0f,4.0f,0.0f, -1.0f,3.0f,0.0f,
-		//blue           //Z-axis
-		0.0f,0.0f,1.0f,  0.0f,0.0f,-4.0f,  0.0f,0.0f,4.0f,  0.0f,0.0f,4.0f, 0.0f,1.0f,3.0f, 0.0f,0.0f,4.0f, 0.0f,-1.0f,3.0f,
-	};*/
 
+	if (World::_piv != NULL) World::_piv->AttachObject(selectobject->_actor);
 }
 void WindowUI::ListInspectorCur(SelectObject* _sel)
 {
@@ -213,11 +211,11 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
 				{
 					_sel->_actor->boxcollision->_Mass = f0;
-					_sel->_actor->boxcollision->UpdateState();
+					_sel->_actor->boxcollision->UpdateCollision();
 				}
 				if (ImGui::Checkbox("Debug Line", &_sel->_actor->boxcollision->_needdebug))
 				{
-					_sel->_actor->boxcollision->UpdateState();
+					_sel->_actor->boxcollision->UpdateCollision();
 				}
 			}
 		}
@@ -282,6 +280,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			*/
 
 			UI_Left_X = ImGui::GetWindowWidth()+ ImGui::GetWindowPos().x;
+			UI_Left_Y = ImGui::GetWindowPos().y;
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = ImGui::GetWindowHeight();
 			//delete [] array;
@@ -476,7 +475,12 @@ static void MainMenuBar()
 			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_PointLight(WindowUI::cur_SelectObject->_actor); }
 			if (ImGui::MenuItem("Add TestComponent")) {}
 			ImGui::Separator();
-			if (ImGui::MenuItem("Add BoxCollision")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject->_actor); }
+			if (ImGui::MenuItem("Add BoxCollision")) 
+			{ 
+				if (WindowUI::cur_SelectObject != NULL||WindowUI::cur_SelectObject->_actor != NULL)
+					ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject->_actor); 
+					
+			}
 			if (ImGui::MenuItem("Add BoxCollision2D")) {}
 			if (ImGui::MenuItem("Add SphereCollision")) {}
 			if (ImGui::MenuItem("Add SphereCollision2D")) {}
@@ -507,7 +511,7 @@ static void MainMenuBar()
 			{
 				for (int i = 0; i < SceneManager::Objects.size(); i++)
 				{
-					if (SceneManager::Objects[i]->boxcollision != NULL) SceneManager::Objects[i]->boxcollision->UpdateState();
+					if (SceneManager::Objects[i]->boxcollision != NULL) SceneManager::Objects[i]->boxcollision->UpdateCollision();
 				}
 			}
 

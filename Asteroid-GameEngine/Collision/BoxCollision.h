@@ -40,7 +40,7 @@ public:
 
 	void UpdateCollision();
 	
-	void UpdateState();
+	
 
 private:
 	
