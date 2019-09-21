@@ -28,6 +28,7 @@ void Meshrender::Draw(Shader _shader)
 	_shader.use();
 	_shader.setMat4("projection", Window::_editorCamera.Projection);
 	_shader.setMat4("view", Window::_editorCamera.GetViewMatrix());
+	_Mat4model = glm::mat4(1.0f);
 	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 	glm::quat MyQuaternion;
 	glm::vec3 EulerAngles(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));

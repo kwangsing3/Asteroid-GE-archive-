@@ -642,7 +642,7 @@ static void ShowSimpleOverlay(bool* p_open)
 			ImGui::Text("Simple overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
 			ImGui::Separator();
 			
-			ImGui::TextColored(ImVec4(1,1,1,1),"FPS: %.1f", WindowUI::_FPS);
+			ImGui::Text("FPS: %.1f", WindowUI::_FPS);
 			
 			
 			if (ImGui::BeginPopupContextWindow())
