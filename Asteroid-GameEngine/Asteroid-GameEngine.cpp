@@ -10,6 +10,7 @@
 #include "GraphicEngine/imgui.h"
 #include "GraphicEngine/imgui_impl_glfw.h"
 #include "GraphicEngine/imgui_impl_opengl3.h"
+
 #include <Window.h>
 #include <model.h>     //導入模型
 #include <SceneManager.h>
@@ -18,7 +19,7 @@
 #include <Raycast.h>
 //#include<ADD_Component.h>
 #include "btBulletDynamicsCommon.h"
-
+#include "GraphicEngine/imgui_Custom.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -65,12 +66,13 @@ int main()
 		ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
 	//	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
 	//	io.Fonts->Build();
-
+		
 
 		// Setup Dear ImGui style
 		//ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();
-		ImGui::StyleColorsLight();
+		ImGui::StyleColorsCustom();
+		
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(_mainWindow->MainGLFWwindow, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
@@ -187,7 +189,7 @@ int main()
 		//  Game scene	
 		//glBindFramebuffer(GL_FRAMEBUFFER, Window::_editorCamera.GetframeBuffer());			
 		//  ------ render
-		glClearColor(0.2f, 0.2f, 0.24f, 1.0f);
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		//Draw Croodinate  基本座標(白)
@@ -203,7 +205,7 @@ int main()
 			else
 				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
 			SceneManager::vec_ShaderProgram[0].setMat4("model", model);
-			SceneManager::vec_ShaderProgram[0].setVec3("Color", 1, 1, 1);
+			SceneManager::vec_ShaderProgram[0].setVec3("Color",0.4f,0.4f,0.4f);
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
 		}
@@ -452,5 +454,7 @@ unsigned int loadCubemap(vector<std::string> faces)
 
 	return textureID;
 }
+
+
 
 

@@ -168,6 +168,7 @@ void Meshrender::CreateMouseCollision()
 }
 void Meshrender::UpdateCollision()
 {
+	if (this->body == NULL) return;
 	Window::_Mainworld->deleteRigidBody(this->body);
 	CreateMouseCollision();
 }

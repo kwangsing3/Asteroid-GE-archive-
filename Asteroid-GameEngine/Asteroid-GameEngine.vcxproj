@@ -252,6 +252,7 @@
     <ClInclude Include="GraphicEngine\imstb_rectpack.h" />
     <ClInclude Include="GraphicEngine\imstb_textedit.h" />
     <ClInclude Include="GraphicEngine\imstb_truetype.h" />
+    <ClInclude Include="GraphicEngine\imgui_Custom.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />

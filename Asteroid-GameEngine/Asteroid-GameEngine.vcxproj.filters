@@ -346,6 +346,9 @@
     <ClInclude Include="Physics Engine\CommonInterfaces\CommonWindowInterface.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="GraphicEngine\imgui_Custom.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assimp\color4.inl">
