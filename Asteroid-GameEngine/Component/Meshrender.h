@@ -19,7 +19,11 @@ class btRigidBody;
 class btCollisionShape;
 class Shader;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, _Model, NONE};
-enum RotateType { RotateType01, RotateType02, RotateType03, RotateType04, RotateType05, RotateType06, RotateType07, RotateType08};
+struct ModelStruct
+{
+	std::vector<Mesh> _meshes;
+	std::string path;
+};
 enum RenderMode { RMode2D, RMode3D };
 
 class Meshrender :public Component
@@ -42,6 +46,7 @@ public:
 	std::vector<Mesh> meshes;
 	std::string directory;
 	glm::mat4 _Mat4model;
+	static std::vector<ModelStruct> ModelList;
 	/*  Model Data */
 	btRigidBody* body;
 	btCollisionShape* colShape;
@@ -74,9 +79,18 @@ public:
 	}
 	void SaveFile(pugi::xml_node _node) override;
 	void OpenFile(pugi::xml_node _node) override;
-	void SwitchRotateType(RotateType _ro);
+
 	void RecreateShape(std::string _path)
 	{
+		for (int i = 0; i < ModelList.size(); i++)
+		{
+			if (ModelList[i].path == _path)
+			{
+				meshes = ModelList[i]._meshes;
+				return;
+			}
+		}
+
 		loadModel(_path);
 	}
 	virtual void UpdateCollision();
@@ -103,6 +117,10 @@ private:
 
 		// process ASSIMP's root node recursively
 		processNode(scene->mRootNode, scene);
+		ModelStruct _NewModel;
+		_NewModel.path = path;
+		_NewModel._meshes = this->meshes;
+		ModelList.push_back(_NewModel);
 	}
 
 	// processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).

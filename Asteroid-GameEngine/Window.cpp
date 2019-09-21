@@ -38,12 +38,13 @@ static float _maineditorX = Window::_Width / 3, _maineditorY = Window::_Height /
 static float _LogoutX = _maineditorX * 2;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
-bool WindowUI::show_simple_overlay = false;
+bool WindowUI::show_simple_overlay = true;
 static SelectObject * _headSelectObject = new SelectObject();
 static SelectObject *_cSelectObject = _headSelectObject;
 float WindowUI::UI_Left_X;
 float WindowUI::UI_Left_Y;
 float WindowUI::UI_Right_X;
+float WindowUI::_FPS=0;
 void Clear_ListBool()
 {
 	_cSelectObject = _headSelectObject;
@@ -197,11 +198,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 					_sel->_actor->meshrender->UpdateCollision();
 				}
 				static int _curco = 0;
-				const char* _rotype[] = {"RotateType01","RotateType02","RotateType03","RotateType04","RotateType05","RotateType06","RotateType07","RotateType08" };
-				if (ImGui::Combo("RotateType",&_curco, _rotype, IM_ARRAYSIZE(_rotype)))
-				{
-					_sel->_actor->meshrender->SwitchRotateType(RotateType(_curco));
-				}
+				
 				ImGui::Checkbox("ADDingX", &_sel->_actor->meshrender->ADDingX);
 				ImGui::Checkbox("ADDingY", &_sel->_actor->meshrender->ADDingY);
 				ImGui::Checkbox("ADDingZ", &_sel->_actor->meshrender->ADDingZ);
@@ -331,11 +328,45 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				ADD_Component::Add_PointLight(_ac);
 				_ac->transform->name = (char*) "New PointLight";
 			}
-			if (ImGui::Button("新增一顆隕石"))
+			if (ImGui::Button("新增10顆隕石"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac,"ExampleModel/rock.obj");
-				_ac->transform->name = (char*) "New Asteroid";
+				
+
+				unsigned int amount = 10;
+				
+				srand(glfwGetTime()); // initialize random seed	
+				float radius = 50.0;
+				float offset = 2.5f;
+				for (unsigned int i = 0; i < amount; i++)
+				{
+					glm::mat4 model = glm::mat4(1.0f);
+					// 1. translation: displace along circle with 'radius' in range [-offset, offset]
+					float angle = (float)i / (float)amount * 360.0f;
+					float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+					float x = sin(angle) * radius + displacement;
+					displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+					float y = displacement * 0.4f; // keep height of asteroid field smaller compared to width of x and z
+					displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+					float z = cos(angle) * radius + displacement;
+					model = glm::translate(model, glm::vec3(x, y, z));
+
+					// 2. scale: Scale between 0.05 and 0.25f
+					float scale = (rand() % 20) / 100.0f + 0.05;
+					model = glm::scale(model, glm::vec3(scale));
+
+					// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+					float rotAngle = (rand() % 360);
+					model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+					// 4. now add to list of matrices
+					
+
+					Actor* _ac = ADD_Component::Add_Actor();
+					ADD_Component::Add_Meshrender(_ac, "ExampleModel/rock.obj");
+					_ac->transform->name = (char*) "New Asteroid";
+					_ac->meshrender->_Mat4model = model;
+				}
+
 			}
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = *height - ImGui::GetWindowHeight();
@@ -595,21 +626,17 @@ static void ShowSimpleOverlay(bool* p_open)
 		{
 			ImVec2 window_pos = ImVec2((corner & 1) ? io.DisplaySize.x - DISTANCE : DISTANCE, (corner & 2) ? io.DisplaySize.y - DISTANCE : DISTANCE);
 			ImVec2 window_pos_pivot = ImVec2((corner & 1) ? 1.0f : 0.0f, (corner & 2) ? 1.0f : 0.0f);
-			ImGui::SetNextWindowPos(ImVec2(window_pos.x, window_pos.y + 10), ImGuiCond_Always, window_pos_pivot);
+			ImGui::SetNextWindowPos(ImVec2(WindowUI::UI_Left_X, window_pos.y + 10), ImGuiCond_Always, window_pos_pivot);
 		}
 		ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
 		if (ImGui::Begin("Example: Simple overlay", p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
 		{
 			ImGui::Text("Simple overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
 			ImGui::Separator();
-			if (ImGui::IsMousePosValid())
-			{
-				ImGui::Text("Click Position: (%.1f,%.1f)", Raycast::X_pos, Raycast::Y_pos);
-				ImGui::Text("World Position: (%.1f,%.1f,%.1f)", Raycast::GetWorldPosition(0.0f).x, Raycast::GetWorldPosition(0.0f).y, Raycast::GetWorldPosition(0.0f).z);
-			}
-
-			else
-				ImGui::Text("Mouse Position: <invalid>");
+			
+			ImGui::TextColored(ImVec4(1,1,1,1),"FPS: %.1f", WindowUI::_FPS);
+			
+			
 			if (ImGui::BeginPopupContextWindow())
 			{
 				if (ImGui::MenuItem("Custom", NULL, corner == -1)) corner = -1;

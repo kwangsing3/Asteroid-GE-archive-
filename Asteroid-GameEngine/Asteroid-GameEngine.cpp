@@ -162,15 +162,26 @@ int main()
 	//---------------------------------------
 	//記得拿掉
 	//SceneManager::OpenFile();//調試用函數
+
+
 	//記得拿掉
 	
-	
+	double previousTime = glfwGetTime();
+	int frameCount = 0;
 
 	while (!Window::WindowShouldClose)
 	{
-		float currentFrame = glfwGetTime();
+		double currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
+		frameCount++;
+		if (currentFrame - previousTime >= 1.0)
+		{
+			// Display the frame count here any way you want.
+			WindowUI::_FPS = frameCount;
+			frameCount = 0;
+			previousTime = currentFrame;
+		}
 		// ------ input
 		processInput(_mainWindow->MainGLFWwindow);
 		//  Game scene	

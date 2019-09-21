@@ -40,7 +40,7 @@ public:
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;
-	
+	static float _FPS;
 	static float UI_Left_X;
 	static float UI_Left_Y;
 	//static float UI_Right_X;

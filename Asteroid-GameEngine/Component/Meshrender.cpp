@@ -18,6 +18,7 @@
 #include "GraphicEngine/imgui_impl_opengl3.h"
 #include "btBulletDynamicsCommon.h"
 
+std::vector<ModelStruct> Meshrender::ModelList;
 
 float CubeVertices[] = {
 	// Back face
@@ -90,13 +91,7 @@ void Meshrender::OpenFile(pugi::xml_node _node)
 	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
 }
 
-void Meshrender::SwitchRotateType(RotateType _ro)   //這是測試旋轉函數用的函數
-{
-	this->_actor->transform->Translate(glm::vec3(0,0,0));
-	this->_actor->transform->Rotate(glm::vec3(0, 0, 0));
-	this->_actor->transform->Scale(glm::vec3(1, 1, 1));
-	
-}
+
 
 
 void Meshrender::Draw(Shader _shader)
