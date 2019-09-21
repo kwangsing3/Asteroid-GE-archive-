@@ -173,18 +173,18 @@ void Meshrender::UpdateCollision()
 	Window::_Mainworld->deleteRigidBody(this->body);
 	CreateMouseCollision();
 }
-void Meshrender::SaveFile(pugi::xml_node _node)
+void Meshrender::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->meshrender == NULL) return;
-	_node.append_attribute("meshrender") = 1;
-	pugi::xml_node _n = _node.append_child("MeshRender");
+	_node->append_attribute("meshrender") = 1;
+	pugi::xml_node _n = _node->append_child("MeshRender");
 	_n.append_attribute("VertexColorX") = this->_actor->meshrender->VertexColor.x;
 	_n.append_attribute("VertexColorY") = this->_actor->meshrender->VertexColor.y;
 	_n.append_attribute("VertexColorZ") = this->_actor->meshrender->VertexColor.z;
 }
-void Meshrender::OpenFile(pugi::xml_node _node)
+void Meshrender::OpenFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->meshrender == NULL) return;
-	pugi::xml_node _n = _node.child("MeshRender");
+	pugi::xml_node _n = _node->child("MeshRender");
 	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
 }

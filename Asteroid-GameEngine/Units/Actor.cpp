@@ -2,8 +2,14 @@
 
 #include <iostream>
 
-Transform transform;
-bool enbaled = true;
+/*#include <Component/Transform.h>
+#include <Component/DirectionalLight.h>
+#include <Component/PointLight.h>
+#include <Component/Meshrender.h>
+#include <Collision/BoxCollision.h>*/
+
+
+
 
 
 void Actor::Draw()

@@ -1,8 +1,8 @@
 #ifndef POINTLIGHT_H
 #define POINTLIGHT_H
 
-#include <Component/Transform.h>
 #include <Component/Component.h>
+
 
 
 class PointLight:public Component
@@ -29,8 +29,8 @@ public:
 		linear = 0.09f;
 		quadratic = 0.032f;
 	}
-	void SaveFile(pugi::xml_node _node) override;
-	void OpenFile(pugi::xml_node _node) override;
+	void SaveFile( pugi::xml_node* _node) override;
+	void OpenFile( pugi::xml_node* _node) override;
 };
 
 

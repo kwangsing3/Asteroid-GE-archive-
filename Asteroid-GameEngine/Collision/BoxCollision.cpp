@@ -1,27 +1,22 @@
 ﻿#include <Collision/BoxCollision.h>
 #include <SceneManager.h>
 #include <Window.h>
-#include <glm/glm.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <World.h>
 #include "btBulletDynamicsCommon.h"
-void BoxCollision::SaveFile(pugi::xml_node _node)
+void BoxCollision::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->boxcollision == NULL) return;
-
-	
-	_node.append_attribute("_BoxCollision") = 1;
-	_node.append_child("BoxCollision").append_attribute("Mass") = this->_actor->boxcollision->_Mass;
+	_node->append_attribute("_BoxCollision") = 1;
+	_node->append_child("BoxCollision").append_attribute("Mass") = this->_actor->boxcollision->_Mass;
 }
-void BoxCollision::OpenFile(pugi::xml_node _node)
+void BoxCollision::OpenFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->boxcollision == NULL) return;
-	float _f = _node.child("BoxCollision").attribute("Mass").as_float();
+	float _f = _node->child("BoxCollision").attribute("Mass").as_float();
 	this->_Mass = _f;
-
 }
-
-int Collision_flags = 0;
 
 void BoxCollision::CreateBox()
 {
@@ -52,7 +47,7 @@ void BoxCollision::CreateBox()
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
-
+	int Collision_flags = 0;
 	Collision_flags = body->getCollisionFlags();
 	body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 	body->setCustomDebugColor(btVector3(1,1,1));
@@ -68,8 +63,8 @@ void BoxCollision::CreateBox()
 
 void BoxCollision::UpdateCollision()
 {
+	if (this->body == NULL) return;
 	Window::_Mainworld->deleteRigidBody(this->body);
-
 	CreateBox();
 }
 

@@ -1,8 +1,6 @@
 #ifndef DIRECTIONALLIGHT_H
 #define DIRECTIONALLIGHT_H
 
-
-
 #include <Component/Component.h>
 
 class DirectionalLight:public Component
@@ -22,8 +20,8 @@ public:
 		Specular = {0.5f,0.5f,0.5f};
 		enabled = true;
 	}
-	void SaveFile(pugi::xml_node _node) override;
-	void OpenFile(pugi::xml_node _node) override;
+	void SaveFile( pugi::xml_node* _node) override;
+	void OpenFile( pugi::xml_node* _node) override;
 };
 
 

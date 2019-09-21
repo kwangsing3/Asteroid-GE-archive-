@@ -1,9 +1,9 @@
 #ifndef CLASS_TRANSFORM_H
 #define CLASS_TRANSFORM_H
 #include<Component/Component.h>
-#include <glm/glm.hpp>
-#include <iostream>
-class Quaternion;
+
+
+
 class Transform:public Component
 {
 public:
@@ -20,11 +20,11 @@ public:
 		name =(char*)"New Actor";
 		enabled = true;
 	}
-	void SaveFile(pugi::xml_node _node) override;
-	void OpenFile(pugi::xml_node _node) override;
+	void SaveFile( pugi::xml_node* _node) override;
+	void OpenFile( pugi::xml_node* _node) override;
 	void Translate(glm::vec3 _pos);
 	void Rotate(glm::vec3 _rot);
-	void Rotate(Quaternion _qu);
+	//void Rotate(glm::Quaternion _qu);
 	void Scale(glm::vec3 _scal);
 	 
 	

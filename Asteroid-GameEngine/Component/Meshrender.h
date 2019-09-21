@@ -75,8 +75,8 @@ public:
 		
 		
 	}
-	void SaveFile(pugi::xml_node _node) override;
-	void OpenFile(pugi::xml_node _node) override;
+	void SaveFile( pugi::xml_node* _node) override;
+	void OpenFile( pugi::xml_node* _node) override;
 
 	void RecreateShape(std::string _path)
 	{

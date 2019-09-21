@@ -6,6 +6,11 @@
 #include <Component/Meshrender.h>
 #include <Collision/BoxCollision.h>
 
+class Transform;
+class DirectionalLight;
+class PointLight;
+class Meshrender;
+class BoxCollision;
 
 class Actor
 {

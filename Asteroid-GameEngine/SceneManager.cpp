@@ -39,7 +39,7 @@ void SceneManager::OpenFile()
 		_Actor->transform->name = (char*)_char->c_str();
 		//_Actor->ID = tool.attribute("ID").as_int();
 		//Transform
-		_Actor->transform->OpenFile(tool);
+		_Actor->transform->OpenFile(&tool);
 
 		// Component
 		int _componentSize = tool.attribute("Component_size").as_int();
@@ -47,22 +47,22 @@ void SceneManager::OpenFile()
 
 		if (tool.attribute("_Dirlight").as_int())
 		{
-			ADD_Component::Add_DirectionalLight(_Actor)->OpenFile(tool);
+			ADD_Component::Add_DirectionalLight(_Actor)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("_PointLight").as_int())                                 //光線類的OpenFile詳細數值 還沒有製作
 		{
-			ADD_Component::Add_PointLight(_Actor)->OpenFile(tool);
+			ADD_Component::Add_PointLight(_Actor)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("meshrender").as_int())
 		{
-			ADD_Component::Add_Meshrender(_Actor,Cube)->OpenFile(tool);
+			ADD_Component::Add_Meshrender(_Actor,Cube)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
 		{
-			ADD_Component::Add_BoxCollision(_Actor)->OpenFile(tool);    //調試用
+			ADD_Component::Add_BoxCollision(_Actor)->OpenFile(&tool);    //調試用
 			_check++;
 		}
 		if (_check != _componentSize) { std::cout << _char << ": Component_size error" << std::endl; }
@@ -101,26 +101,26 @@ void SceneManager::SaveFile()
 		component_size = 0;
 		if (Objects[i]->transform != NULL)
 		{
-			Objects[i]->transform->SaveFile(_cur);
+			Objects[i]->transform->SaveFile(&_cur);
 		}
 		if (Objects[i]->meshrender != NULL)
 		{
-			Objects[i]->meshrender->SaveFile(_cur);
+			Objects[i]->meshrender->SaveFile(&_cur);
 			component_size++;
 		}
 		if (Objects[i]->_Dirlight != NULL)
 		{
-			Objects[i]->_Dirlight->SaveFile(_cur);
+			Objects[i]->_Dirlight->SaveFile(&_cur);
 			component_size++;
 		}
 		if (Objects[i]->_PointLight != NULL)
 		{
-			Objects[i]->_PointLight->SaveFile(_cur);
+			Objects[i]->_PointLight->SaveFile(&_cur);
 			component_size++;
 		}
 		if (Objects[i]->boxcollision != NULL)
 		{
-			Objects[i]->boxcollision->SaveFile(_cur);
+			Objects[i]->boxcollision->SaveFile(&_cur);
 			component_size++;
 		}
 		_cur.append_attribute("Component_size") = component_size;
