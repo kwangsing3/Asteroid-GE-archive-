@@ -30,10 +30,12 @@ public:
 		/*1*/Shader _StandardShader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs");
 		/*2*/Shader _DepthShader("Shader/shadow_mapping_depth.vs", "Shader/shadow_mapping_depth.fs", "Shader/point_shadows_depth.gs");
 		/*3*/Shader _ShadowdShader("Shader/shadow_mapping.vs", "Shader/shadow_mapping.fs");
+		/*4*/Shader _ModelShader("Shader/ModelShader.vs", "Shader/ModelShader.fs");
 		SceneManager::vec_ShaderProgram.push_back(_SimpleShader);
 		SceneManager::vec_ShaderProgram.push_back(_StandardShader);
 		SceneManager::vec_ShaderProgram.push_back(_DepthShader);
 		SceneManager::vec_ShaderProgram.push_back(_ShadowdShader);
+		SceneManager::vec_ShaderProgram.push_back(_ModelShader);
 	}
 private:
 

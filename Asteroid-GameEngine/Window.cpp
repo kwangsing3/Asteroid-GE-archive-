@@ -331,6 +331,12 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				ADD_Component::Add_PointLight(_ac);
 				_ac->transform->name = (char*) "New PointLight";
 			}
+			if (ImGui::Button("新增一顆隕石"))
+			{
+				Actor* _ac = ADD_Component::Add_Actor();
+				ADD_Component::Add_Meshrender(_ac,"ExampleModel/rock.obj");
+				_ac->transform->name = (char*) "New Asteroid";
+			}
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = *height - ImGui::GetWindowHeight();
 			ImGui::End();

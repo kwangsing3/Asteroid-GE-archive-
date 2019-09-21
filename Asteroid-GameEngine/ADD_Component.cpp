@@ -39,6 +39,16 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 	return _mesh;
 }
 
+Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)
+{
+	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	Meshrender* _mesh = new Meshrender(_actor, _path);
+	_actor->meshrender = _mesh;
+	SceneManager::vec_ObjectsToRender.push_back(_mesh);
+	//_ac->transform->name = (char*)"Cube";
+	return _mesh;
+}
+
 Meshrender * ADD_Component::Add_Rotater(Actor* _actor)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;

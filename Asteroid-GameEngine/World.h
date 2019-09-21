@@ -86,7 +86,7 @@ public:
 
 		SceneManager::vec_ShaderProgram[0].use();
 		SceneManager::vec_ShaderProgram[0].setInt("material.diffuse", 0);
-		Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
+		//Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
 		SceneManager::vec_ObjectsToRender.push_back(this);
 	}
 	void Draw(Shader _shader) override
@@ -221,7 +221,7 @@ public:
 		//Pyhscis Pipeline
 		if (this->_PlayMode)
 		{
-			this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
+			/*this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
 			for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 			{
 				btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
@@ -253,11 +253,11 @@ public:
 						break;
 					}
 				}
-			}
+			}*/
 		}
 		//glCullFace(GL_FRONT);
 		///Shadw
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		/*glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
@@ -268,13 +268,13 @@ public:
 		//glCullFace(GL_BACK);
 		// Draw Pipeline
 		glViewport(0, 0, Window::_Width, Window::_Height);
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		*/
 		this->m_dynamicsWorld->debugDrawWorld();
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==NONE?0:1]); // 這是暫時的  記得要改 非常難看  而且非常難懂
+			//glActiveTexture(GL_TEXTURE1);
+			//glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==NONE?0:4]); // 這是暫時的  記得要改 非常難看  而且非常難懂
 		}
 		//this->dynamicsWorld->debugDrawWorld();
 	}

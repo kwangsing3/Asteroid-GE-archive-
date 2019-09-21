@@ -63,8 +63,8 @@ int main()
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); //(void)io;
 		ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
-		io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
-		io.Fonts->Build();
+	//	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
+	//	io.Fonts->Build();
 
 
 		// Setup Dear ImGui style
