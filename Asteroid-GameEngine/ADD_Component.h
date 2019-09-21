@@ -11,7 +11,7 @@ public:
 	static Actor* Add_Actor();
 	static Meshrender* Add_Meshrender(Actor* _actor, Shape _sha);
 	static Meshrender* Add_Meshrender(Actor* _actor, std::string _path);
-	static Meshrender* Add_Rotater(Actor* _actor = nullptr);
+	
 	static DirectionalLight* Add_DirectionalLight(Actor* _actor = nullptr);
 	static PointLight* Add_PointLight(Actor* _actor = nullptr);
 

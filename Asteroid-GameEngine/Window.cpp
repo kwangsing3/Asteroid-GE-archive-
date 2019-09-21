@@ -199,9 +199,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				}
 				static int _curco = 0;
 				
-				ImGui::Checkbox("ADDingX", &_sel->_actor->meshrender->ADDingX);
-				ImGui::Checkbox("ADDingY", &_sel->_actor->meshrender->ADDingY);
-				ImGui::Checkbox("ADDingZ", &_sel->_actor->meshrender->ADDingZ);
+				
 				ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable);
 			}
 		}
@@ -309,30 +307,40 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				Actor* _ac = ADD_Component::Add_Actor();
 				_ac->transform->name = (char*) "New Actor";
 			}
-			if (ImGui::Button("新增一個方塊物件"))
+			if (ImGui::Button("Create a cube"))
 			{
 				Actor* _ac = ADD_Component::Add_Actor();
 				ADD_Component::Add_Meshrender(_ac,Cube);
 				_ac->transform->name = (char*) "New Cube";
 			}
+			if (ImGui::Button("Create a sphere"))
+			{
+				Actor* _ac = ADD_Component::Add_Actor();
+				ADD_Component::Add_Meshrender(_ac, Sphere);
+				_ac->transform->name = (char*) "New Sphere";
+			}
+			if (ImGui::Button("Create a planet"))
+			{
+				Actor* _ac = ADD_Component::Add_Actor();
+				ADD_Component::Add_Meshrender(_ac, "ExampleModel/planet.obj");
+				_ac->transform->name = (char*) "New Plantet";
+			}
 
-			if (ImGui::Button("新增一個方向光源物件"))
+			if (ImGui::Button("Create a Directional light"))
 			{
 				Actor* _ac = ADD_Component::Add_Actor();
 				ADD_Component::Add_DirectionalLight(_ac);
 				_ac->transform->name = (char*) "New DirectionalLight";
 			}
-			if (ImGui::Button("新增一個點光源物件"))
+			if (ImGui::Button("Create a PointLight"))
 			{
 				Actor* _ac = ADD_Component::Add_Actor();
 				ADD_Component::Add_PointLight(_ac);
 				_ac->transform->name = (char*) "New PointLight";
 			}
-			if (ImGui::Button("新增10顆隕石"))
+			if (ImGui::Button("Create 100 Asteroids"))
 			{
-				
-
-				unsigned int amount = 10;
+				unsigned int amount = 100;
 				
 				srand(glfwGetTime()); // initialize random seed	
 				float radius = 50.0;

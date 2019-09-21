@@ -28,7 +28,7 @@ public:
 	std::vector<btCollisionShape*> colshape;
 	int _group = 1;
 	int _mask = 1;
-	
+	unsigned int VBO, VAO;
 	_Pivot(Actor* _a)
 	{
 		_visable = false;

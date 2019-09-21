@@ -4,8 +4,11 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
-
+uniform bool HasTexture;
 void main()
 {
-    FragColor = texture(texture_diffuse1, TexCoords);
+	if(HasTexture)
+		FragColor = texture(texture_diffuse1, TexCoords);
+	else
+		FragColor = vec4(0.4,0.4,0.4,1);
 }

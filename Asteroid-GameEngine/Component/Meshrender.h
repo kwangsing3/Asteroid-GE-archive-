@@ -18,7 +18,7 @@
 class btRigidBody;
 class btCollisionShape;
 class Shader;
-enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, Line, _Model, NONE};
+enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
 struct ModelStruct
 {
 	std::vector<Mesh> _meshes;
@@ -34,11 +34,11 @@ public:
 	Shape _shape;
 	RenderMode _mode;
 	//---------------------------------
-	unsigned int VBO, VAO;
+
 	//unsigned int Texture;
 	virtual void Draw(Shader _shader);
 	bool _needdebug = false;
-	bool ADDingX = false;     bool ADDingY = false;     bool ADDingZ = false;
+	
 	bool _visable = true;
 	
 	/*  Model Data */
@@ -47,6 +47,7 @@ public:
 	std::string directory;
 	glm::mat4 _Mat4model;
 	static std::vector<ModelStruct> ModelList;
+	
 	/*  Model Data */
 	btRigidBody* body;
 	btCollisionShape* colShape;
@@ -56,14 +57,12 @@ public:
 		_actor = _a;
 		this->_mode = RenderMode(1);
 		this->enabled = true;
-		this->CreateShape(_shape);
+		this->RecreateShape(_shape);
 		this->VertexColor = glm::vec3(1, 1, 1);
-
+		_Mat4model = glm::mat4(1.0f);
 		if(_shape!=NONE)
 			CreateMouseCollision();
-		//transform->name = (char*)"Cube";
-		//  滑鼠判定的碰撞體
-		//CreateMouseCollision();
+	
 	}
 	Meshrender(Actor* _a, std::string _path)
 	{
@@ -71,7 +70,6 @@ public:
 		_Mat4model = glm::mat4(1.0f);
 		this->_mode = RenderMode(1);
 		this->enabled = true;
-		this->_shape = _Model;
 		this->RecreateShape(_path);
 		this->VertexColor = glm::vec3(1, 1, 1);
 		
@@ -82,6 +80,7 @@ public:
 
 	void RecreateShape(std::string _path)
 	{
+		this->_shape = _Model;
 		for (int i = 0; i < ModelList.size(); i++)
 		{
 			if (ModelList[i].path == _path)
@@ -93,14 +92,50 @@ public:
 
 		loadModel(_path);
 	}
+	void RecreateShape(Shape _shape)
+	{
+		this->_shape = _shape;
+		std::string DefaultShapePath;
+		switch (_shape)
+		{
+		case Plane:
+			DefaultShapePath = "";
+			break;
+		case Cube:
+			DefaultShapePath = "ExampleModel/Cube.obj";
+			break;
+		case Sphere:
+			DefaultShapePath = "ExampleModel/Sphere.obj";
+			break;
+		case Capsule:
+			DefaultShapePath = "";
+			break;
+		case Cylinder:
+			DefaultShapePath = "ExampleModel/Cylinder.obj";
+			break;
+		default:
+			return;
+			break;
+		}
+		for (int i = 0; i < ModelList.size(); i++)
+		{
+			if (ModelList[i].path == DefaultShapePath)
+			{
+				meshes = ModelList[i]._meshes;
+				return;
+			}
+		}
+		loadModel(DefaultShapePath);
+		//CreateMouseCollision();
+	}
 	virtual void UpdateCollision();
 	
 private:
 	//void CreateCube(RenderMode _m);
 	//void CreateLine(glm::vec3 from, glm::vec3  to, glm::vec3 color);
-	unsigned int LoadTexture(const char* path);
+	//unsigned int LoadTexture(const char* path);
 	void CreateMouseCollision();
-	void CreateShape(Shape _shape);
+	//void CreateShape(Shape _shape);
 	void loadModel(string const &path)
 	{
 		// read file via ASSIMP
