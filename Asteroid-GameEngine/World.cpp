@@ -3,12 +3,6 @@
 #include <Window.h>     //裡面有 #include <Camera.h>
 
 
-
-
-
-
-bool World::_PlayMode;
-_Pivot* World::_piv;
 //unsigned int World::depthMapFBO;
 extern World* _MainWorld;
 void _Pivot::CreateMouseCollision()

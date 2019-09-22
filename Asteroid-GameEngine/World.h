@@ -215,9 +215,9 @@ struct World : public CommonRigidBodyBase
 	
 	}
 public:
-	static bool _PlayMode;
+	 bool _PlayMode;
 	
-	static _Pivot* _piv;
+	 _Pivot* _piv;
 	virtual ~World()
 	{
 	

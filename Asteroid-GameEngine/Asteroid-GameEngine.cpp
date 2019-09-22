@@ -257,7 +257,7 @@ void processInput(GLFWwindow *window)
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 			_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
 		else
-			World::_piv->SwitchDragMode(0);
+			_MainWorld->_piv->SwitchDragMode(0);
 	}
 		
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -271,7 +271,7 @@ void processInput(GLFWwindow *window)
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 			_editorCamera.ProcessKeyboard(UP, deltaTime);
 		else
-			World::_piv->SwitchDragMode(1);
+			_MainWorld->_piv->SwitchDragMode(1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		_editorCamera.ProcessKeyboard(DOWN, deltaTime);
@@ -281,7 +281,7 @@ void processInput(GLFWwindow *window)
 		WindowUI::Renamecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 	{
-		World::_piv->SwitchDragMode(2);
+		_MainWorld->_piv->SwitchDragMode(2);
 	}
 }
 
@@ -303,37 +303,37 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 	float xoffset = xpos - lastX;
 	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 	// Pivot Drag Function
-	if (isClickingPivot && World::_piv != NULL)     
+	if (isClickingPivot && _MainWorld->_piv != NULL)
 	{
-		if (World::_piv->Drag[0])
+		if (_MainWorld->_piv->Drag[0])
 		{
-			if(World::_piv->_DragMode[0])
-				World::_piv->Translate(glm::vec3(World::_piv->_actor->transform->position.x + xoffset / 200, World::_piv->_actor->transform->position.y, World::_piv->_actor->transform->position.z));
-			else if (World::_piv->_DragMode[1])
-				World::_piv->Rotate(glm::vec3(World::_piv->_actor->transform->rotation.x + xoffset / 20, World::_piv->_actor->transform->rotation.y, World::_piv->_actor->transform->rotation.z));
-			else if (World::_piv->_DragMode[2])
-				World::_piv->Scale(glm::vec3(World::_piv->_actor->transform->scale.x + xoffset / 200, World::_piv->_actor->transform->scale.y, World::_piv->_actor->transform->scale.z));
+			if(_MainWorld->_piv->_DragMode[0])
+				_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x + xoffset / 200, _MainWorld->_piv->_actor->transform->position.y, _MainWorld->_piv->_actor->transform->position.z));
+			else if (_MainWorld->_piv->_DragMode[1])
+				_MainWorld->_piv->Rotate(glm::vec3(_MainWorld->_piv->_actor->transform->rotation.x + xoffset / 20, _MainWorld->_piv->_actor->transform->rotation.y, _MainWorld->_piv->_actor->transform->rotation.z));
+			else if (_MainWorld->_piv->_DragMode[2])
+				_MainWorld->_piv->Scale(glm::vec3(_MainWorld->_piv->_actor->transform->scale.x + xoffset / 200, _MainWorld->_piv->_actor->transform->scale.y, _MainWorld->_piv->_actor->transform->scale.z));
 		}
-		else if (World::_piv->Drag[1])
+		else if (_MainWorld->_piv->Drag[1])
 		{
 			
-			if (World::_piv->_DragMode[0])
-				World::_piv->Translate(glm::vec3(World::_piv->_actor->transform->position.x , World::_piv->_actor->transform->position.y + yoffset / 200, World::_piv->_actor->transform->position.z));
-			else if (World::_piv->_DragMode[1])
-				World::_piv->Rotate(glm::vec3(World::_piv->_actor->transform->rotation.x, World::_piv->_actor->transform->rotation.y + yoffset / 20, World::_piv->_actor->transform->rotation.z));
-			else if (World::_piv->_DragMode[2])
-				World::_piv->Scale(glm::vec3(World::_piv->_actor->transform->scale.x, World::_piv->_actor->transform->scale.y + yoffset / 200, World::_piv->_actor->transform->scale.z));
+			if (_MainWorld->_piv->_DragMode[0])
+				_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x , _MainWorld->_piv->_actor->transform->position.y + yoffset / 200, _MainWorld->_piv->_actor->transform->position.z));
+			else if (_MainWorld->_piv->_DragMode[1])
+				_MainWorld->_piv->Rotate(glm::vec3(_MainWorld->_piv->_actor->transform->rotation.x, _MainWorld->_piv->_actor->transform->rotation.y + yoffset / 20, _MainWorld->_piv->_actor->transform->rotation.z));
+			else if (_MainWorld->_piv->_DragMode[2])
+				_MainWorld->_piv->Scale(glm::vec3(_MainWorld->_piv->_actor->transform->scale.x, _MainWorld->_piv->_actor->transform->scale.y + yoffset / 200, _MainWorld->_piv->_actor->transform->scale.z));
 		}
 			
-		else if (World::_piv->Drag[2])
+		else if (_MainWorld->_piv->Drag[2])
 		{
 			
-			if (World::_piv->_DragMode[0])
-				World::_piv->Translate(glm::vec3(World::_piv->_actor->transform->position.x , World::_piv->_actor->transform->position.y, World::_piv->_actor->transform->position.z + xoffset / 200));
-			else if (World::_piv->_DragMode[1])
-				World::_piv->Rotate(glm::vec3(World::_piv->_actor->transform->rotation.x , World::_piv->_actor->transform->rotation.y, World::_piv->_actor->transform->rotation.z + xoffset / 20));
-			else if (World::_piv->_DragMode[2])
-				World::_piv->Scale(glm::vec3(World::_piv->_actor->transform->scale.x , World::_piv->_actor->transform->scale.y, World::_piv->_actor->transform->scale.z + xoffset / 200));
+			if (_MainWorld->_piv->_DragMode[0])
+				_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x , _MainWorld->_piv->_actor->transform->position.y, _MainWorld->_piv->_actor->transform->position.z + xoffset / 200));
+			else if (_MainWorld->_piv->_DragMode[1])
+				_MainWorld->_piv->Rotate(glm::vec3(_MainWorld->_piv->_actor->transform->rotation.x , _MainWorld->_piv->_actor->transform->rotation.y, _MainWorld->_piv->_actor->transform->rotation.z + xoffset / 20));
+			else if (_MainWorld->_piv->_DragMode[2])
+				_MainWorld->_piv->Scale(glm::vec3(_MainWorld->_piv->_actor->transform->scale.x , _MainWorld->_piv->_actor->transform->scale.y, _MainWorld->_piv->_actor->transform->scale.z + xoffset / 200));
 		}
 			
 		
@@ -380,19 +380,19 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				//_cur_World->dynamicsWorld.
 				if (RayCallback.m_collisionObject->_actor->meshrender->_shape == NONE)  //確定是否擊中Pivot
 				{
-					World::_piv->_actor = RayCallback.m_collisionObject->_actor;
-					World::_piv->Drag[0] = false; World::_piv->Drag[1] = false; World::_piv->Drag[2] = false;
-					if (RayCallback.m_collisionObject == World::_piv->body[0])
-						World::_piv->Drag[0] = true;
-					else if (RayCallback.m_collisionObject == World::_piv->body[1])
-						World::_piv->Drag[1] = true;
-					else if (RayCallback.m_collisionObject == World::_piv->body[2])
-						World::_piv->Drag[2] = true;
+					_MainWorld->_piv->_actor = RayCallback.m_collisionObject->_actor;
+					_MainWorld->_piv->Drag[0] = false; _MainWorld->_piv->Drag[1] = false; _MainWorld->_piv->Drag[2] = false;
+					if (RayCallback.m_collisionObject == _MainWorld->_piv->body[0])
+						_MainWorld->_piv->Drag[0] = true;
+					else if (RayCallback.m_collisionObject == _MainWorld->_piv->body[1])
+						_MainWorld->_piv->Drag[1] = true;
+					else if (RayCallback.m_collisionObject == _MainWorld->_piv->body[2])
+						_MainWorld->_piv->Drag[2] = true;
 					isClickingPivot = true;
 				}
 				else
 				{
-					if (World::_piv != NULL && World::_piv->_lowwerActor != RayCallback.m_collisionObject->_actor)
+					if (_MainWorld->_piv != NULL && _MainWorld->_piv->_lowwerActor != RayCallback.m_collisionObject->_actor)
 						//World::_piv->AttachObject(RayCallback.m_collisionObject->_actor);
 					WindowUI::SelectThisActor(RayCallback.m_collisionObject->_actor);
 				}
