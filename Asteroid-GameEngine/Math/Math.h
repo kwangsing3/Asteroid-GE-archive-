@@ -11,6 +11,8 @@ struct Quaternion
 	double w, x, y, z;
 };
 
+
+
 #include <glm/gtc/constants.hpp>
 class Math
 {
@@ -19,7 +21,7 @@ public:
 	static EulerAngles ToEulerAngles(Quaternion q)
 	{
 		EulerAngles angles;
-
+		
 		// roll (x-axis rotation)
 		double sinr_cosp = +2.0 * (q.w * q.x + q.y * q.z);
 		double cosr_cosp = +1.0 - 2.0 * (q.x * q.x + q.y * q.y);
@@ -50,7 +52,7 @@ public:
 		double sp = sin(pitch * 0.5);
 		double cr = cos(roll * 0.5);
 		double sr = sin(roll * 0.5);
-
+		
 		Quaternion q;
 		q.w = cy * cp * cr + sy * sp * sr;
 		q.x = cy * cp * sr - sy * sp * cr;

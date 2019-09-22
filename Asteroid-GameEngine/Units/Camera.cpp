@@ -1,5 +1,5 @@
 #include<Units/Camera.h>
-
+#include <vector>
 //#include <Window.h>
 
 unsigned int framebuffer;
@@ -7,12 +7,7 @@ unsigned int textureColorbuffer;
 unsigned int rbo;
 //Transform transform;
 
-std::vector<glm::vec2> viewports
-{
-	glm::vec2(800,600),
-	glm::vec2(1280,720),
-	glm::vec2(1920,1080)
-};
+
 
 void Camera::EnableFrameBuffer(bool _enable)
 {
@@ -94,24 +89,7 @@ unsigned int Camera::GetframeBuffer()
 	return framebuffer;
 }
 
-glm::mat4 Camera::SwitchCamera3D(bool *_mode)
-{
-	if (*_mode)
-	{
-		Projection = glm::perspective(glm::radians(Zoom), (float)viewports[_ViewportSetting].x / (float)viewports[_ViewportSetting].y, 0.1f, 100.0f);
-		*_mode = true;
-	}
-	else
-	{
-		Projection = glm::ortho(0.0f, (float)viewports[_ViewportSetting].x/200, 0.0f, (float)viewports[_ViewportSetting].y/200, 0.1f, 100.0f);
-		this->Up = glm::vec3(0.0f, 1.0f, 0.0f);
-		this->Yaw = YAW; this->Pitch = PITCH;
-		this->Front = glm::vec3(0.0f, 0.0f, -1.0f);
 
-		*_mode = false;
-	}
-	return Projection;
-}
 void Camera::SwitchCamera3D(bool _mode)
 {
 	if (_mode)

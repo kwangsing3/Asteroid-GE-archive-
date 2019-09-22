@@ -6,10 +6,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 //#include <Window.h>
-#include <vector>
+
 #include <iostream>
 #include <Component/Component.h>
-#include <Component/Transform.h>
+
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
 	FORWARD,
@@ -22,6 +22,7 @@ enum Camera_Movement {
 
 
 
+
 //enum Game_Mode { Mode_2D, Mode_3D } _mode;
 // Default camera values
 const float YAW = -90.0f;
@@ -30,17 +31,32 @@ const float SPEED = 2.5f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
+class CameraTransform
+{
+public:
+	glm::vec3 position;
+	glm::vec3 rotation;
+	char* name;
+	bool enabled;
+
+};
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera:public Component
 {
 public:
+	std::vector<glm::vec2> viewports
+	{
+		glm::vec2(800,600),
+		glm::vec2(1280,720),
+		glm::vec2(1920,1080)
+	};
 	// Camera Attributes
 	glm::vec3 Front;
 	glm::vec3 Up;
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
-	Transform transform;
+	CameraTransform transform;
 	glm::mat4 Projection;
 	// Euler Angles
 	float Yaw;
@@ -60,7 +76,7 @@ public:
 	unsigned int rbo;
 
 	bool Projection_3D;
-	glm::mat4 SwitchCamera3D(bool *_mode);
+	//glm::mat4 SwitchCamera3D(bool *_mode);
 	void SwitchCamera3D(bool _mode);
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
@@ -73,8 +89,9 @@ public:
 		Yaw = yaw;
 		Pitch = pitch;
 		transform.name = (char*) "Camera";
-		Projection = SwitchCamera3D(&Projection_3D);
+		SwitchCamera3D(&Projection_3D);
 		updateCameraVectors();
+		//EnableFrameBuffer(true);     目前暫時沒有使用到FrameBuffter 先藏起來
 	}
 	// Constructor with scalar values
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)

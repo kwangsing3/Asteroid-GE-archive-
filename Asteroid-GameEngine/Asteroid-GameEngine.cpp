@@ -10,12 +10,10 @@
 #include <GraphicEngine/imgui_Custom.h>
 
 #include <Window.h>
-
-#include <SceneManager.h>   //要記得刪掉 Debug用
 #include <World.h>
-
 #include <Raycast.h>
 
+#include <SceneManager.h>   //要記得刪掉 Debug用
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -23,7 +21,7 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-unsigned int loadCubemap(vector<std::string> faces);
+
 
 
 float lastX = 500.0f;
@@ -193,8 +191,8 @@ int main()
 		//Draw Croodinate  基本座標(白)
 		{
 			SceneManager::vec_ShaderProgram[0].use();
-			SceneManager::vec_ShaderProgram[0].setMat4("projection", Window::_editorCamera.Projection);
-			glm::mat4 view = Window::_editorCamera.GetViewMatrix();
+			SceneManager::vec_ShaderProgram[0].setMat4("projection", _editorCamera.Projection);
+			glm::mat4 view = _editorCamera.GetViewMatrix();
 			SceneManager::vec_ShaderProgram[0].setMat4("view", view);
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(0, 0, 0));
@@ -219,7 +217,7 @@ int main()
 
 		glDisable(GL_DEPTH_TEST);
 		//UI----------------------------------------------------------------------------------------------------------------------
-		WindowUI::ShowMyImGUIDemoWindow(&show_demo_window, &Window::_Width, &Window::_Height, Window::_editorCamera.GetframeBuffer());
+		WindowUI::ShowMyImGUIDemoWindow(&show_demo_window, &_Width, &_Height, _editorCamera.GetframeBuffer());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -234,6 +232,7 @@ int main()
 
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
+
 	glfwTerminate();
 	return 0;
 }
@@ -250,26 +249,26 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-			Window::_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
+			_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
 		else
 			World::_piv->SwitchDragMode(0);
 	}
 		
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(BACKWARD, deltaTime);
+		_editorCamera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(LEFT, deltaTime);
+		_editorCamera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(RIGHT, deltaTime);
+		_editorCamera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 	{
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-			Window::_editorCamera.ProcessKeyboard(UP, deltaTime);
+			_editorCamera.ProcessKeyboard(UP, deltaTime);
 		else
 			World::_piv->SwitchDragMode(1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		Window::_editorCamera.ProcessKeyboard(DOWN, deltaTime);
+		_editorCamera.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
 		WindowUI::Deletecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
@@ -338,7 +337,7 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
-		Window::_editorCamera.ProcessMouseMovement(xoffset, yoffset);
+		_editorCamera.ProcessMouseMovement(xoffset, yoffset);
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
@@ -356,7 +355,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
 		if (lastX>WindowUI::UI_Left_X&&lastX<WindowUI::UI_Right_X&&lastY>WindowUI::UI_Left_Y)
 		{
-			Raycast::SetMousePosition(lastX, lastY + Window::_Height / 45);
+			Raycast::SetMousePosition(lastX, lastY + _Height / 45);
 			btCollisionWorld::ClosestRayResultCallback RayCallback(
 				btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z)
 			);
@@ -410,7 +409,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	Window::_editorCamera.ProcessMouseScroll(yoffset);
+	_editorCamera.ProcessMouseScroll(yoffset);
 }
 
 // loads a cubemap texture from 6 individual texture faces

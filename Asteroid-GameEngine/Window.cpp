@@ -9,11 +9,10 @@
 
 GLFWwindow* Window::MainGLFWwindow = NULL;
 //Default  settings
-unsigned int Window::_Width = 800;
-unsigned int Window::_Height = 600;
+
 // ImVec2  Window::viewport_pos;
 // ImVec2  Window::viewport_size;
-Camera Window::_editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+
 bool Window::WindowShouldClose = false;
 bool Window::DeBug_Mode = false;
 
@@ -25,6 +24,8 @@ Game_Mode WindowUI::_mode = Mode_3D;
 std::vector<int> Window::vec_ID;
 WindowUI *Window::_Main_UI;
 
+Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+
 void Window::InitWorld()
 {
 	this->_Mainworld = new World();
@@ -34,7 +35,7 @@ void Window::InitWorld()
 static void MainMenuBar();
 static void Menu_File();
 //static void ShowExampleAppLayout(bool* p_open);
-static float _maineditorX = Window::_Width / 3, _maineditorY = Window::_Height / 3;
+static float _maineditorX = _Width / 3, _maineditorY = _Height / 3;
 static float _LogoutX = _maineditorX * 2;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
@@ -122,7 +123,7 @@ void WindowUI::SelectThisActor(Actor * _actor)
 				WindowUI::SelectThisObject(_cSelectObject);
 				break;
 			}
-
+			
 			if (_cSelectObject->next != NULL)_cSelectObject = _cSelectObject->next;
 		}
 	}
@@ -467,8 +468,8 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			ImGui::GetWindowDrawList()->AddImage(
 				(void *)(intptr_t)textureColorbuffer,
 				ImVec2(ImGui::GetCursorScreenPos()),
-				ImVec2(ImGui::GetCursorScreenPos().x + Window::_Width,
-					ImGui::GetCursorScreenPos().y + Window::_Height), ImVec2(0, 1), ImVec2(1, 0));
+				ImVec2(ImGui::GetCursorScreenPos().x + _Width,
+					ImGui::GetCursorScreenPos().y + _Height), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		MainMenuBar();
 		ImGui::End();
@@ -548,12 +549,12 @@ static void MainMenuBar()
 				if (WindowUI::_mode == Mode_3D)
 				{
 					WindowUI::_mode = Mode_2D;
-					Window::_editorCamera.SwitchCamera3D(false);
+					_editorCamera.SwitchCamera3D(false);
 				}
 				else
 				{
 					WindowUI::_mode = Mode_3D;
-					Window::_editorCamera.SwitchCamera3D(true);
+					_editorCamera.SwitchCamera3D(true);
 				}
 			}
 			if (ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay)) {}

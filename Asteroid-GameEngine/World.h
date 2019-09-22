@@ -16,6 +16,7 @@
 #include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 #include <GraphicEngine/GLDebugDrawer.h>
+extern Camera _editorCamera;
 class _Pivot : public Meshrender
 {
 	bool _needdebug = true;
@@ -29,6 +30,7 @@ public:
 	int _group = 1;
 	int _mask = 1;
 	unsigned int VBO, VAO;
+	
 	_Pivot(Actor* _a)
 	{
 		_visable = false;
@@ -95,11 +97,11 @@ public:
 		{
 			{
 				_shader.use();
-				_shader.setVec3("viewPos", Window::_editorCamera.transform.position);
+				_shader.setVec3("viewPos", _editorCamera.transform.position);
 				_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
 
-				glm::mat4 projection = Window::_editorCamera.Projection;
-				glm::mat4 view = Window::_editorCamera.GetViewMatrix();
+				glm::mat4 projection = _editorCamera.Projection;
+				glm::mat4 view = _editorCamera.GetViewMatrix();
 				_shader.setMat4("projection", projection);
 				_shader.setMat4("view", view);
 				glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	

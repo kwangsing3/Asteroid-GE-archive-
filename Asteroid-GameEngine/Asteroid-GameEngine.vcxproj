@@ -181,7 +181,6 @@
     <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp" />
     <ClCompile Include="GraphicEngine\imgui_widgets.cpp" />
     <ClCompile Include="hide\MainUI.cpp" />
-    <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Physics Engine\clew\clew.c" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="SceneManager.cpp" />

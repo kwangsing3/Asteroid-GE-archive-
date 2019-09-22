@@ -10,6 +10,7 @@
 #include <Window.h>
 
 std::vector<ModelStruct> Meshrender::ModelList;
+extern Camera _editorCamera;
 void Meshrender::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->meshrender == NULL) return;
@@ -29,8 +30,8 @@ void Meshrender::Draw(Shader _shader)
 {
 	if (!this->_visable)  return;
 	_shader.use();
-	_shader.setMat4("projection", Window::_editorCamera.Projection);
-	_shader.setMat4("view", Window::_editorCamera.GetViewMatrix());
+	_shader.setMat4("projection", _editorCamera.Projection);
+	_shader.setMat4("view", _editorCamera.GetViewMatrix());
 	_Mat4model = glm::mat4(1.0f);
 	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 	glm::quat MyQuaternion;
