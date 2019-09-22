@@ -4,22 +4,20 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include <stb_image.h>
 #include <iostream>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "GraphicEngine/imgui.h"
-#include "GraphicEngine/imgui_impl_glfw.h"
-#include "GraphicEngine/imgui_impl_opengl3.h"
+#include <GraphicEngine/imgui.h>
+#include <GraphicEngine/imgui_impl_glfw.h>
+#include <GraphicEngine/imgui_impl_opengl3.h>
+#include <GraphicEngine/imgui_Custom.h>
 
 #include <Window.h>
-#include <model.h>     //導入模型
-#include <SceneManager.h>
+
+#include <SceneManager.h>   //要記得刪掉 Debug用
 #include <World.h>
 
 #include <Raycast.h>
-//#include<ADD_Component.h>
-#include "btBulletDynamicsCommon.h"
-#include "GraphicEngine/imgui_Custom.h"
+
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -373,8 +371,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 			if (RayCallback.hasHit()) 
 			{
-				std::ostringstream oss;
-				oss << "mesh " << RayCallback.m_collisionObject;
+				
 				//_cur_World->dynamicsWorld.
 				if (RayCallback.m_collisionObject->_actor->meshrender->_shape == NONE)  //確定是否擊中Pivot
 				{
@@ -425,35 +422,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 // +Z (front) 
 // -Z (back)
 // -------------------------------------------------------
-unsigned int loadCubemap(vector<std::string> faces)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-	int width, height, nrChannels;
-	for (unsigned int i = 0; i < faces.size(); i++)
-	{
-		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			stbi_image_free(data);
-		}
-		else
-		{
-			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-			stbi_image_free(data);
-		}
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	return textureID;
-}
+
 
 
 

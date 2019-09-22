@@ -1,7 +1,15 @@
 ﻿#include <SceneManager.h>
-#include <World.h>
+
 #include "Xml/pugixml.hpp"
 
+#include <Units/Actor.h>
+#include <Component/DirectionalLight.h>
+#include <Component/PointLight.h>
+#include <Component/Meshrender.h>
+#include <Collision/BoxCollision.h>
+#include <World.h>
+
+#include <ADD_Component.h>
 std::vector<Shader> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;

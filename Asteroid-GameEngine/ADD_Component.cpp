@@ -1,23 +1,16 @@
 ﻿
 #include<ADD_Component.h>
+#include <Units/Actor.h>
 #include <Component/Meshrender.h>
-
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include <Collision/BoxCollision.h>
+
 #include <SceneManager.h>
 
-
-
 //------------------------------------------------------------Pivot------------------------------------------------------------
-#include <Window.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <btBulletCollisionCommon.h>
-#include <World.h>
+
+
 
 //------------------------------------------------------------Pivot------------------------------------------------------------
 

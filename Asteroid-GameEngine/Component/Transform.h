@@ -27,7 +27,7 @@ public:
 	//void Rotate(glm::Quaternion _qu);
 	void Scale(glm::vec3 _scal);
 	 
-	
 };
+
 
 #endif // !TRANSFORM_H

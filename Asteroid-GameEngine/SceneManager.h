@@ -2,13 +2,13 @@
 #define SHADER_LIST_H
 #include <shader_m.h>
 #include <vector>
-#include <Units/Actor.h>
-#include <ADD_Component.h>
-#include <Component/DirectionalLight.h>
-#include <Component/PointLight.h>
 
-#include <Component/Meshrender.h>
-#include <Collision/BoxCollision.h>
+
+class Actor;
+class Meshrender;
+class DirectionalLight;
+class PointLight;
+
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
 {
 public:
