@@ -9,9 +9,12 @@
 #include <Units/Camera.h>
 #include <Window.h>
 
+#include <World.h>
 #include <Units/Actor.h>
 std::vector<ModelStruct> Meshrender::ModelList;
 extern Camera _editorCamera;
+extern World* _MainWorld;
+
 void Meshrender::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->meshrender == NULL) return;
@@ -133,7 +136,7 @@ void Meshrender::CreateMouseCollision()
 	if (colShape == NULL)
 	{
 		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
-		Window::_Mainworld->m_collisionShapes.push_back(colShape);
+		_MainWorld->m_collisionShapes.push_back(colShape);
 	}
 
 	btScalar mass(0);
@@ -163,14 +166,14 @@ void Meshrender::CreateMouseCollision()
 	int _group = 1;
 	int _mask = 1;
 
-	Window::_Mainworld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
+	_MainWorld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
 	body->_actor = this->_actor;
 	//World::dynamicsWorld->updateSingleAabb(body);
 }
 void Meshrender::UpdateCollision()
 {
 	if (this->body == NULL) return;
-	Window::_Mainworld->deleteRigidBody(this->body);
+	_MainWorld->deleteRigidBody(this->body);
 	CreateMouseCollision();
 }
 

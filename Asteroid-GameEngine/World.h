@@ -17,7 +17,7 @@
 #include <SceneManager.h>
 
 //#include <Window.h>
-#include <Component/Meshrender.h>
+//#include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
 extern Camera _editorCamera;
@@ -196,9 +196,6 @@ private:
 
 };
 
-
-
-
 struct World : public CommonRigidBodyBase
 {
 	unsigned int depthMapFBO;
@@ -208,7 +205,7 @@ struct World : public CommonRigidBodyBase
 	{
 		//Bullet Physics creation// --------------------// Build the broadphase
 		_PlayMode = false;
-		SceneManager _sceneManager;   // 我的ShaderProgram在建構函數中創建   目前需要在world的類別前宣告
+		   // 我的ShaderProgram在建構函數中創建   目前需要在world的類別前宣告
 		initPhysics();
 		// -----------------------
 		//const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;

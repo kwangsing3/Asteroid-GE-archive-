@@ -2,7 +2,7 @@
 
 #include "GraphicEngine/imgui.h"
 
-
+#include <Units/Actor.h>
 #include <ADD_Component.h>
 #include <World.h>
 #include <SceneManager.h>
@@ -16,8 +16,8 @@ GLFWwindow* Window::MainGLFWwindow = NULL;
 bool Window::WindowShouldClose = false;
 bool Window::DeBug_Mode = false;
 
-World* Window::_Mainworld;
-
+//World* Window::_Mainworld;
+extern World* _MainWorld;
 //關於專案設定
 bool WindowUI::All_UIElement = true;
 Game_Mode WindowUI::_mode = Mode_3D;
@@ -29,11 +29,11 @@ Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
 //static unsigned int _Width = 800;
 //static unsigned int _Height = 600;
 
-void Window::InitWorld()
+/*void Window::InitWorld()
 {
 	this->_Mainworld = new World();
 	this->_Mainworld->CreateDepthMap();
-}
+}*/
 // ---------------------------UI---------------------------
 static void MainMenuBar();
 static void Menu_File();
@@ -134,7 +134,7 @@ void WindowUI::SelectThisActor(Actor * _actor)
 	{
 		cur_SelectObject = NULL;
 		WindowUI::ListInspectorCur(NULL);
-		if (World::_piv != NULL) World::_piv->AttachObject(NULL);
+		if (_MainWorld->_piv != NULL) _MainWorld->_piv->AttachObject(NULL);
 	}
 }
 void WindowUI::SelectThisObject(SelectObject * selectobject)
@@ -143,10 +143,10 @@ void WindowUI::SelectThisObject(SelectObject * selectobject)
 	selectobject->Is_selected = !selectobject->Is_selected;
 	cur_SelectObject = selectobject;
 
-	if (World::_piv != NULL)
+	if (_MainWorld->_piv != NULL)
 	{
-		World::_piv->AttachObject(NULL);
-		World::_piv->AttachObject(selectobject->_actor);
+		_MainWorld->_piv->AttachObject(NULL);
+		_MainWorld->_piv->AttachObject(selectobject->_actor);
 	}
 }
 void WindowUI::ListInspectorCur(SelectObject* _sel)

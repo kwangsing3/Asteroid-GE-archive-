@@ -38,9 +38,9 @@ private:
 	unsigned GetTimeSeed();
 	bool ReadVector(int _id)
 	{
-		for (std::vector<int>::iterator it_i = Component::vec_ID.begin(); it_i != Component::vec_ID.end(); ++it_i)
+		for (int i=0; i<vec_ID.size();i++)
 		{
-			if (*it_i == _id)
+			if (vec_ID[i]== _id)
 				return true;
 		}
 		return false;

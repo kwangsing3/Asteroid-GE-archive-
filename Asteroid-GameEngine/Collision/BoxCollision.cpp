@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <World.h>
 #include "btBulletDynamicsCommon.h"
+extern World* _MainWorld;
 void BoxCollision::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->boxcollision == NULL) return;
@@ -21,12 +22,10 @@ void BoxCollision::OpenFile(pugi::xml_node* _node)
 void BoxCollision::CreateBox()
 {
 	btVector3 localInertia(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-	//create a dynamic rigidbody
 	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z)/2);
 	btScalar mass(this->_Mass);
-	//colShape->setLocalScaling(btVector3(transform->scale.x, transform->scale.y, transform->scale.z));
-   //btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
-	Window::_Mainworld->m_collisionShapes.push_back(colShape);
+	
+	_MainWorld->m_collisionShapes.push_back(colShape);
 
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -52,7 +51,7 @@ void BoxCollision::CreateBox()
 	body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
 	body->setCustomDebugColor(btVector3(1,1,1));
 
-	Window::_Mainworld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
+	_MainWorld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
 	
 
 	//World::dynamicsWorld->addRigidBody(body);
@@ -64,7 +63,7 @@ void BoxCollision::CreateBox()
 void BoxCollision::UpdateCollision()
 {
 	if (this->body == NULL) return;
-	Window::_Mainworld->deleteRigidBody(this->body);
+	_MainWorld->deleteRigidBody(this->body);
 	CreateBox();
 }
 

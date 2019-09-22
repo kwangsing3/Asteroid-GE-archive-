@@ -15,6 +15,7 @@ std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
+extern World* _MainWorld;
 
 const char* gloabl_test = "It's me, Mario";
 void SceneManager::OpenFile()
@@ -145,11 +146,11 @@ void SceneManager::NewScene()
 	vec_ObjectsToRender.clear();
 	Objects.clear();
 
-	Window::_Mainworld->exitPhysics();
-	Window::_Mainworld->initPhysics();
-	World::_PlayMode = false;
-	delete World::_piv;
-	World::_piv =new _Pivot(new Actor());
+	_MainWorld->exitPhysics();
+	_MainWorld->initPhysics();
+	_MainWorld->_PlayMode = false;
+	delete _MainWorld->_piv;
+	_MainWorld->_piv =new _Pivot(new Actor());
 	
 	
 	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());

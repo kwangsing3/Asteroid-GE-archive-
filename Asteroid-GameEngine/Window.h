@@ -6,14 +6,15 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <World.h>
+//#include <World.h>
+
 
 
 //#include <GraphicEngine/imgui.h>
 
 
 class Actor;
-
+//class SceneManager;
 struct SelectObject
 {
 	Actor* _actor;
@@ -25,8 +26,8 @@ struct SelectObject
 enum  Game_Mode { Mode_2D, Mode_3D };
 extern unsigned int _Width;
 extern unsigned int _Height;
-
-class World;
+//SceneManager* _sceneManager;
+//class World;
 //   ---------------------------------UI---------------------------------
 class WindowUI
 {
@@ -68,7 +69,7 @@ public:
 	static WindowUI *_Main_UI;
 	static bool WindowShouldClose;
 
-	static World* _Mainworld;
+	//static World* _Mainworld;
 
 	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback, void* mouse_Click_callback)
 	{
@@ -124,8 +125,8 @@ public:
 		}
 	
 
-
-		InitWorld();
+	
+		//InitWorld();
 		/*調試用函數*/
 
 		
@@ -133,7 +134,7 @@ public:
 	}
 
 private:
-	void InitWorld();
+	//void InitWorld();
 	
 
 };

@@ -25,6 +25,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 unsigned int _Width = 0;
 unsigned int _Height = 0;
+World* _MainWorld;
 
 
 float lastX = 500.0f;
@@ -55,8 +56,8 @@ int main()
 	Window *_mainWindow = new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
 	_mainWindow->DeBug_Mode = true;
 
-	
-	
+	SceneManager _sceneManager;
+	_MainWorld = new World();
 	//UI 初始化-------------
 	{
 		IMGUI_CHECKVERSION();
@@ -213,7 +214,7 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		//世界的畫面刷新
-		Window::_Mainworld->UpdateFrame();
+		_MainWorld->UpdateFrame();
 		//_deb->drawLine(btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(0, 0,0),btVector3(1,0,0));
 
 		// 正在解決MSAA 抗鋸齒  想辦法把抗鋸齒用到幀緩衝上
@@ -367,7 +368,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			RayCallback.m_collisionFilterMask = 1;
 			RayCallback.m_collisionFilterGroup = 1;
 
-			Window::_Mainworld->m_dynamicsWorld->rayTest(
+			_MainWorld->m_dynamicsWorld->rayTest(
 				btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(Raycast::GetWorldPosition(1).x, Raycast::GetWorldPosition(1).y, Raycast::GetWorldPosition(1).z),
 				RayCallback
 			);

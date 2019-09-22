@@ -10,7 +10,7 @@
 bool World::_PlayMode;
 _Pivot* World::_piv;
 //unsigned int World::depthMapFBO;
-
+extern World* _MainWorld;
 void _Pivot::CreateMouseCollision()
 {
 
@@ -22,13 +22,13 @@ void _Pivot::CreateMouseCollision()
 			btCollisionShape* _shap;
 			_shap = new btCapsuleShapeX(0.08f, 0.55f);
 			colshape.push_back(_shap);
-			Window::_Mainworld->m_collisionShapes.push_back(_shap);
+			_MainWorld->m_collisionShapes.push_back(_shap);
 			_shap = new btCapsuleShape(0.08f, 0.55f);
 			colshape.push_back(_shap);
-			Window::_Mainworld->m_collisionShapes.push_back(_shap);
+			_MainWorld->m_collisionShapes.push_back(_shap);
 			_shap = new btCapsuleShapeZ(0.08f, 0.55f);
 			colshape.push_back(_shap);
-			Window::_Mainworld->m_collisionShapes.push_back(_shap);
+			_MainWorld->m_collisionShapes.push_back(_shap);
 		}
 
 		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
@@ -56,7 +56,7 @@ void _Pivot::CreateMouseCollision()
 			Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 			body[i]->setCollisionFlags(Collision_flag);
 			
-			Window::_Mainworld->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
+			_MainWorld->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
 		}
 	}
 }
@@ -69,9 +69,9 @@ void _Pivot::UpdateCollision()
 }
 void _Pivot::DeleteCollision()
 {
-	if (this->body[0] != NULL)Window::_Mainworld->m_dynamicsWorld->removeRigidBody(body[0]);
-	if (this->body[1] != NULL)Window::_Mainworld->m_dynamicsWorld->removeRigidBody(body[1]);
-	if (this->body[2] != NULL)Window::_Mainworld->m_dynamicsWorld->removeRigidBody(body[2]);
+	if (this->body[0] != NULL)_MainWorld->m_dynamicsWorld->removeRigidBody(body[0]);
+	if (this->body[1] != NULL)_MainWorld->m_dynamicsWorld->removeRigidBody(body[1]);
+	if (this->body[2] != NULL)_MainWorld->m_dynamicsWorld->removeRigidBody(body[2]);
 }
 void _Pivot::AddCollision()
 {
