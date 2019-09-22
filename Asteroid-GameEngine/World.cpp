@@ -1,9 +1,6 @@
 ﻿#include <World.h>
 
-
-
-
-
+#include <Window.h>     //裡面有 #include <Camera.h>
 
 
 

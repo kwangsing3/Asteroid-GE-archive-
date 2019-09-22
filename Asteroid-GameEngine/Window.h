@@ -6,13 +6,13 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-
+#include <World.h>
 
 
 //#include <GraphicEngine/imgui.h>
 
-#include <Units/Camera.h>
 
+class Actor;
 
 struct SelectObject
 {

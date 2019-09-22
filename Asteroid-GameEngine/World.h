@@ -4,6 +4,8 @@
 #include "btBulletDynamicsCommon.h"
 #include <GraphicEngine/GLDebugDrawer.h>
 #include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
+#include <Units/Camera.h>
+
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,11 +16,12 @@
 
 #include <SceneManager.h>
 
-#include <Window.h>
+//#include <Window.h>
 #include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
 extern Camera _editorCamera;
+
 class _Pivot : public Meshrender
 {
 	bool _needdebug = true;
@@ -32,13 +35,13 @@ public:
 	int _group = 1;
 	int _mask = 1;
 	unsigned int VBO, VAO;
-	
+
 	_Pivot(Actor* _a)
 	{
 		_visable = false;
 		SwitchDragMode(0);
 		_actor = _a;
-		_actor->transform->name =(char*) "Pivot";
+		_actor->transform->name = (char*) "Pivot";
 		_actor->meshrender = new Meshrender(_a, NONE);
 		this->_mode = RenderMode(1);
 		this->enabled = true;
@@ -48,8 +51,8 @@ public:
 		//transform->name = (char*)"Cube";
 		//  滑鼠判定的碰撞體
 		//initshapes
-		
-	
+
+
 
 		CreateMouseCollision();
 	}
@@ -146,18 +149,18 @@ public:
 	}
 	void AttachObject(Actor* _ac)
 	{
-		if (_ac!=NULL)
+		if (_ac != NULL)
 		{
 			this->_visable = true;
 			AddCollision();
-			
+
 			this->_lowwerActor = _ac;
 			this->_attaching = true;
 			this->Translate(_ac->transform->position);
 			this->Rotate(_ac->transform->rotation);
 			//this->Scale(_ac->transform->position);
 		}
-		else 
+		else
 		{
 			this->_visable = false;
 			this->_lowwerActor = NULL;
@@ -194,6 +197,8 @@ private:
 };
 
 
+
+
 struct World : public CommonRigidBodyBase
 {
 	unsigned int depthMapFBO;
@@ -210,7 +215,7 @@ struct World : public CommonRigidBodyBase
 		//unsigned int depthMapFBO;
 		_piv = new _Pivot(new Actor());
 		// ----------------------- 
-		
+	
 	}
 public:
 	static bool _PlayMode;

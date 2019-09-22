@@ -33,7 +33,6 @@ void PointLight::OpenFile(pugi::xml_node* _node)
 	this->_actor->_PointLight->Ambient.x = Amb.attribute("X").as_float();
 	this->_actor->_PointLight->Ambient.y = Amb.attribute("Y").as_float();
 	this->_actor->_PointLight->Ambient.z = Amb.attribute("Z").as_float();
-	
 	pugi::xml_node Dif = _node->child("Diffuse");
 	this->_actor->_PointLight->Diffuse.x = Dif.attribute("X").as_float();
 	this->_actor->_PointLight->Diffuse.y = Dif.attribute("Y").as_float();

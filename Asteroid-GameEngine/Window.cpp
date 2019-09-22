@@ -6,7 +6,7 @@
 #include <ADD_Component.h>
 #include <World.h>
 #include <SceneManager.h>
-
+#include <Units/Camera.h>
 GLFWwindow* Window::MainGLFWwindow = NULL;
 //Default  settings
 
@@ -549,16 +549,7 @@ static void MainMenuBar()
 			}
 			if (ImGui::MenuItem("Switch_GameMode"))
 			{
-				if (WindowUI::_mode == Mode_3D)
-				{
-					WindowUI::_mode = Mode_2D;
-					_editorCamera.SwitchCamera3D(false);
-				}
-				else
-				{
-					WindowUI::_mode = Mode_3D;
-					_editorCamera.SwitchCamera3D(true);
-				}
+				
 			}
 			if (ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay)) {}
 			if (ImGui::MenuItem("PlayMode", "", &World::_PlayMode))
