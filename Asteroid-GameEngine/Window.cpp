@@ -1,11 +1,11 @@
 #include <Window.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
 #include "GraphicEngine/imgui.h"
+
+
 #include <ADD_Component.h>
-#include <SceneManager.h>
-#include <Raycast.h>
 #include <World.h>
+#include <SceneManager.h>
 
 GLFWwindow* Window::MainGLFWwindow = NULL;
 //Default  settings
@@ -25,6 +25,9 @@ std::vector<int> Window::vec_ID;
 WindowUI *Window::_Main_UI;
 
 Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+//static unsigned int _Width = 800;
+//static unsigned int _Height = 600;
 
 void Window::InitWorld()
 {

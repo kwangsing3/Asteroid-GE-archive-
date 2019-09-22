@@ -1,6 +1,6 @@
 ﻿#include <Collision/BoxCollision.h>
 #include <SceneManager.h>
-#include <Window.h>
+//#include <Window.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <World.h>

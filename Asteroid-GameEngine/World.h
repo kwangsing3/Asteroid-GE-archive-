@@ -2,20 +2,22 @@
 #define WORLD_H
 #pragma once
 #include "btBulletDynamicsCommon.h"
-#include <SceneManager.h>
+#include <GraphicEngine/GLDebugDrawer.h>
+#include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
+
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <Math/Math.h>
 
-#include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
+#include <SceneManager.h>
+
 #include <Window.h>
 #include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
-#include <GraphicEngine/GLDebugDrawer.h>
+
 extern Camera _editorCamera;
 class _Pivot : public Meshrender
 {
@@ -284,7 +286,6 @@ public:
 	virtual void initPhysics()
 	{
 		createEmptyDynamicsWorld();
-
 
 		GLDebugDrawer* _deb = new GLDebugDrawer();
 		this->m_dynamicsWorld->setDebugDrawer(_deb);

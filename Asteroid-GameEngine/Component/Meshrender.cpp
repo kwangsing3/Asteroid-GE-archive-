@@ -6,9 +6,10 @@
 #include <stb_image.h>
 #include <shader_m.h>
 #include <glm/gtx/quaternion.hpp>
+#include <Units/Camera.h>
+//#include <Window.h>
 
-#include <Window.h>
-
+#include <Units/Actor.h>
 std::vector<ModelStruct> Meshrender::ModelList;
 extern Camera _editorCamera;
 void Meshrender::SaveFile(pugi::xml_node* _node)

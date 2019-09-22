@@ -1,16 +1,18 @@
 ﻿#ifndef WINDOW_H
 #define WINDOW_H
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <GraphicEngine/imgui.h>
-#include <Units/Actor.h>
+#include <Xml/pugixml.hpp>
 #include <fstream>
 #include <iostream>
-#include <Xml/pugixml.hpp>
+#include <vector>
+
+
+
+//#include <GraphicEngine/imgui.h>
 
 #include <Units/Camera.h>
-#include <vector>
+
 
 struct SelectObject
 {
@@ -21,14 +23,11 @@ struct SelectObject
 	SelectObject* next = NULL;
 };
 enum  Game_Mode { Mode_2D, Mode_3D };
-
-static unsigned int _Width = 800;
-static unsigned int _Height = 600;
+extern unsigned int _Width;
+extern unsigned int _Height;
 
 class World;
-
 //   ---------------------------------UI---------------------------------
-
 class WindowUI
 {
 public:
@@ -58,23 +57,17 @@ public:
 	static void ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer);
 
 };
-
-
-
 class Window
 {
 public:
 	static GLFWwindow* MainGLFWwindow;
 	bool isFullscreen;
-	
-	//static ImVec2 viewport_pos;
-	//static ImVec2 viewport_size;
-	
+
 	static bool DeBug_Mode;
 	static std::vector<int> vec_ID;
 	static WindowUI *_Main_UI;
 	static bool WindowShouldClose;
-	
+
 	static World* _Mainworld;
 
 	Window(void* framebuffer_size_callback, void* mouse_callback, void* scroll_callback, void* mouse_Click_callback)

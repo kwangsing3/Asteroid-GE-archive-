@@ -1,6 +1,15 @@
 ﻿#include <World.h>
 
 
+
+
+
+
+
+
+
+
+
 bool World::_PlayMode;
 _Pivot* World::_piv;
 //unsigned int World::depthMapFBO;

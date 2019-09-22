@@ -16,7 +16,7 @@ std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
 
-
+const char* gloabl_test = "It's me, Mario";
 void SceneManager::OpenFile()
 {
 	SceneManager::NewScene();

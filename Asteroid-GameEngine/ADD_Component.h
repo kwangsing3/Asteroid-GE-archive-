@@ -7,7 +7,7 @@ class Meshrender;
 class DirectionalLight;
 class PointLight;
 class BoxCollision;
-enum Shape;
+enum  Shape;
 
 
 class ADD_Component

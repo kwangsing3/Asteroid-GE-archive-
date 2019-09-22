@@ -13,6 +13,7 @@ class btCollisionShape;
 class Shader;
 class Mesh;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
+
 struct ModelStruct
 {
 	std::vector<Mesh> _meshes;
