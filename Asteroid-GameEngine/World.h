@@ -24,7 +24,7 @@ extern Camera _editorCamera;
 
 class _Pivot : public Meshrender
 {
-	bool _needdebug = true;
+	bool _needdebug = false;
 public:
 	btRigidBody* body[3];
 	Actor* _lowwerActor;
@@ -52,9 +52,7 @@ public:
 		//  滑鼠判定的碰撞體
 		//initshapes
 
-
-
-		CreateMouseCollision();
+		CreateMouseCollision();     
 	}
 	void CreatePivot()
 	{
@@ -98,17 +96,19 @@ public:
 	}
 	void Draw(Shader _shader) override
 	{
+		//return;
 		if (this->_visable)
 		{
 			{
 				_shader.use();
-				_shader.setVec3("viewPos", _editorCamera.transform.position);
-				_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
+				//_shader.setVec3("viewPos", _editorCamera.transform.position);
+				//_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
 
 				glm::mat4 projection = _editorCamera.Projection;
 				glm::mat4 view = _editorCamera.GetViewMatrix();
 				_shader.setMat4("projection", projection);
 				_shader.setMat4("view", view);
+
 				glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
 				model = glm::translate(model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 				glm::quat MyQuaternion;
@@ -119,8 +119,8 @@ public:
 				model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 				_shader.setMat4("model", model);
 				_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
-				_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
-				_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
+				//_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
+				//_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
 			}
 			glBindVertexArray(VAO);
 			glDrawArrays(GL_LINES, 0, 36);

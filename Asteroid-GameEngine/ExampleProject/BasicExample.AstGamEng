@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="13">
-<Objects name="Pivot" />
+<Scene name="test" Objects_Size="14">
+<Objects name="Pivot" Component_size="0">
+<Position x="0" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="0" y="0" z="0" />
+</Objects>
 <Objects name="Pivot" Component_size="0">
 <Position x="0" y="0" z="0" />
 <Rotation x="0" y="0" z="0" />
@@ -13,22 +17,22 @@
 </Objects>
 <Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="0" y="-0.430000007" z="0" />
-<Rotation x="0" y="0" z="0" />
+<Rotation x="0" y="4" z="0" />
 <Scale x="100" y="0.100000001" z="100" />
-<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+<MeshRender VertexColorX="0.171568632" VertexColorY="0" VertexColorZ="0" />
 <BoxCollision Mass="0" />
 </Objects>
 <Objects name="New DirectionalLight" _Dirlight="1" Component_size="1">
 <Position x="0" y="0" z="0" />
-<Rotation x="0" y="0" z="0" />
+<Rotation x="-79.5999985" y="-52.9000015" z="50" />
 <Scale x="1" y="1" z="1" />
-<Ambient X="1" Y="1" Z="1" />
-<Diffuse X="0.400000006" Y="0.400000006" Z="0.400000006" />
-<Specular X="0.5" Y="0.5" Z="0.5" />
+<Ambient X="0.186274529" Y="0.186272666" Z="0.186272666" />
+<Diffuse X="0.754901946" Y="0.754894376" Z="0.754894376" />
+<Specular X="0.525038421" Y="0.70431155" Z="0.931372523" />
 </Objects>
 <Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
-<Position x="-1.90999985" y="2.61999989" z="0.14500019" />
-<Rotation x="0" y="0" z="0" />
+<Position x="-1.67999995" y="2.52999997" z="0.14500019" />
+<Rotation x="22.6000004" y="23.2000008" z="-42.4000015" />
 <Scale x="1" y="1" z="1" />
 <MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
 <BoxCollision Mass="1" />
@@ -81,5 +85,11 @@
 <Scale x="1" y="1" z="1" />
 <MeshRender VertexColorX="0.0775652677" VertexColorY="0.685840726" VertexColorZ="0" />
 <BoxCollision Mass="1" />
+</Objects>
+<Objects name="New Plantet" meshrender="1" Component_size="1">
+<Position x="0" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
 </Objects>
 </Scene>

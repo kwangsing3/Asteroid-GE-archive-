@@ -163,7 +163,7 @@ int main()
 
 	//---------------------------------------
 	//記得拿掉
-	//SceneManager::OpenFile();//調試用函數
+	SceneManager::OpenFile();//調試用函數
 
 
 	//記得拿掉
@@ -192,6 +192,8 @@ int main()
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+
+		_sceneManager.CheckReload();
 		//Draw Croodinate  基本座標(白)
 		{
 			SceneManager::vec_ShaderProgram[0].use();

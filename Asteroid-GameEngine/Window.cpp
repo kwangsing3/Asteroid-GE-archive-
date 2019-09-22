@@ -202,7 +202,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 					_sel->_actor->meshrender->UpdateCollision();
 				}
 				static int _curco = 0;
-				
+				if (ImGui::Button("Reload Shader"))  SceneManager::NeedReload = true;
 				
 				ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable);
 			}

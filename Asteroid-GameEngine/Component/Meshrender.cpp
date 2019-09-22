@@ -36,6 +36,8 @@ void Meshrender::Draw(Shader _shader)
 	_shader.use();
 	_shader.setMat4("projection", _editorCamera.Projection);
 	_shader.setMat4("view", _editorCamera.GetViewMatrix());
+	_shader.setVec3("viewPos", _editorCamera.transform.position);
+	_shader.setFloat("material.shininess", 32.0f);
 	_Mat4model = glm::mat4(1.0f);
 	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 	glm::quat MyQuaternion;
@@ -45,6 +47,59 @@ void Meshrender::Draw(Shader _shader)
 	_Mat4model = _Mat4model * RotationMatrix;
 	_Mat4model = glm::scale(_Mat4model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 	_shader.setMat4("model", _Mat4model);
+
+	int Light_Length = 3;
+	//Directional Light
+	for (int i = 0; i < Light_Length; i++)
+	{
+		if (i + 1 > SceneManager::vec_DirectionlLight.size())
+		{
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0, 0, 0));
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+			_shader.setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+			continue;
+		}
+		_shader.setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->_actor->transform->rotation);
+		_shader.setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
+		_shader.setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
+		_shader.setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
+	}
+	//Point Light
+	for (int i = 0; i < Light_Length; i++)
+	{
+		if (i + 1 > SceneManager::vec_PointLight.size())
+		{
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+			_shader.setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+			_shader.setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
+			_shader.setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
+			_shader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0);
+			continue;
+		}
+		_shader.setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->_actor->transform->position);
+		_shader.setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
+		_shader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
+		_shader.setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
+		_shader.setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
+		_shader.setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
+		_shader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
+		// spotLight
+		/*_shader.setVec3("spotLight.position", Window::_editorCamera.transform.position);
+		_shader.setVec3("spotLight.direction", Window::_editorCamera.Front);
+		_shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		_shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		_shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		_shader.setFloat("spotLight.constant", 1.0f);
+		_shader.setFloat("spotLight.linear", 0.09);
+		_shader.setFloat("spotLight.quadratic", 0.032);
+		_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
+	}
+
+	_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
 
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].Draw(_shader);
@@ -200,6 +255,7 @@ void Meshrender::loadModel(string const & path)
 
 	// process ASSIMP's root node recursively
 	processNode(scene->mRootNode, scene);
+
 	ModelStruct _NewModel;
 	_NewModel.path = path;
 	_NewModel._meshes = this->meshes;
@@ -329,6 +385,17 @@ vector<Texture> Meshrender::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 			textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}
 	}
+	if (mat->GetTextureCount(type) < 1)
+	{
+		Texture texture;
+		aiString str("DefaultColor.jpg");
+		texture.id = TextureFromFile(str.C_Str(), this->directory);
+		texture.type = typeName;
+		texture.path = str.C_Str();
+		textures.push_back(texture);
+		textures_loaded.push_back(texture);
+	}
+
 	return textures;
 }
 unsigned int Meshrender::TextureFromFile(const char * path, const string & directory)

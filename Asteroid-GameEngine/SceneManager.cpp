@@ -15,6 +15,7 @@ std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
+bool SceneManager::NeedReload = false;
 extern World* _MainWorld;
 
 const char* gloabl_test = "It's me, Mario";

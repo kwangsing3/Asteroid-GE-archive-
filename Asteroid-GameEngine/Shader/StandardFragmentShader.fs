@@ -43,9 +43,9 @@ struct SpotLight {
 };
 
 
-#define DLight_Length 8
-#define PLight_Length 8
-#define SLight_Length 8
+#define DLight_Length 3
+#define PLight_Length 3
+#define SLight_Length 3
 
 
 in VS_OUT {
