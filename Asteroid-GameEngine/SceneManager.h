@@ -50,6 +50,11 @@ private:
 		SceneManager::vec_ShaderProgram.push_back(_DepthShader);
 		SceneManager::vec_ShaderProgram.push_back(_ShadowdShader);
 		SceneManager::vec_ShaderProgram.push_back(_ModelShader);
+
+		//  先暫時放這裡  影子相關
+		SceneManager::vec_ShaderProgram[4].use();
+		SceneManager::vec_ShaderProgram[4].setInt("diffuseTexture", 0);
+		SceneManager::vec_ShaderProgram[4].setInt("depthMap", 1);
 	}
 
 };

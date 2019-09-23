@@ -79,7 +79,7 @@ uniform samplerCube depthMap;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform float far_plane;
-uniform bool shadows;
+//uniform bool shadows;
 //Shadow texture
 
 uniform sampler2D texture_diffuse1;
@@ -107,7 +107,7 @@ void main()
     result += CalcSpotLight(spotLight, normal,  fs_in.FragPos, viewDir);    
 
 	  //vec3 normal = normalize(fs_in.Normal);
-    vec3 lightColor = vec3(0.3);
+    vec3 lightColor = vec3(1.0);
     // ambient
     vec3 ambient = 0.3 * color;
     // diffuse
@@ -238,7 +238,7 @@ float ShadowCalculation(vec3 fragPos)
     // }
     // shadow /= (samples * samples * samples);
     float shadow = 0.0;
-    float bias = 0.15;
+    float bias = 0.06;
     int samples = 20;
     float viewDistance = length(viewPos - fragPos);
     float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;

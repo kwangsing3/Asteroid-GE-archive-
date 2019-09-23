@@ -4,13 +4,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
 #include <mesh.h>
 
 
 
 class btRigidBody;
 class btCollisionShape;
-class Shader;
 class Mesh;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
 
@@ -22,7 +22,7 @@ struct ModelStruct
 enum RenderMode { RMode2D, RMode3D };
 
 
-
+class Shader;
 class Meshrender :public Component
 {
 public:
@@ -33,7 +33,8 @@ public:
 	//---------------------------------
 
 	//unsigned int Texture;
-	virtual void Draw(Shader _shader);
+	virtual void Draw(Shader* _shader,bool _renderShadow);
+
 	bool _needdebug = false;
 	bool _visable = true;
 	
@@ -58,7 +59,7 @@ public:
 		_Mat4model = glm::mat4(1.0f);
 		if(_shape!=NONE)
 			CreateMouseCollision();
-	
+		
 	}
 	Meshrender(Actor* _a, std::string _path)
 	{
@@ -91,6 +92,8 @@ public:
 	void CreateShape(Shape _shape)
 	{
 		this->_shape = _shape;
+		
+
 		std::string DefaultShapePath;
 		switch (_shape)
 		{
@@ -137,6 +140,17 @@ private:
 	vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	unsigned int TextureFromFile(const char *path, const string &directory);
 	
+	// Draw Pipeline Variable
+	float near_plane = 1.0f;
+	float far_plane = 25.0f;
+	glm::mat4 shadowProj, lightView;
+	glm::mat4 lightSpaceMatrix;
+	glm::vec3 lightPos;
+	
+	int Light_Length = 3;
+
+	glm::vec3 EulerAngles;
+	//glm::quat MyQuaternion;
 	//void CreatePivotVollision();
 };
 

@@ -4,16 +4,21 @@
 #define STB_IMAGE_IMPLEMENTATION
 #endif // !STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-#include <shader_m.h>
 #include <glm/gtx/quaternion.hpp>
+
 #include <Units/Camera.h>
 #include <Window.h>
+#include <shader_m.h>
 
 #include <World.h>
 #include <Units/Actor.h>
 std::vector<ModelStruct> Meshrender::ModelList;
 extern Camera _editorCamera;
 extern World* _MainWorld;
+
+
+
+
 
 void Meshrender::SaveFile(pugi::xml_node* _node)
 {
@@ -30,89 +35,20 @@ void Meshrender::OpenFile(pugi::xml_node* _node)
 	pugi::xml_node _n = _node->child("MeshRender");
 	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
 }
-void Meshrender::Draw(Shader _shader)
+void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 {
 	if (!this->_visable)  return;
-	_shader.use();
-	_shader.setMat4("projection", _editorCamera.Projection);
-	_shader.setMat4("view", _editorCamera.GetViewMatrix());
-	//_shader.setVec3("viewPos", _editorCamera.transform.position);
-	_shader.setFloat("material.shininess", 32.0f);
-	_Mat4model = glm::mat4(1.0f);
-	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-	glm::quat MyQuaternion;
-	glm::vec3 EulerAngles(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
-	MyQuaternion = glm::quat(EulerAngles);
-	glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
-	_Mat4model = _Mat4model * RotationMatrix;
-	_Mat4model = glm::scale(_Mat4model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
-	_shader.setMat4("model", _Mat4model);
+	if (_shader==NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
 
-	int Light_Length = 3;
-	//Directional Light
-	for (int i = 0; i < Light_Length; i++)
+	//Shader* _shader = _renderShadow ? _ShadowShader:_StandardShader;
+	_shader->use();
+	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
+	if (_renderShadow)
 	{
-		if (i + 1 > SceneManager::vec_DirectionlLight.size())
-		{
-			_shader.setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0, 0, 0));
-			_shader.setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
-			_shader.setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
-			_shader.setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
-			continue;
-		}
-		_shader.setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->_actor->transform->rotation);
-		_shader.setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
-		_shader.setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
-		_shader.setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
-	}
-	//Point Light
-	for (int i = 0; i < Light_Length; i++)
-	{
-		if (i + 1 > SceneManager::vec_PointLight.size())
-		{
-			_shader.setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
-			_shader.setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
-			_shader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
-			_shader.setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
-			_shader.setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
-			_shader.setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
-			_shader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0);
-			continue;
-		}
-		_shader.setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->_actor->transform->position);
-		_shader.setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
-		_shader.setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
-		_shader.setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
-		_shader.setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
-		_shader.setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
-		_shader.setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
-		// spotLight
-		/*_shader.setVec3("spotLight.position", Window::_editorCamera.transform.position);
-		_shader.setVec3("spotLight.direction", Window::_editorCamera.Front);
-		_shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		_shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		_shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		_shader.setFloat("spotLight.constant", 1.0f);
-		_shader.setFloat("spotLight.linear", 0.09);
-		_shader.setFloat("spotLight.quadratic", 0.032);
-		_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
-	}
-	_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
-
-	///Shader Setting
-	{
-		///shadow
-		glm::mat4 shadowProj, lightView;
-		glm::mat4 lightSpaceMatrix;
-		glm::vec3 lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 		/*
 			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
 		*/
-	
 		///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		float near_plane = 1.0f;
-		float far_plane = 25.0f;
 		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 		std::vector<glm::mat4> shadowTransforms;
 		if (SceneManager::vec_DirectionlLight.size() > 0)  //目前只有Directional Light有效果
@@ -125,23 +61,89 @@ void Meshrender::Draw(Shader _shader)
 			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
 		}
 		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-		lightSpaceMatrix = shadowProj * lightView;
+		lightSpaceMatrix = shadowProj * lightView;    //這行應該跟Directional light 有關
 		// render scene from light's point of view
-		_shader.setVec3("viewPos", _editorCamera.transform.position);
 		for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
-			_shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-		_shader.setFloat("far_plane", far_plane);
-		_shader.setInt("shadows", 1);
-		_shader.setVec3("lightPos", lightPos);
-		//_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
-		//_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
+			_shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 	}
-	///Shader Setting
+	else
+	{
+		_shader->setFloat("material.shininess", 32.0f);
+		
+		//Directional Light
+		for (int i = 0; i < Light_Length; i++)
+		{
+			if (i + 1 > SceneManager::vec_DirectionlLight.size())
+			{
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0, 0, 0));
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+				continue;
+			}
+			_shader->setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->_actor->transform->rotation);
+			_shader->setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
+			_shader->setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
+			_shader->setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
+		}
+		//Point Light
+		for (int i = 0; i < Light_Length; i++)
+		{
+			if (i + 1 > SceneManager::vec_PointLight.size())
+			{
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+				_shader->setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
+				_shader->setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
+				_shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0);
+				continue;
+			}
+			_shader->setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->_actor->transform->position);
+			_shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
+			_shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
+			_shader->setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
+			_shader->setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
+			_shader->setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
+			_shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
+			// spotLight
+			/*_shader.setVec3("spotLight.position", Window::_editorCamera.transform.position);
+			_shader.setVec3("spotLight.direction", Window::_editorCamera.Front);
+			_shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+			_shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+			_shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+			_shader.setFloat("spotLight.constant", 1.0f);
+			_shader.setFloat("spotLight.linear", 0.09);
+			_shader.setFloat("spotLight.quadratic", 0.032);
+			_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
+		}
+		_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
+	}
 
+	//_shader.setVec3("viewPos", _editorCamera.transform.position);
+	// 共通
+	_shader->setMat4("projection", _editorCamera.Projection);
+	_shader->setMat4("view", _editorCamera.GetViewMatrix());
+	_Mat4model = glm::mat4(1.0f);
+	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+
+	EulerAngles = glm::vec3(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
+	glm::mat4 RotationMatrix = glm::toMat4(glm::quat(EulerAngles));
+	_Mat4model = _Mat4model * RotationMatrix;
+	_Mat4model = glm::scale(_Mat4model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
+	_shader->setMat4("model", _Mat4model);
+	
+	///Shadow
+	_shader->setFloat("far_plane", far_plane);
+	_shader->setVec3("viewPos", _editorCamera.transform.position);
+	_shader->setVec3("lightPos", lightPos);
+	// 共通
 
 	/// Draw Pipeline
 	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i].Draw(_shader);
+		meshes[i].Draw(*_shader);
 }
 //  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.h>

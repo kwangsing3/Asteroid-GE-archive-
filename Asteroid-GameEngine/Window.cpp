@@ -197,6 +197,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
 
 				ImGui::ColorEdit4("Diffuse", (float*)&_sel->_actor->meshrender->VertexColor);
+
 				if (ImGui::Checkbox("Debug", &_sel->_actor->meshrender->_needdebug))
 				{
 					_sel->_actor->meshrender->UpdateCollision();
@@ -351,7 +352,12 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				float offset = 2.5f;
 				for (unsigned int i = 0; i < amount; i++)
 				{
-					glm::mat4 model = glm::mat4(1.0f);
+					Actor* _ac = ADD_Component::Add_Actor();
+					ADD_Component::Add_Meshrender(_ac, "ExampleModel/rock.obj");
+					_ac->transform->name = (char*) "New Asteroid";
+					
+
+					//glm::mat4 model = glm::mat4(1.0f);
 					// 1. translation: displace along circle with 'radius' in range [-offset, offset]
 					float angle = (float)i / (float)amount * 360.0f;
 					float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
@@ -360,23 +366,19 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 					float y = displacement * 0.4f; // keep height of asteroid field smaller compared to width of x and z
 					displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
 					float z = cos(angle) * radius + displacement;
-					model = glm::translate(model, glm::vec3(x, y, z));
-
+					//model = glm::translate(model, );
+					_ac->transform->Translate(glm::vec3(x, y, z));
 					// 2. scale: Scale between 0.05 and 0.25f
 					float scale = (rand() % 20) / 100.0f + 0.05;
-					model = glm::scale(model, glm::vec3(scale));
-
+					_ac->transform->Scale(glm::vec3(scale));
 					// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
 					float rotAngle = (rand() % 360);
-					model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
-
+					//model = glm::rotate(model, rotAngle, );
+					_ac->transform->Rotate(glm::vec3(0.4f*rotAngle, 0.6f*rotAngle, 0.8f*rotAngle));
 					// 4. now add to list of matrices
 					
 
-					Actor* _ac = ADD_Component::Add_Actor();
-					ADD_Component::Add_Meshrender(_ac, "ExampleModel/rock.obj");
-					_ac->transform->name = (char*) "New Asteroid";
-					_ac->meshrender->_Mat4model = model;
+					
 				}
 
 			}

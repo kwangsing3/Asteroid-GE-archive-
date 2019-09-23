@@ -51,7 +51,7 @@ public:
 		//transform->name = (char*)"Cube";
 		//  滑鼠判定的碰撞體
 		//initshapes
-
+		//_StandardShader = new Shader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
 		CreateMouseCollision();     
 	}
 	void CreatePivot()
@@ -94,20 +94,22 @@ public:
 		//Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
 		SceneManager::vec_ObjectsToRender.push_back(this);
 	}
-	void Draw(Shader _shader) override
+	void Draw(Shader* _shader,bool _renderShadow) override
 	{
+		if (_renderShadow) return;
+		//Shader* _shader = _StandardShader? _StandardShader : new Shader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
 		//return;
 		if (this->_visable)
 		{
 			{
-				_shader.use();
+				_shader->use();
 				//_shader.setVec3("viewPos", _editorCamera.transform.position);
 				//_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
 
 				glm::mat4 projection = _editorCamera.Projection;
 				glm::mat4 view = _editorCamera.GetViewMatrix();
-				_shader.setMat4("projection", projection);
-				_shader.setMat4("view", view);
+				_shader->setMat4("projection", projection);
+				_shader->setMat4("view", view);
 
 				glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
 				model = glm::translate(model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
@@ -117,8 +119,8 @@ public:
 				glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
 				model = model * RotationMatrix;
 				model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
-				_shader.setMat4("model", model);
-				_shader.setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
+				_shader->setMat4("model", model);
+				_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
 				//_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
 				//_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
 			}
@@ -269,7 +271,7 @@ public:
 		glClear(GL_DEPTH_BUFFER_BIT);
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
-			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[2]);
+			SceneManager::vec_ObjectsToRender[i]->Draw(&SceneManager::vec_ShaderProgram[2],true);   //True 代表在渲染陰影
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glCullFace(GL_BACK); 
@@ -281,7 +283,7 @@ public:
 		{
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==NONE?0:4]); // 這是暫時的  記得要改 非常難看  而且非常難懂
+			SceneManager::vec_ObjectsToRender[i]->Draw(&SceneManager::vec_ShaderProgram[4],false);
 		}
 		//this->dynamicsWorld->debugDrawWorld();
 	}
@@ -313,10 +315,6 @@ public:
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		SceneManager::vec_ShaderProgram[4].use();                                //要想辦法改掉   應該要直接串給MeshRender的主要Shader上 
-		SceneManager::vec_ShaderProgram[4].setInt("diffuseTexture", 0);
-		SceneManager::vec_ShaderProgram[4].setInt("depthMap", 1);
 	}
 
 };
