@@ -195,12 +195,13 @@ private:
 
 
 };
-
+extern unsigned int _Width, _Height;
 struct World : public CommonRigidBodyBase
 {
 	unsigned int depthMapFBO;
 	unsigned int depthCubemap;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	
 	World(): CommonRigidBodyBase()
 	{
 		//Bullet Physics creation// --------------------// Build the broadphase
@@ -211,8 +212,8 @@ struct World : public CommonRigidBodyBase
 		//const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 		//unsigned int depthMapFBO;
 		_piv = new _Pivot(new Actor());
-		// ----------------------- 
-	
+		// ----------------------- Shadow -----------------------
+		CreateDepthMap();
 	}
 public:
 	 bool _PlayMode;
@@ -227,8 +228,8 @@ public:
 		//Pyhscis Pipeline
 		if (this->_PlayMode)
 		{
-			/*this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
-			for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
+			this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
+			/*for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 			{
 				btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
 				for (int j = 0; j < SceneManager::Objects.size(); j++)
@@ -261,9 +262,9 @@ public:
 				}
 			}*/
 		}
-		//glCullFace(GL_FRONT);
+		glCullFace(GL_FRONT);
 		///Shadw
-		/*glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
@@ -271,15 +272,15 @@ public:
 			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[2]);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glCullFace(GL_BACK);
+		glCullFace(GL_BACK); 
 		// Draw Pipeline
-		glViewport(0, 0, Window::_Width, Window::_Height);
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		*/
+		glViewport(0, 0, _Width, _Height);
+		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 		this->m_dynamicsWorld->debugDrawWorld();
 		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
 		{
-			//glActiveTexture(GL_TEXTURE1);
-			//glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 			SceneManager::vec_ObjectsToRender[i]->Draw(SceneManager::vec_ShaderProgram[SceneManager::vec_ObjectsToRender[i]->_shape==NONE?0:4]); // 這是暫時的  記得要改 非常難看  而且非常難懂
 		}
 		//this->dynamicsWorld->debugDrawWorld();
@@ -313,9 +314,9 @@ public:
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		SceneManager::vec_ShaderProgram[1].use();                                //要想辦法改掉   應該要直接串給MeshRender的主要Shader上 
-		SceneManager::vec_ShaderProgram[1].setInt("diffuseTexture", 0);
-		SceneManager::vec_ShaderProgram[1].setInt("depthMap", 1);
+		SceneManager::vec_ShaderProgram[4].use();                                //要想辦法改掉   應該要直接串給MeshRender的主要Shader上 
+		SceneManager::vec_ShaderProgram[4].setInt("diffuseTexture", 0);
+		SceneManager::vec_ShaderProgram[4].setInt("depthMap", 1);
 	}
 
 };

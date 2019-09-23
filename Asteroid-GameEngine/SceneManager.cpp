@@ -28,7 +28,7 @@ void SceneManager::OpenFile()
 	std::ifstream _XMLstream;
 	try
 	{
-		_XMLstream.open("ExampleProject/BasicExample.AstGamEng");
+		_XMLstream.open("ExampleProject/Scene1.AstGamEng");
 		_doc.load(_XMLstream);
 	}
 	catch (const std::exception&)
@@ -137,7 +137,7 @@ void SceneManager::SaveFile()
 	}
 	root.append_attribute("Objects_Size") = Objects.size();
 
-	doc.save_file("ExampleProject/BasicExample.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
+	doc.save_file("ExampleProject/Scene1.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
 }
 
 void SceneManager::NewScene()

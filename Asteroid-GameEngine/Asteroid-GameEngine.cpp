@@ -225,6 +225,9 @@ int main()
 		//UI----------------------------------------------------------------------------------------------------------------------
 		WindowUI::ShowMyImGUIDemoWindow(&show_demo_window, &_Width, &_Height, _editorCamera.GetframeBuffer());
 
+		//ImGui::Image((void*)_MainWorld->depthMapFBO,ImVec2(400,400));
+
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(_mainWindow->MainGLFWwindow);
