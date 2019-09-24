@@ -175,7 +175,7 @@ void SceneManager::AddToRenderPipeline(Meshrender * _mrender)
 	_rs->_meshrender = _mrender;
 	vec_ObjectsToRender.push_back(_rs);
 }
-void SceneManager::DrawScene(bool _drawShadow)
+void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 {
 	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	float far_plane = 25.0f;
@@ -252,12 +252,12 @@ void SceneManager::DrawScene(bool _drawShadow)
 				// render scene from light's point of view
 				for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
 					vec_ShaderProgram[2]->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-
+				vec_ShaderProgram[2]->use();
 				// 共通
 				vec_ShaderProgram[2]->setMat4("projection", _editorCamera.Projection);
 				vec_ShaderProgram[2]->setMat4("view", _editorCamera.GetViewMatrix());
-				glm::mat4 _Mat4model = glm::mat4(1.0f);
 				
+			
 				///Shadow
 				vec_ShaderProgram[2]->setFloat("far_plane", far_plane);
 				vec_ShaderProgram[2]->setVec3("viewPos", _editorCamera.transform.position);
@@ -268,10 +268,39 @@ void SceneManager::DrawScene(bool _drawShadow)
 				for (unsigned int xi = 0; xi < vec_ObjectsToRender[y]->_meshrender->meshes.size(); xi++)
 				{
 					glBindVertexArray(vec_ObjectsToRender[y]->_meshrender->meshes[xi].VAO);
+					unsigned int diffuseNr = 1;
+					unsigned int specularNr = 1;
+					unsigned int normalNr = 1;
+					unsigned int heightNr = 1;
+
+					for (unsigned int i = 0; i < vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures.size(); i++)
+					{
+						glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+						// retrieve texture number (the N in diffuse_textureN)
+						string number;
+						string name = vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures[i].type;
+						if (name == "texture_diffuse")
+							number = std::to_string(diffuseNr++);
+						else if (name == "texture_specular")
+							number = std::to_string(specularNr++); // transfer unsigned int to stream
+						else if (name == "texture_normal")
+							number = std::to_string(normalNr++); // transfer unsigned int to stream
+						else if (name == "texture_height")
+							number = std::to_string(heightNr++); // transfer unsigned int to stream
+
+																 // now set the sampler to the correct texture unit
+						glUniform1i(glGetUniformLocation(vec_ShaderProgram[4]->ID, (name + number).c_str()), i);
+						// and finally bind the texture
+						glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures[i].id);
+					}
+
+					glActiveTexture(GL_TEXTURE1);
+					//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
 					glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender[y]->amount);
 					glBindVertexArray(0);
 					glActiveTexture(GL_TEXTURE0);
 				}
+				
 			
 		}
 	}
@@ -478,8 +507,6 @@ void SceneManager::DrawScene(bool _drawShadow)
 			for (unsigned int xi = 0; xi < vec_ObjectsToRender[y]->_meshrender->meshes.size(); xi++)
 			{
 				glBindVertexArray(vec_ObjectsToRender[y]->_meshrender->meshes[xi].VAO);
-
-
 				unsigned int diffuseNr = 1;
 				unsigned int specularNr = 1;
 				unsigned int normalNr = 1;
@@ -506,7 +533,8 @@ void SceneManager::DrawScene(bool _drawShadow)
 					glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures[i].id);
 				}
 
-
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender[y]->amount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);

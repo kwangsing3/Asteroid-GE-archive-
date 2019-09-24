@@ -188,7 +188,7 @@ void World::UpdateFrame()
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    //這個綁陰影的動作很醜，還能夠優化*/
-	SceneManager::DrawScene(false);  //False 代表沒有在渲染陰影
+	SceneManager::DrawScene(false, depthCubemap);  //False 代表沒有在渲染陰影
 
 	//this->dynamicsWorld->debugDrawWorld();
 }

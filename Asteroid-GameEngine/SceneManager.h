@@ -42,7 +42,7 @@ public:
 		CreateShader();
 	}
 
-	static void DrawScene(bool _drawShadow);
+	static void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
 	static void AddToRenderPipeline(Meshrender* _mrender);
 
 private:
