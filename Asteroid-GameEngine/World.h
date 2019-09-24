@@ -89,12 +89,14 @@ public:
 		glBufferData(GL_ARRAY_BUFFER, sizeof(PIVOTVERTICES), PIVOTVERTICES, GL_STATIC_DRAW);
 		glBindVertexArray(0);
 
-		SceneManager::vec_ShaderProgram[0].use();
-		SceneManager::vec_ShaderProgram[0].setInt("material.diffuse", 0);
+		SceneManager::vec_ShaderProgram[0]->use();
+		SceneManager::vec_ShaderProgram[0]->setInt("material.diffuse", 0);
 		//Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
-		SceneManager::vec_ObjectsToRender.push_back(this);
+		
+
+		SceneManager::AddToRenderPipeline(this);
 	}
-	void Draw(Shader* _shader,bool _renderShadow) override
+	void Draw(Shader* _shader,bool _renderShadow)// override
 	{
 		if (_renderShadow) return;
 		//Shader* _shader = _StandardShader? _StandardShader : new Shader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
@@ -206,117 +208,24 @@ struct World : public CommonRigidBodyBase
 	
 	World(): CommonRigidBodyBase()
 	{
-		//Bullet Physics creation// --------------------// Build the broadphase
 		_PlayMode = false;
-		   // 我的ShaderProgram在建構函數中創建   目前需要在world的類別前宣告
 		initPhysics();
-		// -----------------------
-		//const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-		//unsigned int depthMapFBO;
-		_piv = new _Pivot(new Actor());
+		
+		
 		// ----------------------- Shadow -----------------------
 		CreateDepthMap();
 	}
 public:
 	 bool _PlayMode;
-	
-	 _Pivot* _piv;
+	 _Pivot* _piv=new _Pivot(new Actor());
 	virtual ~World()
 	{
 	
 	}
-	void UpdateFrame()
-	{
-		//Pyhscis Pipeline
-		if (this->_PlayMode)
-		{
-			this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
-			/*for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
-			{
-				btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
-				for (int j = 0; j < SceneManager::Objects.size(); j++)
-				{
-					if (SceneManager::Objects[j]->boxcollision != NULL && SceneManager::Objects[j]->boxcollision->body == obj)
-					{
-						//int _order = SceneManager::Objects[i]->boxcollision->phy_order;
-						btRigidBody* body = btRigidBody::upcast(obj);
-						btTransform trans;
-						if (body && body->getMotionState())
-						{
-							body->getMotionState()->getWorldTransform(trans);
-						}
-						else
-						{
-							trans = obj->getWorldTransform();
-						}
-						SceneManager::Objects[j]->transform->position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-						Quaternion _btq;
-						_btq.x = trans.getRotation().getX();
-						_btq.y = trans.getRotation().getY();
-						_btq.z = trans.getRotation().getZ();
-						_btq.w = trans.getRotation().getW();
+	void UpdateFrame();
 
-						//EulerAngles _ea = Math::ToEulerAngles(trans.getRotation());
-						SceneManager::Objects[j]->transform->Rotate(_btq);
-						//SceneManager::Objects[j]->transform->Rotate(Math::QuaternionToGlmVec3(_btq));
-						break;
-					}
-				}
-			}*/
-		}
-		glCullFace(GL_FRONT);
-		///Shadw
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
-		{
-			SceneManager::vec_ObjectsToRender[i]->Draw(&SceneManager::vec_ShaderProgram[2],true);   //True 代表在渲染陰影
-		}
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glCullFace(GL_BACK); 
-		// Draw Pipeline
-		glViewport(0, 0, _Width, _Height);
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
-		this->m_dynamicsWorld->debugDrawWorld();
-		for (int i = 0; i < SceneManager::vec_ObjectsToRender.size(); i++)
-		{
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			SceneManager::vec_ObjectsToRender[i]->Draw(&SceneManager::vec_ShaderProgram[4],false);
-		}
-		//this->dynamicsWorld->debugDrawWorld();
-	}
-
-	virtual void initPhysics()
-	{
-		createEmptyDynamicsWorld();
-
-		GLDebugDrawer* _deb = new GLDebugDrawer();
-		this->m_dynamicsWorld->setDebugDrawer(_deb);
-	}
-	void CreateDepthMap()
-	{
-		glGenFramebuffers(1, &depthMapFBO);
-		// create depth texture
-
-		glGenTextures(1, &depthCubemap);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-		for (unsigned int i = 0; i < 6; ++i)
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		// attach depth texture as FBO's depth buffer                                            // Shadow buffer
-		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
+	virtual void initPhysics();
+	void CreateDepthMap();
 };
 
 

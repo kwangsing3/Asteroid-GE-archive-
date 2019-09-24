@@ -67,9 +67,9 @@ void Clear_ListBool()
 SelectObject *WindowUI::cur_SelectObject;
 void WindowUI::Deletecur_actor(SelectObject* cur_selectobject)
 {
-	if (cur_selectobject == NULL) return;
+	if (cur_selectobject == NULL) return;    //先暫時移除
 
-	for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
+	/*for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
 	{
 		if (*it == cur_selectobject->_actor)
 		{
@@ -106,7 +106,7 @@ void WindowUI::Deletecur_actor(SelectObject* cur_selectobject)
 				break;
 			}
 		}
-	}
+	}*/
 	cur_selectobject = NULL;
 }
 void WindowUI::Renamecur_actor(SelectObject * cur_actor)

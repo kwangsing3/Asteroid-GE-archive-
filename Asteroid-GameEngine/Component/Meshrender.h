@@ -12,6 +12,7 @@
 class btRigidBody;
 class btCollisionShape;
 class Mesh;
+class Transform;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
 
 struct ModelStruct
@@ -33,7 +34,7 @@ public:
 	//---------------------------------
 
 	//unsigned int Texture;
-	virtual void Draw(Shader* _shader,bool _renderShadow);
+	//virtual void Draw(Shader* _shader, bool _renderShadow, Transform* _trans);
 
 	bool _needdebug = false;
 	bool _visable = true;
@@ -44,7 +45,7 @@ public:
 	std::string directory;
 	glm::mat4 _Mat4model;
 	static std::vector<ModelStruct> ModelList;
-	
+	std::string Model_path;
 	/*  Model Data */
 	btRigidBody* body;
 	btCollisionShape* colShape;
@@ -78,6 +79,7 @@ public:
 	void CreateShape(std::string _path)
 	{
 		this->_shape = _Model;
+		this->Model_path = _path;
 		for (int i = 0; i < ModelList.size(); i++)
 		{
 			if (ModelList[i].path == _path)
@@ -92,8 +94,6 @@ public:
 	void CreateShape(Shape _shape)
 	{
 		this->_shape = _shape;
-		
-
 		std::string DefaultShapePath;
 		switch (_shape)
 		{
@@ -116,6 +116,8 @@ public:
 			return;
 			break;
 		}
+		this->Model_path = DefaultShapePath;
+
 		for (int i = 0; i < ModelList.size(); i++)
 		{
 			if (ModelList[i].path == DefaultShapePath)

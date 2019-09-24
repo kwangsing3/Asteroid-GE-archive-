@@ -107,6 +107,11 @@ void main()
     result += CalcSpotLight(spotLight, normal,  fs_in.FragPos, viewDir);    
 
 	  //vec3 normal = normalize(fs_in.Normal);
+
+	//shadow
+	
+    //vec3 normal = normalize(fs_in.Normal);
+	
     vec3 lightColor = vec3(1.0);
     // ambient
     vec3 ambient = 0.3 * color;
@@ -122,10 +127,11 @@ void main()
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     vec3 specular = spec * lightColor;    
     // calculate shadow
-    float shadow =  ShadowCalculation(fs_in.FragPos) ;                      
+    float shadow = ShadowCalculation(fs_in.FragPos);                      
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;   
-
-		FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+	
+	 FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+	 //FragColor = vec4(Color,1.0);
 }
 
 

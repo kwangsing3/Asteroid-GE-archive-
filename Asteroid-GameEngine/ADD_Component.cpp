@@ -27,7 +27,7 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _sha);
 	_actor->meshrender = _mesh;
-	SceneManager::vec_ObjectsToRender.push_back(_mesh);
+	SceneManager::AddToRenderPipeline(_mesh);
 	//_ac->transform->name = (char*)"Cube";
 	return _mesh;
 }
@@ -37,7 +37,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _path);
 	_actor->meshrender = _mesh;
-	SceneManager::vec_ObjectsToRender.push_back(_mesh);
+	SceneManager::AddToRenderPipeline(_mesh);
 	//_ac->transform->name = (char*)"Cube";
 	return _mesh;
 }

@@ -196,18 +196,18 @@ int main()
 		_sceneManager.CheckReload();
 		//Draw Croodinate  基本座標(白)
 		{
-			SceneManager::vec_ShaderProgram[0].use();
-			SceneManager::vec_ShaderProgram[0].setMat4("projection", _editorCamera.Projection);
+			SceneManager::vec_ShaderProgram[0]->use();
+			SceneManager::vec_ShaderProgram[0]->setMat4("projection", _editorCamera.Projection);
 			glm::mat4 view = _editorCamera.GetViewMatrix();
-			SceneManager::vec_ShaderProgram[0].setMat4("view", view);
+			SceneManager::vec_ShaderProgram[0]->setMat4("view", view);
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(0, 0, 0));
 			if (WindowUI::_mode == Mode_2D)
 				model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
 			else
 				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
-			SceneManager::vec_ShaderProgram[0].setMat4("model", model);
-			SceneManager::vec_ShaderProgram[0].setVec3("Color",0.4f,0.4f,0.4f);
+			SceneManager::vec_ShaderProgram[0]->setMat4("model", model);
+			SceneManager::vec_ShaderProgram[0]->setVec3("Color",0.4f,0.4f,0.4f);
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
 		}
