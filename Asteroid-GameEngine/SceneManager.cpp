@@ -16,7 +16,7 @@ std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Render_Struct*> SceneManager::vec_ObjectsToRender;
 std::vector<Actor*> SceneManager::Objects;
 glm::vec3 SceneManager::lightPos;
-bool SceneManager::NeedReload = false;
+bool SceneManager::NeedReloadShader = false;
 bool SceneManager::NeedInitedDraw = true;
 extern World* _MainWorld;
 
@@ -168,31 +168,75 @@ void SceneManager::AddToRenderPipeline(Meshrender * _mrender)
 		{
 			vec_ObjectsToRender[i]->amount += 1;
 			vec_ObjectsToRender[i]->transformList.push_back(_mrender->_actor->transform);
-			
+			vec_ObjectsToRender[i]->_visableList.push_back(&_mrender->_visable);	
 			return;
 		}
 	}
-
 	Render_Struct* _rs = new Render_Struct();
 	_rs->amount += 1;
 	_rs->transformList.push_back(_mrender->_actor->transform);
 	_rs->_meshrender = _mrender;
+	_rs->_visableList.push_back(&_mrender->_visable);
 	vec_ObjectsToRender.push_back(_rs);
-
+}
+void SceneManager::UpdateRenderPipeline(Meshrender * _mrender)
+{
+	NeedInitedDraw = true;
+	for (int i = 0; i < vec_ObjectsToRender.size(); i++)
+	{
+		if (vec_ObjectsToRender[i]->_meshrender->Model_path == _mrender->Model_path)
+		{
+			for (int x = 0; x < vec_ObjectsToRender[i]->transformList.size(); x++)
+			{
+				if (vec_ObjectsToRender[i]->transformList[x] == _mrender->_actor->transform)
+				{
+					vec_ObjectsToRender[i]->_visableList[x] = &_mrender->_visable;
+					return;
+				}
+			}
+		}
+	}
 }
 void SceneManager::InitDrawPipline()
 {
 	if (!NeedInitedDraw) return;
 	NeedInitedDraw = false;	
+	//Clear Render_List
+	{
+		for (int y = 0; y < vec_ObjectsToRender.size(); y++)
+		{
+			vec_ObjectsToRender[y]->DrawingAmount = 0;
+			vec_ObjectsToRender[y]->DrawingtransformList.clear();
+		}
+	}
+
 	// Init Transform
 	for (int y = 0; y < vec_ObjectsToRender.size(); y++)
 	{
+		vec_ObjectsToRender[y]->DrawingAmount = 0;
+		for (int x = 0; x < vec_ObjectsToRender[y]->amount; x++)
+		{
+			if (*vec_ObjectsToRender[y]->_visableList[x] == true)
+			{
+				vec_ObjectsToRender[y]->DrawingAmount += 1;
+				vec_ObjectsToRender[y]->DrawingtransformList.push_back(vec_ObjectsToRender[y]->transformList[x]);
+			}
+		}
+	
+		if (vec_ObjectsToRender[y]->DrawingAmount < 1)
+		{
+			vec_ObjectsToRender[y]->Drawing = false;
+			continue;
+		}
+		
+
+		vec_ObjectsToRender[y]->Drawing = true;
 		glm::mat4* modelMatrices;
-		modelMatrices = new glm::mat4[vec_ObjectsToRender[y]->amount];
-		for (unsigned int i = 0; i < vec_ObjectsToRender[y]->amount; i++)
+		modelMatrices = new glm::mat4[vec_ObjectsToRender[y]->DrawingAmount];
+		for (unsigned int i = 0; i < vec_ObjectsToRender[y]->DrawingAmount; i++)
 		{
 			glm::mat4 model = glm::mat4(1.0f);
-			Transform* _trans = vec_ObjectsToRender[y]->transformList[i];
+			Transform* _trans = vec_ObjectsToRender[y]->DrawingtransformList[i];
 			model = glm::translate(model, glm::vec3(_trans->position.x, _trans->position.y, _trans->position.z));
 			// 2. scale: Scale between 0.05 and 0.25f
 
@@ -204,10 +248,11 @@ void SceneManager::InitDrawPipline()
 			// 4. now add to list of matrices
 			modelMatrices[i] = model;
 		}
+
 		unsigned int buffer;
 		glGenBuffers(1, &buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		glBufferData(GL_ARRAY_BUFFER, vec_ObjectsToRender[y]->amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vec_ObjectsToRender[y]->DrawingAmount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 		//Bind to Vertex Array
 		for (unsigned int i = 0; i < vec_ObjectsToRender[y]->_meshrender->meshes.size(); i++)
 		{
@@ -241,14 +286,13 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	float far_plane = 25.0f;
 	if (_drawShadow)
-	{
-		
+	{	
 		vec_ShaderProgram[2]->use();
 		float near_plane = 1.0f;	
 		for (int y = 0; y < vec_ObjectsToRender.size(); y++)   //模型種類的數量
 		{
 				// Draw Shadow
-				if (!vec_ObjectsToRender[y]->_meshrender->_visable) continue;
+				//if (!vec_ObjectsToRender[y]->_meshrender->_visable) continue;
 				if (vec_ShaderProgram[2] == NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
 				
 
@@ -285,35 +329,10 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 				for (unsigned int xi = 0; xi < vec_ObjectsToRender[y]->_meshrender->meshes.size(); xi++)
 				{
 					glBindVertexArray(vec_ObjectsToRender[y]->_meshrender->meshes[xi].VAO);
-					unsigned int diffuseNr = 1;
-					unsigned int specularNr = 1;
-					unsigned int normalNr = 1;
-					unsigned int heightNr = 1;
+				
 
-					for (unsigned int i = 0; i < vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures.size(); i++)
-					{
-						glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-						// retrieve texture number (the N in diffuse_textureN)
-						string number;
-						string name = vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures[i].type;
-						if (name == "texture_diffuse")
-							number = std::to_string(diffuseNr++);
-						else if (name == "texture_specular")
-							number = std::to_string(specularNr++); // transfer unsigned int to stream
-						else if (name == "texture_normal")
-							number = std::to_string(normalNr++); // transfer unsigned int to stream
-						else if (name == "texture_height")
-							number = std::to_string(heightNr++); // transfer unsigned int to stream
-
-																 // now set the sampler to the correct texture unit
-						glUniform1i(glGetUniformLocation(vec_ShaderProgram[4]->ID, (name + number).c_str()), i);
-						// and finally bind the texture
-						glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender[y]->_meshrender->meshes[xi].textures[i].id);
-					}
-
-					glActiveTexture(GL_TEXTURE1);
 					//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
-					glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender[y]->amount);
+					glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender[y]->DrawingAmount);
 					glBindVertexArray(0);
 					glActiveTexture(GL_TEXTURE0);
 				}
@@ -328,7 +347,7 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 		vec_ShaderProgram[Shader_index]->use();
 		for (int y = 0; y < vec_ObjectsToRender.size(); y++)
 		{
-			if (!vec_ObjectsToRender[y]->_meshrender->_visable) continue;
+			if (!vec_ObjectsToRender[y]->Drawing) continue;
 			if (vec_ShaderProgram[Shader_index] == NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
 			
 
@@ -429,7 +448,7 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 				glBindVertexArray(vec_ObjectsToRender[y]->_meshrender->meshes[xi].VAO);
 				//glActiveTexture(GL_TEXTURE1);
 				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
-				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender[y]->amount);
+				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender[y]->DrawingAmount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
 			}

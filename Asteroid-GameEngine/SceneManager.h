@@ -12,8 +12,12 @@ class Transform;
 struct Render_Struct
 {
 	Meshrender* _meshrender;
+	bool Drawing = true;
 	unsigned int amount = 0;
+	unsigned int DrawingAmount = 0;
 	std::vector<Transform*> transformList;
+	std::vector<Transform*> DrawingtransformList;
+	std::vector<bool*> _visableList;
 };
 
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
@@ -25,7 +29,7 @@ public:
 	static std::vector<DirectionalLight*> vec_DirectionlLight;
 	static std::vector<PointLight*> vec_PointLight;
 	static std::vector<Shader*> vec_ShaderProgram;
-	static bool NeedReload;
+	static bool NeedReloadShader;
 	//載入檔案
 	static void OpenFile();
 	static void SaveFile();
@@ -36,17 +40,17 @@ public:
 	{
 		CreateShader();
 	}
-	void CheckReload()
+	void CheckReloadShader()
 	{
-		if (!NeedReload) return;
-		this->NeedReload = false;
+		if (!NeedReloadShader) return;
+		this->NeedReloadShader = false;
 		CreateShader();
 	}
 
 	static void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
 	static void DrawScene();   //this is test draw scene, only has simple drawing.
 	static void AddToRenderPipeline(Meshrender* _mrender);
-
+	static void UpdateRenderPipeline(Meshrender * _mrender);
 private:
 	void CreateShader()
 	{

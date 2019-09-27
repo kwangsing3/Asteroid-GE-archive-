@@ -198,6 +198,12 @@ void Meshrender::UpdateCollision()
 	
 }
 
+void Meshrender::SetVisable(bool _bool)
+{
+	this->_visable = _bool;
+	SceneManager::UpdateRenderPipeline(this);
+}
+
 
 
 

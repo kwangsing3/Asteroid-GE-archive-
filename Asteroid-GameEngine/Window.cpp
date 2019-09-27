@@ -203,9 +203,13 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 					_sel->_actor->meshrender->UpdateCollision();
 				}
 				static int _curco = 0;
-				if (ImGui::Button("Reload Shader"))  SceneManager::NeedReload = true;
+				if (ImGui::Button("Reload Shader"))  SceneManager::NeedReloadShader = true;
 				
-				ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable);
+				if (ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable))
+				{
+					//SceneManager::NeedInitedDraw = true;
+					_sel->_actor->meshrender->SetVisable(_sel->_actor->meshrender->_visable);
+				}
 			}
 		}
 		if (_sel->_actor->boxcollision != NULL && _sel->_actor->boxcollision->enabled)
@@ -554,7 +558,7 @@ static void MainMenuBar()
 				
 			}
 			if (ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay)) {}
-			if (ImGui::MenuItem("PlayMode", "", &World::_PlayMode))
+			if (ImGui::MenuItem("PlayMode", "", &_MainWorld->_PlayMode))
 			{
 				for (int i = 0; i < SceneManager::Objects.size(); i++)
 				{

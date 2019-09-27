@@ -198,7 +198,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		_sceneManager.CheckReload(); //檢查是否實時重載Shader;
+		_sceneManager.CheckReloadShader(); //檢查是否實時重載Shader;
 		//Draw Croodinate  基本座標(白)
 		{
 			SceneManager::vec_ShaderProgram[0]->use();
@@ -386,7 +386,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			{
 				
 				//_cur_World->dynamicsWorld.
-				if (RayCallback.m_collisionObject->_actor->meshrender->_shape == NONE)  //確定是否擊中Pivot
+				if (RayCallback.m_collisionObject->_actor!=NULL&&RayCallback.m_collisionObject->_actor->meshrender->_shape == NONE)  //確定是否擊中Pivot
 				{
 					_MainWorld->_piv->_actor = RayCallback.m_collisionObject->_actor;
 					_MainWorld->_piv->Drag[0] = false; _MainWorld->_piv->Drag[1] = false; _MainWorld->_piv->Drag[2] = false;

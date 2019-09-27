@@ -130,7 +130,10 @@ public:
 		//CreateMouseCollision();
 	}
 	virtual void UpdateCollision();
-	
+	void SetVisable(bool _bool);
+
+
+
 private:
 
 	void CreateMouseCollision();
