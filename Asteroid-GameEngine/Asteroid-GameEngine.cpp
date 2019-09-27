@@ -14,7 +14,8 @@
 #include <Raycast.h>
 
 #include <SceneManager.h>   //要記得刪掉 Debug用
-
+#include <model.h>
+#include <ADD_Component.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
@@ -164,8 +165,12 @@ int main()
 	//---------------------------------------
 	//記得拿掉
 	SceneManager::OpenFile();//調試用函數
+	
+	
 
 
+
+	
 	//記得拿掉
 	
 	double previousTime = glfwGetTime();
@@ -193,7 +198,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		_sceneManager.CheckReload();
+		_sceneManager.CheckReload(); //檢查是否實時重載Shader;
 		//Draw Croodinate  基本座標(白)
 		{
 			SceneManager::vec_ShaderProgram[0]->use();
@@ -216,17 +221,15 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		//世界的畫面刷新
+
+
 		_MainWorld->UpdateFrame();
-		//_deb->drawLine(btVector3(Raycast::GetWorldPosition(0).x, Raycast::GetWorldPosition(0).y, Raycast::GetWorldPosition(0).z), btVector3(0, 0,0),btVector3(1,0,0));
 
-		// 正在解決MSAA 抗鋸齒  想辦法把抗鋸齒用到幀緩衝上
-
+	
+		
 		glDisable(GL_DEPTH_TEST);
 		//UI----------------------------------------------------------------------------------------------------------------------
 		WindowUI::ShowMyImGUIDemoWindow(&show_demo_window, &_Width, &_Height, _editorCamera.GetframeBuffer());
-
-		//ImGui::Image((void*)_MainWorld->depthMapFBO,ImVec2(400,400));
-
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

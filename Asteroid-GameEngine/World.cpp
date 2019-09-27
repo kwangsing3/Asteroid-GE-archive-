@@ -171,7 +171,7 @@ void World::UpdateFrame()
 			}
 		}*/
 	}
-	glCullFace(GL_FRONT);
+	/*glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);

@@ -95,7 +95,7 @@ void Camera::SwitchCamera3D(bool _mode)
 	if (_mode)
 	{
 		Projection_3D = true;
-		Projection = glm::perspective(glm::radians(Zoom), (float)viewports[_ViewportSetting].x / (float)viewports[_ViewportSetting].y, 0.1f, 100.0f);
+		Projection = glm::perspective(glm::radians(Zoom), (float)viewports[_ViewportSetting].x / (float)viewports[_ViewportSetting].y, 0.1f, 1000.0f);
 		
 		this->transform.position = glm::vec3(3.46047330f, 2.89513254f, 9.00700569f);
 		this->Up = glm::vec3(-0.0397651941f, 0.993767977f, -0.104134686f);

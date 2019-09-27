@@ -30,6 +30,7 @@ public:
 	static void OpenFile();
 	static void SaveFile();
 	static void NewScene();
+	static bool NeedInitedDraw;
 	
 	SceneManager()
 	{
@@ -43,6 +44,7 @@ public:
 	}
 
 	static void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
+	static void DrawScene();   //this is test draw scene, only has simple drawing.
 	static void AddToRenderPipeline(Meshrender* _mrender);
 
 private:
@@ -51,16 +53,18 @@ private:
 		if (vec_ShaderProgram.size() > 0)
 			vec_ShaderProgram.clear();
 
-		/*0*/Shader* _SimpleShader = new Shader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
+		/*0*/Shader* _SimpleShader = new Shader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs");
 		/*1*/Shader* _StandardShader = new Shader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs");
 		/*2*/Shader* _DepthShader = new Shader("Shader/shadow_mapping_depth.vs", "Shader/shadow_mapping_depth.fs", "Shader/point_shadows_depth.gs");
 		/*3*/Shader* _ShadowdShader = new Shader("Shader/shadow_mapping.vs", "Shader/shadow_mapping.fs");
 		/*4*/Shader* _ModelShader = new Shader("Shader/ModelShader.vs", "Shader/ModelShader.fs");    //目前的最主要Shader
+		/*5*/Shader* _Simple_TextureShader = new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs");    //目前的最主要Shader
 		SceneManager::vec_ShaderProgram.push_back(_SimpleShader);
 		SceneManager::vec_ShaderProgram.push_back(_StandardShader);
 		SceneManager::vec_ShaderProgram.push_back(_DepthShader);
 		SceneManager::vec_ShaderProgram.push_back(_ShadowdShader);
 		SceneManager::vec_ShaderProgram.push_back(_ModelShader);
+		SceneManager::vec_ShaderProgram.push_back(_Simple_TextureShader);
 
 		//  先暫時放這裡  影子相關
 		SceneManager::vec_ShaderProgram[4]->use();
@@ -68,6 +72,9 @@ private:
 		SceneManager::vec_ShaderProgram[4]->setInt("depthMap", 1);
 	}
 	static glm::vec3 lightPos;
+	static void InitDrawPipline();
+
+
 };
 
 

@@ -191,9 +191,11 @@ void Meshrender::CreateMouseCollision()
 }
 void Meshrender::UpdateCollision()
 {
+	SceneManager::NeedInitedDraw = true;
 	if (this->body == NULL) return;
 	_MainWorld->deleteRigidBody(this->body);
 	CreateMouseCollision();
+	
 }
 
 

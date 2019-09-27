@@ -244,7 +244,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				ImGui::End();
 				return;
 			}
-			//------------------------------------------------------------------------------------------------
+			//------------------------------------------------------------------------------------------------這裡根據物件太多可能會導致性能瓶頸  應該可以優化
 			if (SceneManager::Objects.size() > 0)
 			{
 				//buf1 =(char*) "";
@@ -345,18 +345,18 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			}
 			if (ImGui::Button("Create 100 Asteroids"))
 			{
+			
 				unsigned int amount = 100;
 				
 				srand(glfwGetTime()); // initialize random seed	
 				float radius = 50.0;
 				float offset = 2.5f;
+				
 				for (unsigned int i = 0; i < amount; i++)
 				{
 					Actor* _ac = ADD_Component::Add_Actor();
 					ADD_Component::Add_Meshrender(_ac, "ExampleModel/rock.obj");
 					_ac->transform->name = (char*) "New Asteroid";
-					
-
 					//glm::mat4 model = glm::mat4(1.0f);
 					// 1. translation: displace along circle with 'radius' in range [-offset, offset]
 					float angle = (float)i / (float)amount * 360.0f;
