@@ -8,9 +8,8 @@
 
 //unsigned int World::depthMapFBO;
 extern World* _MainWorld;
-void _Pivot::CreateMouseCollision()
+void _Pivot::CreateMouseCollision()   // 重複執行太多次了
 {
-
 	if (this->_visable)
 	{
 		if (colshape.size() < 3)
@@ -49,7 +48,7 @@ void _Pivot::CreateMouseCollision()
 			this->body[i] = new btRigidBody(rbInfo);
 			
 			//body[0]->setCenterOfMassTransform(startTransform[0]);
-			body[i]->_actor = this->_actor;
+			body[i]->_ActorInBullet = this->_actor;
 			Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 			body[i]->setCollisionFlags(Collision_flag);
 			
@@ -109,7 +108,7 @@ void World::initPhysics()
 
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	this->m_dynamicsWorld->setDebugDrawer(_deb);
-	_piv = new _Pivot(new Actor());
+	//_piv = new _Pivot(new Actor());
 }
 void World::CreateDepthMap()
 {
@@ -137,39 +136,26 @@ void World::UpdateFrame()
 	//Pyhscis Pipeline
 	if (this->_PlayMode)
 	{
-		this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);   //  這句才是讓物理動起來的精隨
-		/*for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
+		
+
+		//需要特別處理一下，BulletEngine不知道為何會把我放的Pointer刷新  所以只好在刷新之前提取我做的標記  在秒數更新後依照Actor順序移動，然後再複寫回去    ps.再複寫回去是為了下次能夠再取得一次
+		
+		for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 		{
 			btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
-			for (int j = 0; j < SceneManager::Objects.size(); j++)
-			{
-				if (SceneManager::Objects[j]->boxcollision != NULL && SceneManager::Objects[j]->boxcollision->body == obj)
-				{
-					//int _order = SceneManager::Objects[i]->boxcollision->phy_order;
-					btRigidBody* body = btRigidBody::upcast(obj);
-					btTransform trans;
-					if (body && body->getMotionState())
-					{
-						body->getMotionState()->getWorldTransform(trans);
-					}
-					else
-					{
-						trans = obj->getWorldTransform();
-					}
-					SceneManager::Objects[j]->transform->position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-					Quaternion _btq;
-					_btq.x = trans.getRotation().getX();
-					_btq.y = trans.getRotation().getY();
-					_btq.z = trans.getRotation().getZ();
-					_btq.w = trans.getRotation().getW();
+			if(obj->_ActorInBullet->boxcollision!=NULL && !obj->isStaticObject())
+				_PhysicsProgress.push_back(new _PhysicsStrut(i, obj->_ActorInBullet));
+		}
 
-					//EulerAngles _ea = Math::ToEulerAngles(trans.getRotation());
-					SceneManager::Objects[j]->transform->Rotate(_btq);
-					//SceneManager::Objects[j]->transform->Rotate(Math::QuaternionToGlmVec3(_btq));
-					break;
-				}
-			}
-		}*/
+		//隨著物理移動算是解決了，一直以來都是因為UpdateCollision會重新刪除又新增，所以會走走停停，剩下就是邏輯上的梳理。
+		this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);
+		for (int i = 0; i < _PhysicsProgress.size(); i++)
+		{
+			_PhysicsProgress[i]->_actor->transform->MoveByPhysics(&this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->getWorldTransform());
+			this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[i]->_actor;
+		}
+
+		_PhysicsProgress.clear();
 	}
 	/*glCullFace(GL_FRONT);
 	///Shadw

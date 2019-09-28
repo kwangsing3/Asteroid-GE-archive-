@@ -101,6 +101,9 @@ protected:
 	btVector3 m_turnVelocity;
 
 public:
+
+	
+
 	///The btRigidBodyConstructionInfo structure provides information to create a rigid body. Setting mass to zero creates a fixed (non-dynamic) rigid body.
 	///For dynamic objects, you can use the collision shape to approximate the local inertia tensor, otherwise use the zero vector (default argument)
 	///You can use the motion state to synchronize the world transform between physics and graphics objects.

@@ -3,6 +3,8 @@
 #include <Component/Component.h>
 
 class btRigidBody;
+class btCollisionShape;
+class btTransform;
 class BoxCollision: public Component
 {
 
@@ -10,19 +12,20 @@ public:
 
 	//btTransform startTransform;
 	//int phy_order;    //直接從Dynamic World 的Collision vector中 找到相應的對象
-	float _Mass;
-	int _Mask;
-	int _Group;
-	btRigidBody* body;   //因為需要跨function用到 所以另外拉出來宣告
-	bool _needdebug = false;
+	float _Mass = 1.0f;
+	int _Mask = 2;
+	int _Group = 2;
+	btRigidBody* body;   
+	btCollisionShape* colShape;
+	
+	bool _needdebug = true;
 	BoxCollision(Actor* _a)
 	{
-		_actor = _a;
+		this->_actor = _a;
 		this->enabled = true;
-		//_Color = { 0,1,0,1 };  //Green
-		//phy_order = -1;
-		_Mass = 1.0f;
-		_Mask = _Group = 2;
+	
+		
+		
 		this->CreateBox();
 	}	
 	void SaveFile( pugi::xml_node* _node) override;
@@ -30,6 +33,7 @@ public:
 	void UpdateCollision();
 private:
 	void CreateBox();
+
 };
 
 

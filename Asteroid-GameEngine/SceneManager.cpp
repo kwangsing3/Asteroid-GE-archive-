@@ -153,8 +153,8 @@ void SceneManager::NewScene()
 	_MainWorld->exitPhysics();
 	_MainWorld->initPhysics();
 	_MainWorld->_PlayMode = false;
-	delete _MainWorld->_piv;
-	_MainWorld->_piv =new _Pivot(new Actor());
+	//delete _MainWorld->_piv;
+	//_MainWorld->_piv =new _Pivot(new Actor());
 	
 	
 	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
@@ -228,8 +228,6 @@ void SceneManager::InitDrawPipline()
 			vec_ObjectsToRender[y]->Drawing = false;
 			continue;
 		}
-		
-
 		vec_ObjectsToRender[y]->Drawing = true;
 		glm::mat4* modelMatrices;
 		modelMatrices = new glm::mat4[vec_ObjectsToRender[y]->DrawingAmount];
@@ -238,13 +236,14 @@ void SceneManager::InitDrawPipline()
 			glm::mat4 model = glm::mat4(1.0f);
 			Transform* _trans = vec_ObjectsToRender[y]->DrawingtransformList[i];
 			model = glm::translate(model, glm::vec3(_trans->position.x, _trans->position.y, _trans->position.z));
-			// 2. scale: Scale between 0.05 and 0.25f
-
+			// 2. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+			glm::quat MyQuaternion;
+			glm::vec3 EulerAngles(glm::radians(_trans->rotation.x), glm::radians(-_trans->rotation.y), glm::radians(_trans->rotation.z));
+			MyQuaternion = glm::quat(EulerAngles);
+			glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
+			model = model * RotationMatrix;
+			// 3. scale: Scale between 0.05 and 0.25f
 			model = glm::scale(model, glm::vec3(_trans->scale));
-			// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-			model = glm::rotate(model, glm::radians(_trans->rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(_trans->rotation.y), glm::vec3(0.0f, 0.1f, 0.0f));
-			model = glm::rotate(model, glm::radians(_trans->rotation.z), glm::vec3(0.0f, 0.0f, 0.1f));
 			// 4. now add to list of matrices
 			modelMatrices[i] = model;
 		}
@@ -278,7 +277,7 @@ void SceneManager::InitDrawPipline()
 
 
 }
-int DrawShadow_Length = 10;
+
 void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 {
 	if (NeedInitedDraw) InitDrawPipline();

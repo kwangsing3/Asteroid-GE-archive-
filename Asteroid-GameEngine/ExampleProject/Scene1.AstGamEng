@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene name="test" Objects_Size="6">
-<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Objects name="New 1" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="2.07999992" y="2.61999989" z="1" />
 <Rotation x="0" y="0" z="-20" />
 <Scale x="0.5" y="0.5" z="0.5" />
@@ -15,28 +15,28 @@
 <Diffuse X="1" Y="0.999989986" Z="0.999989986" />
 <Specular X="0" Y="0.0882613659" Z="1" />
 </Objects>
-<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Objects name="New 2" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="-1.67999995" y="1.99000001" z="1" />
 <Rotation x="-35.0999985" y="0" z="18" />
 <Scale x="0.600000024" y="0.600000024" z="0.600000024" />
 <MeshRender VertexColorX="0" VertexColorY="1" VertexColorZ="0.0892856121" />
 <BoxCollision Mass="1" />
 </Objects>
-<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Objects name="New 3" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="1.88" y="-0.560000002" z="1" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="10" y="0.100000001" z="10" />
 <MeshRender VertexColorX="0.999991357" VertexColorY="0.999989986" VertexColorZ="1" />
 <BoxCollision Mass="0" />
 </Objects>
-<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Objects name="New 4" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="-0.680000007" y="4.86999989" z="-1.47000003" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="0.800000012" y="0.800000012" z="0.800000012" />
 <MeshRender VertexColorX="0.704719365" VertexColorY="0.758928537" VertexColorZ="0" />
 <BoxCollision Mass="1" />
 </Objects>
-<Objects name="New Cube" meshrender="1" Component_size="1">
+<Objects name="New 5" meshrender="1" Component_size="1">
 <Position x="2.78999996" y="-0.349999994" z="0" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="1" y="1" z="1" />

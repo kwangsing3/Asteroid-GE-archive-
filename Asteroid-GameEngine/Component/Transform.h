@@ -3,7 +3,7 @@
 #include<Component/Component.h>
 
 
-
+class btTransform;
 class Transform:public Component
 {
 public:
@@ -26,6 +26,7 @@ public:
 	void Rotate(glm::vec3 _rot);
 	//void Rotate(glm::Quaternion _qu);
 	void Scale(glm::vec3 _scal);
+	void MoveByPhysics(btTransform* _trans);
 	 
 };
 

@@ -126,7 +126,8 @@ protected:
 
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
-	Actor* _actor;
+
+	Actor* _ActorInBullet = NULL;
 	enum CollisionFlags
 	{
 		CF_STATIC_OBJECT = 1,

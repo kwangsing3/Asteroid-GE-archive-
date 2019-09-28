@@ -15,7 +15,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include <SceneManager.h>
-
+#include <ADD_Component.h>
 //#include <Window.h>
 //#include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
@@ -47,11 +47,7 @@ public:
 		this->enabled = true;
 		this->CreatePivot();
 		this->VertexColor = glm::vec3(1, 1, 1);
-		//CreateMouseCollision();
-		//transform->name = (char*)"Cube";
-		//  滑鼠判定的碰撞體
-		//initshapes
-		//_StandardShader = new Shader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
+
 		CreateMouseCollision();     
 	}
 	void CreatePivot()
@@ -200,6 +196,18 @@ private:
 
 };
 extern unsigned int _Width, _Height;
+struct _PhysicsStrut 
+{
+	int _index = -1;
+	Actor* _actor;
+	_PhysicsStrut(int _i, Actor* _a)
+	{
+		_index = _i;
+		_actor = _a;
+	}
+};
+
+
 struct World : public CommonRigidBodyBase
 {
 	unsigned int depthMapFBO;
@@ -217,7 +225,7 @@ struct World : public CommonRigidBodyBase
 	}
 public:
 	 bool _PlayMode;
-	 _Pivot* _piv=new _Pivot(new Actor());
+	 _Pivot* _piv = NULL;// = new _Pivot(ADD_Component::Add_Actor());
 	virtual ~World()
 	{
 	
@@ -226,6 +234,8 @@ public:
 
 	virtual void initPhysics();
 	void CreateDepthMap();
+protected:
+	std::vector<_PhysicsStrut*> _PhysicsProgress;
 };
 
 

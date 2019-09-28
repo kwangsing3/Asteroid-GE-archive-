@@ -21,12 +21,13 @@ void BoxCollision::OpenFile(pugi::xml_node* _node)
 
 void BoxCollision::CreateBox()
 {
-	btVector3 localInertia(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-	btCollisionShape* colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z)/2);
-	btScalar mass(this->_Mass);
-	
-	_MainWorld->m_collisionShapes.push_back(colShape);
+	btVector3 localInertia(0, 0, 0);
 
+	if (colShape == NULL)
+	{
+		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
+		_MainWorld->m_collisionShapes.push_back(colShape);
+	}
 	/// Create Dynamic Objects
 	btTransform startTransform;
 	startTransform.setIdentity();
@@ -36,26 +37,27 @@ void BoxCollision::CreateBox()
 	startTransform.setRotation(quat);
 	
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.f);
+	bool isDynamic = (_Mass != 0.f);
 	if (isDynamic)
-		colShape->calculateLocalInertia(mass, localInertia);
+		colShape->calculateLocalInertia(_Mass, localInertia);
 	startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(_Mass, myMotionState, colShape, localInertia);
+	
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
-	int Collision_flags = 0;
-	Collision_flags = body->getCollisionFlags();
-	body->setCollisionFlags(_needdebug ? Collision_flags : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
-	body->setCustomDebugColor(btVector3(1,1,1));
+	int Collision_flag = 0;
+
+
+	body->_ActorInBullet = this->_actor; 
 
 	_MainWorld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
 	
-
-	//World::dynamicsWorld->addRigidBody(body);
-	//this->phy_order = World::dynamicsWorld->getNumCollisionObjects() - 1;
+	
+	
+	
 }
 
 
@@ -63,6 +65,8 @@ void BoxCollision::CreateBox()
 void BoxCollision::UpdateCollision()
 {
 	if (this->body == NULL) return;
+
+	body->translate(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 	_MainWorld->deleteRigidBody(this->body);
 	CreateBox();
 }

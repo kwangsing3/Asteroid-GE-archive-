@@ -13,6 +13,7 @@ class btRigidBody;
 class btCollisionShape;
 class Mesh;
 class Transform;
+class btTransform;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
 
 struct ModelStruct
@@ -52,7 +53,7 @@ public:
 	Meshrender() { std::cout<<"error: it couldn't be add without constructors "; }
 	Meshrender(Actor* _a, Shape _shape)
 	{
-		_actor = _a;
+		this->_actor = _a;
 		this->_mode = RenderMode(1);
 		this->enabled = true;
 		this->CreateShape(_shape);
@@ -64,7 +65,7 @@ public:
 	}
 	Meshrender(Actor* _a, std::string _path)
 	{
-		_actor = _a;
+		this->_actor = _a;
 		_Mat4model = glm::mat4(1.0f);
 		this->_mode = RenderMode(1);
 		this->enabled = true;
@@ -131,7 +132,7 @@ public:
 	}
 	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
-
+	void SetTransformFromPhysics(btTransform* _trans);
 
 
 private:

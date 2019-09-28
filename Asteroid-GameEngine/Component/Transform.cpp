@@ -1,6 +1,7 @@
 #include <Component/Transform.h>
 
 #include <Units/Actor.h>
+#include "btBulletCollisionCommon.h"
 //#include <glm/gtx/quaternion.hpp>
 //#include <Math/Math.h>
 
@@ -41,18 +42,14 @@ void Transform::Translate(glm::vec3 _pos)
 {
 	this->position= _pos;
 	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 void Transform::Rotate(glm::vec3 _rot)
 {
 	this->rotation = _rot;
 	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	/*if (!World::_PlayMode)
-	{
-		if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
-	}*/
-	
+	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 /*void Transform::Rotate(glm::Quaternion _qu);
@@ -70,5 +67,12 @@ void Transform::Scale(glm::vec3 _scal)
 	this->scale = _scal;
 	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
 	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+}
+
+void Transform::MoveByPhysics(btTransform* _trans)
+{
+	this->Translate(glm::vec3(_trans->getOrigin().getX(), _trans->getOrigin().getY(), _trans->getOrigin().getZ()));
+
+
 }
 

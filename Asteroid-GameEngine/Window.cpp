@@ -116,6 +116,7 @@ void WindowUI::Renamecur_actor(SelectObject * cur_actor)
 }
 void WindowUI::SelectThisActor(Actor * _actor)
 {
+
 	if (_actor != NULL)
 	{
 		_cSelectObject = _headSelectObject;
@@ -123,10 +124,10 @@ void WindowUI::SelectThisActor(Actor * _actor)
 		{
 			if (_cSelectObject->_actor == _actor)
 			{
-				WindowUI::SelectThisObject(_cSelectObject);
+					WindowUI::SelectThisObject(_cSelectObject);
 				break;
 			}
-			
+
 			if (_cSelectObject->next != NULL)_cSelectObject = _cSelectObject->next;
 		}
 	}
@@ -558,13 +559,9 @@ static void MainMenuBar()
 				
 			}
 			if (ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay)) {}
-			if (ImGui::MenuItem("PlayMode", "", &_MainWorld->_PlayMode))
-			{
-				for (int i = 0; i < SceneManager::Objects.size(); i++)
-				{
-					if (SceneManager::Objects[i]->boxcollision != NULL) SceneManager::Objects[i]->boxcollision->UpdateCollision();
-				}
-			}
+
+			ImGui::MenuItem("PlayMode", "", &_MainWorld->_PlayMode);
+			
 
 			ImGui::EndMenu();
 		}

@@ -154,7 +154,7 @@ void Meshrender::CreateMouseCollision()
 	//create a dynamic rigidbody
 	if (colShape == NULL)
 	{
-		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z) / 2);
+		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 		_MainWorld->m_collisionShapes.push_back(colShape);
 	}
 
@@ -179,22 +179,27 @@ void Meshrender::CreateMouseCollision()
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
 	int Collision_flag=0;
-	Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-	body->setCollisionFlags(Collision_flag);
+	
+//	Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+//	body->setCollisionFlags(Collision_flag);
 
 	int _group = 1;
 	int _mask = 1;
-
+	body->_ActorInBullet = this->_actor;
 	_MainWorld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
-	body->_actor = this->_actor;
+	
 	//World::dynamicsWorld->updateSingleAabb(body);
 }
 void Meshrender::UpdateCollision()
 {
 	SceneManager::NeedInitedDraw = true;
 	if (this->body == NULL) return;
-	_MainWorld->deleteRigidBody(this->body);
-	CreateMouseCollision();
+
+	body->translate(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+
+
+	//_MainWorld->deleteRigidBody(this->body);
+	//CreateMouseCollision();
 	
 }
 
@@ -202,6 +207,17 @@ void Meshrender::SetVisable(bool _bool)
 {
 	this->_visable = _bool;
 	SceneManager::UpdateRenderPipeline(this);
+}
+
+void Meshrender::SetTransformFromPhysics(btTransform* _trans)
+{
+	
+	btScalar _x, _y, _z;
+	_trans->getRotation().getEulerZYX(_x, _y, _z);
+	this->_actor->transform->Rotate(glm::vec3(_x, _y, _z));
+	this->_actor->transform->Translate(glm::vec3(_trans->getOrigin().getX(), _trans->getOrigin().getY(), _trans->getOrigin().getZ()));
+
+	
 }
 
 

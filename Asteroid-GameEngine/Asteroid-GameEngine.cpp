@@ -386,9 +386,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			{
 				
 				//_cur_World->dynamicsWorld.
-				if (RayCallback.m_collisionObject->_actor!=NULL&&RayCallback.m_collisionObject->_actor->meshrender->_shape == NONE)  //確定是否擊中Pivot
+				if (RayCallback.m_collisionObject->_ActorInBullet !=NULL&&RayCallback.m_collisionObject->_ActorInBullet->meshrender->_shape == NONE)  //確定是否擊中Pivot
 				{
-					_MainWorld->_piv->_actor = RayCallback.m_collisionObject->_actor;
+					_MainWorld->_piv->_actor = RayCallback.m_collisionObject->_ActorInBullet;
 					_MainWorld->_piv->Drag[0] = false; _MainWorld->_piv->Drag[1] = false; _MainWorld->_piv->Drag[2] = false;
 					if (RayCallback.m_collisionObject == _MainWorld->_piv->body[0])
 						_MainWorld->_piv->Drag[0] = true;
@@ -400,10 +400,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				}
 				else
 				{
-					if (_MainWorld->_piv != NULL && _MainWorld->_piv->_lowwerActor != RayCallback.m_collisionObject->_actor)
 						//World::_piv->AttachObject(RayCallback.m_collisionObject->_actor);
-					WindowUI::SelectThisActor(RayCallback.m_collisionObject->_actor);
+					WindowUI::SelectThisActor(RayCallback.m_collisionObject->_ActorInBullet);
 				}
+
 			}
 			else
 			{
