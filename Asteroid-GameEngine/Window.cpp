@@ -201,7 +201,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 
 				if (ImGui::Checkbox("Debug", &_sel->_actor->meshrender->_needdebug))
 				{
-					_sel->_actor->meshrender->UpdateCollision();
+					_sel->_actor->meshrender->ReSetCollisionFlag();
 				}
 				static int _curco = 0;
 				if (ImGui::Button("Reload Shader"))  SceneManager::NeedReloadShader = true;
@@ -225,7 +225,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				}
 				if (ImGui::Checkbox("Debug Line", &_sel->_actor->boxcollision->_needdebug))
 				{
-					_sel->_actor->boxcollision->UpdateCollision();
+					_sel->_actor->boxcollision->ReSetCollisionFlag();
 				}
 			}
 		}

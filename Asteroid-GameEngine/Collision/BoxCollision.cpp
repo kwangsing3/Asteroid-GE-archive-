@@ -48,26 +48,25 @@ void BoxCollision::CreateBox()
 	
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
-	int Collision_flag = 0;
-
-
+	//int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+//	this->body->setCollisionFlags(Collision_flag);
 	body->_ActorInBullet = this->_actor; 
-
 	_MainWorld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
-	
-	
-	
-	
 }
-
-
 
 void BoxCollision::UpdateCollision()
 {
 	if (this->body == NULL) return;
+	if (!_MainWorld->_PlayMode)
+	{
+		_MainWorld->deleteRigidBody(this->body);
+		CreateBox();
+	}
+}
 
-	body->translate(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-	_MainWorld->deleteRigidBody(this->body);
-	CreateBox();
+void BoxCollision::ReSetCollisionFlag()
+{
+	//int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	//this->body->setCollisionFlags(Collision_flag);
 }
 

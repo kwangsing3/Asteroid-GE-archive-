@@ -14,6 +14,7 @@ class btCollisionShape;
 class Mesh;
 class Transform;
 class btTransform;
+class btDefaultMotionState;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
 
 struct ModelStruct
@@ -132,8 +133,8 @@ public:
 	}
 	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
-	void SetTransformFromPhysics(btTransform* _trans);
 
+	void ReSetCollisionFlag();
 
 private:
 
@@ -156,8 +157,7 @@ private:
 	int Light_Length = 3;
 
 	glm::vec3 EulerAngles;
-	//glm::quat MyQuaternion;
-	//void CreatePivotVollision();
+	btDefaultMotionState* myMotionState;
 };
 
 #endif //MESHRENDER_H

@@ -142,18 +142,21 @@ void World::UpdateFrame()
 		
 		for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 		{
-			btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
-			if(obj->_ActorInBullet->boxcollision!=NULL && !obj->isStaticObject())
-				_PhysicsProgress.push_back(new _PhysicsStrut(i, obj->_ActorInBullet));
+			btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i]; // 全部加進來再全部寫回去
+			_PhysicsProgress.push_back(new _PhysicsStrut(i, obj->_ActorInBullet, true));  
 		}
 
-		//隨著物理移動算是解決了，一直以來都是因為UpdateCollision會重新刪除又新增，所以會走走停停，剩下就是邏輯上的梳理。
 		this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);
-		for (int i = 0; i < _PhysicsProgress.size(); i++)
+
+		for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 		{
-			_PhysicsProgress[i]->_actor->transform->MoveByPhysics(&this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->getWorldTransform());
-			this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[i]->_actor;
+			//if (_PhysicsProgress[i]->Static) continue;
+			btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
+			obj->_ActorInBullet = _PhysicsProgress[i]->_actor;
+			obj->_ActorInBullet->transform->MoveByPhysics(&obj->getWorldTransform());
+			
 		}
+		
 
 		_PhysicsProgress.clear();
 	}

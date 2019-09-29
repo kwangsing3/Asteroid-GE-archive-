@@ -265,7 +265,7 @@ void processInput(GLFWwindow *window)
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 			_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
 		else
-			_MainWorld->_piv->SwitchDragMode(0);
+			if(_MainWorld->_piv!=NULL)_MainWorld->_piv->SwitchDragMode(0);
 	}
 		
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -279,7 +279,7 @@ void processInput(GLFWwindow *window)
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 			_editorCamera.ProcessKeyboard(UP, deltaTime);
 		else
-			_MainWorld->_piv->SwitchDragMode(1);
+			if (_MainWorld->_piv != NULL)_MainWorld->_piv->SwitchDragMode(1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		_editorCamera.ProcessKeyboard(DOWN, deltaTime);
@@ -289,7 +289,7 @@ void processInput(GLFWwindow *window)
 		WindowUI::Renamecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 	{
-		_MainWorld->_piv->SwitchDragMode(2);
+		if (_MainWorld->_piv != NULL)_MainWorld->_piv->SwitchDragMode(2);
 	}
 }
 

@@ -200,10 +200,12 @@ struct _PhysicsStrut
 {
 	int _index = -1;
 	Actor* _actor;
-	_PhysicsStrut(int _i, Actor* _a)
+	bool Static = true;
+	_PhysicsStrut(int _i, Actor* _a , bool _boo)
 	{
 		_index = _i;
 		_actor = _a;
+		Static = _boo;
 	}
 };
 

@@ -42,14 +42,14 @@ void Transform::Translate(glm::vec3 _pos)
 {
 	this->position= _pos;
 	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 void Transform::Rotate(glm::vec3 _rot)
 {
 	this->rotation = _rot;
 	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 /*void Transform::Rotate(glm::Quaternion _qu);
@@ -71,8 +71,10 @@ void Transform::Scale(glm::vec3 _scal)
 
 void Transform::MoveByPhysics(btTransform* _trans)
 {
-	this->Translate(glm::vec3(_trans->getOrigin().getX(), _trans->getOrigin().getY(), _trans->getOrigin().getZ()));
-
+	btScalar _x, _y, _z;
+	_trans->getRotation().getEulerZYX(_x, _y, _z);
+	this->_actor->transform->Rotate(glm::vec3(_x, _y, _z));
+	this->_actor->transform->Translate(glm::vec3(_trans->getOrigin().getX(), _trans->getOrigin().getY(), _trans->getOrigin().getZ()));
+	//_trans->getRotation().getEulerZYX(this->rotation.z,this->rotation.y, this->rotation.x);
 
 }
-

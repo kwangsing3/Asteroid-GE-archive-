@@ -31,6 +31,7 @@ public:
 	void SaveFile( pugi::xml_node* _node) override;
 	void OpenFile( pugi::xml_node* _node) override;
 	void UpdateCollision();
+	void ReSetCollisionFlag();
 private:
 	void CreateBox();
 

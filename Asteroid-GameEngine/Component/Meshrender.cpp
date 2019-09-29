@@ -173,15 +173,15 @@ void Meshrender::CreateMouseCollision()
 		colShape->calculateLocalInertia(mass, localInertia);
 	startTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	 myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
-	int Collision_flag=0;
 	
-//	Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-//	body->setCollisionFlags(Collision_flag);
+	
+	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	body->setCollisionFlags(Collision_flag);
 
 	int _group = 1;
 	int _mask = 1;
@@ -195,11 +195,22 @@ void Meshrender::UpdateCollision()
 	SceneManager::NeedInitedDraw = true;
 	if (this->body == NULL) return;
 
-	body->translate(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-
-
-	//_MainWorld->deleteRigidBody(this->body);
-	//CreateMouseCollision();
+	if (!_MainWorld->_PlayMode)
+	{
+		_MainWorld->deleteRigidBody(this->body);
+		CreateMouseCollision();
+	}
+	/*else
+	{
+		btTransform initialTransform;
+		initialTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
+		btQuaternion quat;
+		quat.setEulerZYX(glm::radians(this->_actor->transform->rotation.z), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x));
+		initialTransform.setRotation(quat);
+		this->body->setWorldTransform(initialTransform);
+		this->myMotionState->setWorldTransform(initialTransform);
+		_MainWorld->m_dynamicsWorld->updateSingleAabb(this->body);
+	}*/
 	
 }
 
@@ -209,15 +220,11 @@ void Meshrender::SetVisable(bool _bool)
 	SceneManager::UpdateRenderPipeline(this);
 }
 
-void Meshrender::SetTransformFromPhysics(btTransform* _trans)
-{
-	
-	btScalar _x, _y, _z;
-	_trans->getRotation().getEulerZYX(_x, _y, _z);
-	this->_actor->transform->Rotate(glm::vec3(_x, _y, _z));
-	this->_actor->transform->Translate(glm::vec3(_trans->getOrigin().getX(), _trans->getOrigin().getY(), _trans->getOrigin().getZ()));
 
-	
+void Meshrender::ReSetCollisionFlag()
+{
+	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	this->body->setCollisionFlags(Collision_flag);
 }
 
 
