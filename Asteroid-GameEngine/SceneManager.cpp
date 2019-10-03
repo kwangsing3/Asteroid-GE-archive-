@@ -145,14 +145,17 @@ void SceneManager::SaveFile()
 
 void SceneManager::NewScene()
 {
+	_MainWorld->_PlayMode = false;
+	_MainWorld->depose_init_PhysicsProgress();
+	
+	_MainWorld->exitPhysics();
+	_MainWorld->initPhysics();
+
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender.clear();
 	Objects.clear();
 
-	_MainWorld->exitPhysics();
-	_MainWorld->initPhysics();
-	_MainWorld->_PlayMode = false;
 	//delete _MainWorld->_piv;
 	//_MainWorld->_piv =new _Pivot(new Actor());
 	

@@ -114,12 +114,23 @@ void World::init_PhysicsProgress()
 {
 	if (!InitPhysics) return;
 	InitPhysics = false;
+	depose_init_PhysicsProgress();
 	for (int i = 0;i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
 		_PhysicsProgress.push_back(new _PhysicsStrut(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, 
 			this->m_dynamicsWorld->getCollisionObjectArray()[i]== this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender->body?true:false
 			));
 	}
+}
+void World::depose_init_PhysicsProgress()
+{
+	if (_PhysicsProgress.size() < 1) return;
+	for (int i = 0; i < _PhysicsProgress.size(); i++)
+	{
+		this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[i]->_actor;	
+	}
+	_PhysicsProgress.clear();
+	InitPhysics = true;
 }
 void World::CreateDepthMap()
 {
@@ -148,6 +159,7 @@ void World::UpdateFrame()
 	if (this->_PlayMode)
 	{
 		if (InitPhysics) init_PhysicsProgress();
+
 		this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);
 		/*  需要特別處理一下，BulletEngine不知道為何會把我放的Pointer刷新  所以只好在刷新之前提取我做的標記  在秒數更新後依照Actor順序移動，然後再複寫回去    ps.再複寫回去是為了下次能夠再取得一次
 		    製作一個Funcition 專門在繪製前initPhysics, 用struct儲存index以及提前抽取actor, 然後只需要依照此struct進行索引然後改變物體位置。
@@ -163,14 +175,7 @@ void World::UpdateFrame()
 	}
 	else
 	{
-		if (_PhysicsProgress.size() > 0)
-		{
-			for (int i = 0; i < _PhysicsProgress.size(); i++)
-			{
-				this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[_PhysicsProgress[i]->_index]->_actor;
-			}
-			_PhysicsProgress.clear();
-		}
+		depose_init_PhysicsProgress();
 	}
 	/*glCullFace(GL_FRONT);
 	///Shadw

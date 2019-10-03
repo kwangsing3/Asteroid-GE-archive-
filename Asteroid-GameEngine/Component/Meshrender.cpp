@@ -150,6 +150,8 @@ void Meshrender::OpenFile(pugi::xml_node* _node)
 //btCollisionShape* colShape;
 void Meshrender::CreateMouseCollision()
 {
+	_MainWorld->InitPhysics = true;
+
 	btVector3 localInertia(0, 0, 0);
 	//create a dynamic rigidbody
 	if (colShape == NULL)

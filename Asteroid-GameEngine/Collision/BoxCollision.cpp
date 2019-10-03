@@ -21,6 +21,9 @@ void BoxCollision::OpenFile(pugi::xml_node* _node)
 
 void BoxCollision::CreateBox()
 {
+	_MainWorld->InitPhysics = true;
+
+
 	btVector3 localInertia(0, 0, 0);
 
 	if (colShape == NULL)

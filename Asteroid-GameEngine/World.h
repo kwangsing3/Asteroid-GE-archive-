@@ -237,6 +237,7 @@ public:
 
 	virtual void initPhysics();
 	void init_PhysicsProgress();
+	void depose_init_PhysicsProgress();
 	void CreateDepthMap();
 protected:
 	std::vector<_PhysicsStrut*> _PhysicsProgress;
