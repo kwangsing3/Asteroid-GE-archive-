@@ -201,7 +201,7 @@ struct _PhysicsStrut
 	int _index = -1;
 	Actor* _actor;
 	bool Static = true;
-	_PhysicsStrut(int _i, Actor* _a , bool _boo)
+	_PhysicsStrut(int _i, Actor* _a, bool _boo)
 	{
 		_index = _i;
 		_actor = _a;
@@ -226,6 +226,7 @@ struct World : public CommonRigidBodyBase
 		CreateDepthMap();
 	}
 public:
+	 bool InitPhysics = true;
 	 bool _PlayMode;
 	 _Pivot* _piv = NULL;// = new _Pivot(ADD_Component::Add_Actor());
 	virtual ~World()
@@ -235,6 +236,7 @@ public:
 	void UpdateFrame();
 
 	virtual void initPhysics();
+	void init_PhysicsProgress();
 	void CreateDepthMap();
 protected:
 	std::vector<_PhysicsStrut*> _PhysicsProgress;

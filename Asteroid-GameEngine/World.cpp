@@ -110,6 +110,17 @@ void World::initPhysics()
 	this->m_dynamicsWorld->setDebugDrawer(_deb);
 	//_piv = new _Pivot(new Actor());
 }
+void World::init_PhysicsProgress()
+{
+	if (!InitPhysics) return;
+	InitPhysics = false;
+	for (int i = 0;i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
+	{
+		_PhysicsProgress.push_back(new _PhysicsStrut(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, 
+			this->m_dynamicsWorld->getCollisionObjectArray()[i]== this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender->body?true:false
+			));
+	}
+}
 void World::CreateDepthMap()
 {
 	glGenFramebuffers(1, &depthMapFBO);
@@ -136,29 +147,30 @@ void World::UpdateFrame()
 	//Pyhscis Pipeline
 	if (this->_PlayMode)
 	{
-		
-
-		//需要特別處理一下，BulletEngine不知道為何會把我放的Pointer刷新  所以只好在刷新之前提取我做的標記  在秒數更新後依照Actor順序移動，然後再複寫回去    ps.再複寫回去是為了下次能夠再取得一次
-		
-		for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
-		{
-			btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i]; // 全部加進來再全部寫回去
-			_PhysicsProgress.push_back(new _PhysicsStrut(i, obj->_ActorInBullet, true));  
-		}
-
+		if (InitPhysics) init_PhysicsProgress();
 		this->m_dynamicsWorld->stepSimulation(1.f / 60.0f, 1);
-
-		for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
-		{
-			//if (_PhysicsProgress[i]->Static) continue;
-			btCollisionObject* obj = this->m_dynamicsWorld->getCollisionObjectArray()[i];
-			obj->_ActorInBullet = _PhysicsProgress[i]->_actor;
-			obj->_ActorInBullet->transform->MoveByPhysics(&obj->getWorldTransform());
-			
-		}
+		/*  需要特別處理一下，BulletEngine不知道為何會把我放的Pointer刷新  所以只好在刷新之前提取我做的標記  在秒數更新後依照Actor順序移動，然後再複寫回去    ps.再複寫回去是為了下次能夠再取得一次
+		    製作一個Funcition 專門在繪製前initPhysics, 用struct儲存index以及提前抽取actor, 然後只需要依照此struct進行索引然後改變物體位置。
+		    之後再停止模擬時複寫回去  */
 		
-
-		_PhysicsProgress.clear();
+		for (int i = 0; i < _PhysicsProgress.size(); i++)
+		{
+			if (_PhysicsProgress[i]->Static) continue;
+			_PhysicsProgress[i]->_actor->transform->MoveByPhysics(
+				&this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->getWorldTransform()
+			);
+		}
+	}
+	else
+	{
+		if (_PhysicsProgress.size() > 0)
+		{
+			for (int i = 0; i < _PhysicsProgress.size(); i++)
+			{
+				this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[_PhysicsProgress[i]->_index]->_actor;
+			}
+			_PhysicsProgress.clear();
+		}
 	}
 	/*glCullFace(GL_FRONT);
 	///Shadw

@@ -18,7 +18,8 @@ public:
 	btRigidBody* body;   
 	btCollisionShape* colShape;
 	
-	bool _needdebug = true;
+	bool _needdebug = false;
+
 	BoxCollision(Actor* _a)
 	{
 		this->_actor = _a;

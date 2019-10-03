@@ -36,10 +36,8 @@
 <MeshRender VertexColorX="0.704719365" VertexColorY="0.758928537" VertexColorZ="0" />
 <BoxCollision Mass="1" />
 </Objects>
-<Objects name="New 5" meshrender="1" Component_size="1">
-<Position x="2.78999996" y="-0.349999994" z="0" />
-<Rotation x="0" y="0" z="0" />
-<Scale x="1" y="1" z="1" />
-<MeshRender VertexColorX="1" VertexColorY="0.999989986" VertexColorZ="0.999989986" />
-</Objects>
+
+  
+  
+  
 </Scene>

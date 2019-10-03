@@ -201,6 +201,7 @@ void SceneManager::InitDrawPipline()
 {
 	if (!NeedInitedDraw) return;
 	NeedInitedDraw = false;	
+	//_MainWorld->InitPhysics = true;
 	//Clear Render_List
 	{
 		for (int y = 0; y < vec_ObjectsToRender.size(); y++)

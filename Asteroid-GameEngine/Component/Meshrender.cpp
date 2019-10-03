@@ -200,7 +200,7 @@ void Meshrender::UpdateCollision()
 		_MainWorld->deleteRigidBody(this->body);
 		CreateMouseCollision();
 	}
-	/*else
+	else
 	{
 		btTransform initialTransform;
 		initialTransform.setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
@@ -210,7 +210,7 @@ void Meshrender::UpdateCollision()
 		this->body->setWorldTransform(initialTransform);
 		this->myMotionState->setWorldTransform(initialTransform);
 		_MainWorld->m_dynamicsWorld->updateSingleAabb(this->body);
-	}*/
+	}
 	
 }
 
