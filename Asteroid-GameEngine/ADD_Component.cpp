@@ -63,9 +63,10 @@ PointLight* ADD_Component::Add_PointLight(Actor* _actor)
 	_ac->_PointLight = _PoLight;
 	return _PoLight;
 }
-BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor)
+BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor, float mass)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
+	if (_ac->meshrender == NULL) ADD_Component::Add_Meshrender(_ac, Cube);
 	BoxCollision* _box = new BoxCollision(_actor);
 	//_ac->transform->name = (char*)"Cube";
 	_ac->boxcollision = _box;

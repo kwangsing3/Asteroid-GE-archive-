@@ -17,6 +17,7 @@ void BoxCollision::OpenFile(pugi::xml_node* _node)
 	if (_node == NULL || this->_actor->boxcollision == NULL) return;
 	float _f = _node->child("BoxCollision").attribute("Mass").as_float();
 	this->_Mass = _f;
+	UpdateCollision();
 }
 
 void BoxCollision::CreateBox()
@@ -51,8 +52,8 @@ void BoxCollision::CreateBox()
 	
 	body = new btRigidBody(rbInfo);
 	body->setCenterOfMassTransform(startTransform);
-	//int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-//	this->body->setCollisionFlags(Collision_flag);
+	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	this->body->setCollisionFlags(Collision_flag);
 	body->_ActorInBullet = this->_actor; 
 	_MainWorld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
 }
@@ -69,7 +70,7 @@ void BoxCollision::UpdateCollision()
 
 void BoxCollision::ReSetCollisionFlag()
 {
-	//int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-	//this->body->setCollisionFlags(Collision_flag);
+	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+	this->body->setCollisionFlags(Collision_flag);
 }
 

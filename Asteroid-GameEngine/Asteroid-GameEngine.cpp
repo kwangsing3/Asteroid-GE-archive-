@@ -291,6 +291,13 @@ void processInput(GLFWwindow *window)
 	{
 		if (_MainWorld->_piv != NULL)_MainWorld->_piv->SwitchDragMode(2);
 	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	{
+		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+			std::cout << "CTRL+C" << std::endl;
+		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
+			std::cout << "CTRL+V" << std::endl;
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -400,14 +407,12 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 				}
 				else
 				{
-						//World::_piv->AttachObject(RayCallback.m_collisionObject->_actor);
 					WindowUI::SelectThisActor(RayCallback.m_collisionObject->_ActorInBullet);
 				}
 
 			}
-			else
+			else if(!ImGui::IsAnyWindowFocused())
 			{
-				//if (World::_piv != NULL)World::_piv->AttachObject(NULL);
 				WindowUI::SelectThisActor(NULL);
 			}
 		}

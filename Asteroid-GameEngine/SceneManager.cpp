@@ -156,11 +156,10 @@ void SceneManager::NewScene()
 	vec_ObjectsToRender.clear();
 	Objects.clear();
 
-	//delete _MainWorld->_piv;
-	//_MainWorld->_piv =new _Pivot(new Actor());
+	delete _MainWorld->_piv;
+	_MainWorld->_piv =new _Pivot(new Actor());
 	
 	
-	//ADD_Component::Add_Pivot(ADD_Component::Add_Actor());
 }
 void SceneManager::AddToRenderPipeline(Meshrender * _mrender)
 {
@@ -351,6 +350,12 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 		for (int y = 0; y < vec_ObjectsToRender.size(); y++)
 		{
 			if (!vec_ObjectsToRender[y]->Drawing) continue;
+			if (vec_ObjectsToRender[y]->_meshrender->_shape == NONE)
+			{
+				if (_MainWorld->_piv != NULL) _MainWorld->_piv->Draw(vec_ShaderProgram[0],false);
+				continue;
+			}
+				
 			if (vec_ShaderProgram[Shader_index] == NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
 			
 

@@ -19,7 +19,7 @@ public:
 	static Meshrender* Add_Meshrender(Actor* _actor, std::string _path);
 	static DirectionalLight* Add_DirectionalLight(Actor* _actor = nullptr);
 	static PointLight* Add_PointLight(Actor* _actor = nullptr);
-	static BoxCollision* Add_BoxCollision(Actor* _actor = nullptr);
+	static BoxCollision* Add_BoxCollision(Actor* _actor = nullptr, float mass = 1);
 
 };
 

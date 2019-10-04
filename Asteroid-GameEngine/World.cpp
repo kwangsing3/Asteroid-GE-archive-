@@ -10,19 +10,20 @@
 extern World* _MainWorld;
 void _Pivot::CreateMouseCollision()   // 重複執行太多次了
 {
+	_needdebug = true;
 	if (this->_visable)
 	{
 		if (colshape.size() < 3)
 		{
 			colshape.clear();
 			btCollisionShape* _shap;
-			_shap = new btCapsuleShapeX(0.08f, 0.55f);
+			_shap = new btCapsuleShapeX(0.08f, 0.55f*(1+ this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
-			_shap = new btCapsuleShape(0.08f, 0.55f);
+			_shap = new btCapsuleShape(0.08f, 0.55f*(1 + this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
-			_shap = new btCapsuleShapeZ(0.08f, 0.55f);
+			_shap = new btCapsuleShapeZ(0.08f, 0.55f*(1 + this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
 		}
@@ -49,7 +50,7 @@ void _Pivot::CreateMouseCollision()   // 重複執行太多次了
 			
 			//body[0]->setCenterOfMassTransform(startTransform[0]);
 			body[i]->_ActorInBullet = this->_actor;
-			Collision_flag = _needdebug ? 1 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+			Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 			body[i]->setCollisionFlags(Collision_flag);
 			
 			_MainWorld->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
@@ -58,8 +59,8 @@ void _Pivot::CreateMouseCollision()   // 重複執行太多次了
 }
 void _Pivot::UpdateCollision()
 {
-	DeleteCollision();
-	CreateMouseCollision();
+	//DeleteCollision();
+	//CreateMouseCollision();
 }
 void _Pivot::DeleteCollision()
 {
@@ -122,11 +123,12 @@ void World::init_PhysicsProgress()
 			));
 	}
 }
-void World::depose_init_PhysicsProgress()
+void World::depose_init_PhysicsProgress()      
 {
 	if (_PhysicsProgress.size() < 1) return;
 	for (int i = 0; i < _PhysicsProgress.size(); i++)
 	{
+		
 		this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[i]->_actor;	
 	}
 	_PhysicsProgress.clear();

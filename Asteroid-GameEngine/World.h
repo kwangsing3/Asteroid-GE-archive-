@@ -24,7 +24,7 @@ extern Camera _editorCamera;
 
 class _Pivot : public Meshrender
 {
-	bool _needdebug = false;
+	
 public:
 	btRigidBody* body[3];
 	Actor* _lowwerActor;
@@ -149,16 +149,18 @@ public:
 	}
 	void AttachObject(Actor* _ac)
 	{
+		
 		if (_ac != NULL)
 		{
 			this->_visable = true;
-			AddCollision();
-
 			this->_lowwerActor = _ac;
 			this->_attaching = true;
-			this->Translate(_ac->transform->position);
-			this->Rotate(_ac->transform->rotation);
-			//this->Scale(_ac->transform->position);
+			this->_actor->transform->Translate(_ac->transform->position);
+			this->_actor->transform->Rotate(_ac->transform->rotation);
+			float _dis = glm::distance(this->_actor->transform->position, _editorCamera.transform.position);
+			this->_actor->transform->Scale(_dis > 1? glm::vec3(1.0f)*(1+ _dis/15):glm::vec3(1.0f));
+
+			AddCollision();
 		}
 		else
 		{
@@ -228,7 +230,7 @@ struct World : public CommonRigidBodyBase
 public:
 	 bool InitPhysics = true;
 	 bool _PlayMode;
-	 _Pivot* _piv = NULL;// = new _Pivot(ADD_Component::Add_Actor());
+	 _Pivot* _piv  = new _Pivot(new Actor());
 	virtual ~World()
 	{
 	

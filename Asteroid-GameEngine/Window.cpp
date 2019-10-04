@@ -117,6 +117,8 @@ void WindowUI::Renamecur_actor(SelectObject * cur_actor)
 void WindowUI::SelectThisActor(Actor * _actor)
 {
 
+	_MainWorld->depose_init_PhysicsProgress();
+	_MainWorld->InitPhysics = true;
 	if (_actor != NULL)
 	{
 		_cSelectObject = _headSelectObject;
