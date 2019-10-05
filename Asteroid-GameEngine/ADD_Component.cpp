@@ -4,15 +4,10 @@
 #include <Component/Meshrender.h>
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
-#include <Collision/BoxCollision.h>
+#include <Component/BoxCollision.h>
 
 #include <SceneManager.h>
 
-//------------------------------------------------------------Pivot------------------------------------------------------------
-
-
-
-//------------------------------------------------------------Pivot------------------------------------------------------------
 
 
 Actor * ADD_Component::Add_Actor()
@@ -42,8 +37,6 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)
 	return _mesh;
 }
 
-
-
 DirectionalLight* ADD_Component::Add_DirectionalLight(Actor* _actor)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
@@ -67,11 +60,30 @@ BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor, float mass)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	if (_ac->meshrender == NULL) ADD_Component::Add_Meshrender(_ac, Cube);
-	BoxCollision* _box = new BoxCollision(_actor);
+	BoxCollision* _box = new BoxCollision(_actor, mass);
 	//_ac->transform->name = (char*)"Cube";
 	_ac->boxcollision = _box;
 	
 	return _box;
+}
+
+Actor* ADD_Component::Copy_Actor(Actor* _actor)
+{
+	if (_actor == NULL) return NULL;
+	Actor* _ac =  ADD_Component::Add_Actor();
+	_ac->transform->Copy(_actor);    
+
+	if (_actor->meshrender != NULL)
+		ADD_Component::Add_Meshrender(_ac, _actor->meshrender->_shape)->Copy(_actor);
+	if (_actor->_Dirlight != NULL)
+		ADD_Component::Add_DirectionalLight(_ac)->Copy(_actor);
+	if (_actor->_PointLight != NULL)
+		ADD_Component::Add_PointLight(_ac)->Copy(_actor);
+	if (_actor->boxcollision != NULL)
+		ADD_Component::Add_BoxCollision(_ac, _actor->boxcollision->_Mass)->Copy(_actor);
+
+
+	return _ac;
 }
 
 

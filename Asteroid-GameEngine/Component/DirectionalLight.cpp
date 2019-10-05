@@ -36,3 +36,14 @@ void DirectionalLight::OpenFile(pugi::xml_node* _node)
 	this->_actor->_Dirlight->Specular.y = Spe.attribute("Y").as_float();
 	this->_actor->_Dirlight->Specular.z = Spe.attribute("Z").as_float();
 }
+
+void DirectionalLight::Copy(Actor * _actor)
+{
+	if (_actor == NULL || _actor->_Dirlight == NULL) return;
+	this->enabled = _actor->_Dirlight->enabled;
+	//-----Component-----
+	this->Ambient = _actor->_Dirlight->Ambient;
+	this->Diffuse = _actor->_Dirlight->Diffuse;
+	this->Specular = _actor->_Dirlight->Specular;
+
+}

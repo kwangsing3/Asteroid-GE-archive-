@@ -6,7 +6,7 @@
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include <Component/Meshrender.h>
-#include <Collision/BoxCollision.h>
+#include <Component/BoxCollision.h>
 #include <World.h>
 #include <Window.h>
 #include <ADD_Component.h>
@@ -20,8 +20,8 @@ bool SceneManager::NeedReloadShader = false;
 bool SceneManager::NeedInitedDraw = true;
 extern World* _MainWorld;
 
+const char* _FilePAth = "ExampleProject/BasicExample.AstGamEng";
 
-const char* gloabl_test = "It's me, Mario";
 void SceneManager::OpenFile()
 {
 	SceneManager::NewScene();
@@ -31,7 +31,7 @@ void SceneManager::OpenFile()
 	std::ifstream _XMLstream;
 	try
 	{
-		_XMLstream.open("ExampleProject/Scene1.AstGamEng");
+		_XMLstream.open(_FilePAth);
 		_doc.load(_XMLstream);
 	}
 	catch (const std::exception&)
@@ -104,7 +104,7 @@ void SceneManager::SaveFile()
 	for (int i = 0; i < Objects.size(); i++)
 	{
 		pugi::xml_node _cur = root.append_child("Objects");
-		_cur.append_attribute("name") = Objects[i]->transform->name;
+		_cur.append_attribute("name") = Objects[i]->transform->name.c_str();
 		//_cur.append_attribute("ID") = Objects[i]->ID;
 
 		//過濾坐標軸
@@ -140,7 +140,7 @@ void SceneManager::SaveFile()
 	}
 	root.append_attribute("Objects_Size") = Objects.size();
 
-	doc.save_file("ExampleProject/Scene1.AstGamEng", "\t", pugi::format_no_escapes, pugi::encoding_utf8);
+	doc.save_file(_FilePAth, "\t", pugi::format_no_escapes, pugi::encoding_utf8);
 }
 
 void SceneManager::NewScene()

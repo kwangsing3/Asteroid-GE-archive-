@@ -17,9 +17,6 @@ extern Camera _editorCamera;
 extern World* _MainWorld;
 
 
-
-
-
 void Meshrender::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->meshrender == NULL) return;
@@ -35,6 +32,27 @@ void Meshrender::OpenFile(pugi::xml_node* _node)
 	pugi::xml_node _n = _node->child("MeshRender");
 	this->VertexColor = glm::vec3(_n.attribute("VertexColorX").as_float(), _n.attribute("VertexColorY").as_float(), _n.attribute("VertexColorZ").as_float());
 }
+void Meshrender::Copy(Actor* _actor)
+{
+	if (_actor == NULL || _actor->meshrender == NULL) return;
+	this->enabled = _actor->meshrender->enabled;
+	//-----Component-----
+	this->_needdebug = _actor->meshrender->_needdebug;
+	this->_visable = _actor->meshrender->_visable;
+	this->VertexColor = _actor->meshrender->VertexColor;
+	this->_shape = _actor->meshrender->_shape;
+	this->_mode = _actor->meshrender->_mode;
+	/*  Model Data */
+	this->textures_loaded= _actor->meshrender->textures_loaded;
+	this->meshes = _actor->meshrender->meshes;
+	this->directory = _actor->meshrender->directory;
+	this->_Mat4model = _actor->meshrender->_Mat4model;
+	this->Model_path = _actor->meshrender->Model_path;
+
+	
+	/*  Model Data */
+}
+
 /*void Meshrender::Draw(Shader* _shader, bool _renderShadow,Transform* _trans)
 {
 	if (!this->_visable)  return;
@@ -47,7 +65,7 @@ void Meshrender::OpenFile(pugi::xml_node* _node)
 	{
 		/*
 			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
-		*/
+		
 		///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 		/*shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 		std::vector<glm::mat4> shadowTransforms;
@@ -117,8 +135,8 @@ void Meshrender::OpenFile(pugi::xml_node* _node)
 			_shader.setFloat("spotLight.linear", 0.09);
 			_shader.setFloat("spotLight.quadratic", 0.032);
 			_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
-		/*}
+			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		}
 		_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
 	}
 

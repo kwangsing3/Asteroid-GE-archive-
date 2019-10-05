@@ -43,28 +43,23 @@ static float _LogoutX = _maineditorX * 2;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
 bool WindowUI::show_simple_overlay = true;
-static SelectObject * _headSelectObject = new SelectObject();
-static SelectObject *_cSelectObject = _headSelectObject;
+static std::vector<SelectObject*> SceneObject_List;
+
 float WindowUI::UI_Left_X;
 float WindowUI::UI_Left_Y;
 float WindowUI::UI_Right_X;
 float WindowUI::_FPS=0;
 void Clear_ListBool()
 {
-	_cSelectObject = _headSelectObject;
-	_cSelectObject->Is_selected = false;
-	_cSelectObject->Is_renaming = false;
-	while (_cSelectObject->next != NULL)
+	for (int i = 0; i < SceneObject_List.size(); i++)
 	{
-		if (_cSelectObject->next == NULL)
-			return;
-		_cSelectObject->Is_selected = false;
-		_cSelectObject->Is_renaming = false;
-		_cSelectObject = _cSelectObject->next;
+		SceneObject_List[i]->Is_renaming = SceneObject_List[i]->Is_selected = false;
 	}
-	return;
 }
-SelectObject *WindowUI::cur_SelectObject;
+
+//SelectObject *WindowUI::cur_SelectObject;
+std::vector<SelectObject*> WindowUI::cur_SelectObject_List;
+std::vector<SelectObject*> WindowUI::copy_SelectObject_List;
 void WindowUI::Deletecur_actor(SelectObject* cur_selectobject)
 {
 	if (cur_selectobject == NULL) return;    //先暫時移除
@@ -115,43 +110,87 @@ void WindowUI::Renamecur_actor(SelectObject * cur_actor)
 		cur_actor->Is_renaming = true;
 }
 void WindowUI::SelectThisActor(Actor * _actor)
-{
-
+{ 
 	_MainWorld->depose_init_PhysicsProgress();
 	_MainWorld->InitPhysics = true;
-	if (_actor != NULL)
-	{
-		_cSelectObject = _headSelectObject;
-		while (_cSelectObject->next != NULL)
-		{
-			if (_cSelectObject->_actor == _actor)
-			{
-					WindowUI::SelectThisObject(_cSelectObject);
-				break;
-			}
 
-			if (_cSelectObject->next != NULL)_cSelectObject = _cSelectObject->next;
+	if (_actor != NULL)
+	{	
+		for (int i = 0; i < SceneObject_List.size(); i++)
+		{
+			if (SceneObject_List[i]->_actor == _actor)
+			{
+				WindowUI::SelectThisObject(SceneObject_List[i]);
+					break;
+			}	
 		}
 	}
 	else
 	{
-		cur_SelectObject = NULL;
+		Clear_ListBool();
+		cur_SelectObject_List.clear();
 		WindowUI::ListInspectorCur(NULL);
 		if (_MainWorld->_piv != NULL) _MainWorld->_piv->AttachObject(NULL);
 	}
 }
-void WindowUI::SelectThisObject(SelectObject * selectobject)
-{
-	Clear_ListBool();
-	selectobject->Is_selected = !selectobject->Is_selected;
-	cur_SelectObject = selectobject;
 
-	if (_MainWorld->_piv != NULL)
+void WindowUI::SelectThisObject(SelectObject* selectobject)
+{
+	if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held  沒有按壓才會進來
 	{
-		_MainWorld->_piv->AttachObject(NULL);
-		_MainWorld->_piv->AttachObject(selectobject->_actor);
+		Clear_ListBool();
+		cur_SelectObject_List.clear();
+
+		if (_MainWorld->_piv != NULL)
+		{
+			_MainWorld->_piv->AttachObject(NULL);
+			_MainWorld->_piv->AttachObject(selectobject->_actor);
+		}
 	}
+	else
+	{
+		if (_MainWorld->_piv != NULL)
+		{
+			_MainWorld->_piv->AttachObject_Multiple(selectobject->_actor);
+		}
+	}
+	selectobject->Is_selected = !selectobject->Is_selected;
+	cur_SelectObject_List.push_back(selectobject);
 }
+
+void WindowUI::CopyEvent()
+{
+	if (cur_SelectObject_List.empty()) 
+		return;
+
+	copy_SelectObject_List = cur_SelectObject_List;
+}
+void WindowUI::PasteEvent()
+{
+	//Paste
+	if (copy_SelectObject_List.empty()) 
+		return;
+	Clear_ListBool();
+	cur_SelectObject_List.clear();
+	if (_MainWorld->_piv != NULL) _MainWorld->_piv->_lowwerActor.clear();
+	for (int i = 0; i < copy_SelectObject_List.size(); i++)
+	{
+		SelectObject* _ns = new SelectObject(ADD_Component::Copy_Actor(copy_SelectObject_List[i]->_actor));
+		_ns->Is_selected = true;
+		SceneObject_List.push_back(_ns);
+		cur_SelectObject_List.push_back(_ns);
+
+		if (_MainWorld->_piv != NULL)
+		{
+			_MainWorld->_piv->AttachObject_Multiple(_ns->_actor);
+		}
+	}
+	copy_SelectObject_List.clear();
+
+	
+	//Select
+}
+
 void WindowUI::ListInspectorCur(SelectObject* _sel)
 {
 	if (_sel != NULL)
@@ -235,6 +274,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 
 
 }
+
 void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
 
@@ -254,33 +294,27 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			//------------------------------------------------------------------------------------------------這裡根據物件太多可能會導致性能瓶頸  應該可以優化
 			if (SceneManager::Objects.size() > 0)
 			{
+				if (SceneManager::Objects.size() != SceneObject_List.size())
+				{
+					SceneObject_List.clear();
+					for (int n = 0; n < SceneManager::Objects.size(); n++)
+					{
+						SceneObject_List.push_back(new SelectObject(SceneManager::Objects[n]));
+					}
+				}
+
 				//buf1 =(char*) "";
-				for (int n = 0; n < SceneManager::Objects.size(); n++)
+				for (int n = 0; n < SceneObject_List.size(); n++)
 				{
 					char * buf1 = new char[64]();
-					_cSelectObject->_actor = SceneManager::Objects[n];
-					if (_cSelectObject->Is_renaming)
+					std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
+					const char* newchar = _newname.c_str();
+					if (ImGui::Selectable(newchar, SceneObject_List[n]->Is_selected))
 					{
-						if (ImGui::InputText("", buf1, 64))
-						{
-							SceneManager::Objects[n]->transform->name = buf1;
-						}
+						WindowUI::SelectThisObject(SceneObject_List[n]);
 					}
-					else
-					{
-						std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
-						const char* newchar = _newname.c_str();
-						if (ImGui::Selectable(newchar, _cSelectObject->Is_selected))
-						{
-							if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held
-								WindowUI::SelectThisObject(_cSelectObject);
-						}
-					}
-					if (_cSelectObject->next == NULL)
-						_cSelectObject->next = new SelectObject();
-					_cSelectObject = _cSelectObject->next;
 				}
-				_cSelectObject = _headSelectObject;
+
 			}
 
 
@@ -424,7 +458,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				ImGui::End();
 				return;
 			}
-			WindowUI::ListInspectorCur(WindowUI::cur_SelectObject);
+			WindowUI::ListInspectorCur(cur_SelectObject_List.size()>0? cur_SelectObject_List[0]:NULL);
 
 			UI_Right_X = ImGui::GetWindowPos().x;
 			//------------------------------------------------------------------------------------------------
@@ -531,17 +565,17 @@ static void MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Add Component"))
 		{
-			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject->_actor,Cube); }
+			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor,Cube); }
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_DirectionalLight(WindowUI::cur_SelectObject->_actor); }
-			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject->_actor != NULL) ADD_Component::Add_PointLight(WindowUI::cur_SelectObject->_actor); }
+			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_DirectionalLight(WindowUI::cur_SelectObject_List[0]->_actor); }
+			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_PointLight(WindowUI::cur_SelectObject_List[0]->_actor); }
 			if (ImGui::MenuItem("Add TestComponent")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add BoxCollision")) 
 			{ 
-				if (WindowUI::cur_SelectObject != NULL&&WindowUI::cur_SelectObject->_actor != NULL)
-					ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject->_actor); 
+				if (WindowUI::cur_SelectObject_List[0] != NULL&&WindowUI::cur_SelectObject_List[0]->_actor != NULL)
+					ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);
 					
 			}
 			if (ImGui::MenuItem("Add BoxCollision2D")) {}

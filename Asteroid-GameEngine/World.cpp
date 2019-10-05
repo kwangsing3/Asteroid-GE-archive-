@@ -17,13 +17,13 @@ void _Pivot::CreateMouseCollision()   // 重複執行太多次了
 		{
 			colshape.clear();
 			btCollisionShape* _shap;
-			_shap = new btCapsuleShapeX(0.08f, 0.55f*(1+ this->_actor->transform->scale.x));
+			_shap = new btCapsuleShapeX(0.2f, 0.55f*(1+ this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
-			_shap = new btCapsuleShape(0.08f, 0.55f*(1 + this->_actor->transform->scale.x));
+			_shap = new btCapsuleShape(0.2f, 0.55f*(1 + this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
-			_shap = new btCapsuleShapeZ(0.08f, 0.55f*(1 + this->_actor->transform->scale.x));
+			_shap = new btCapsuleShapeZ(0.2f, 0.55f*(1 + this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
 		}

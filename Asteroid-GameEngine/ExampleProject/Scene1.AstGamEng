@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="6">
+<Scene name="test" Objects_Size="5">
 <Objects name="New 1" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="2.07999992" y="2.61999989" z="1" />
 <Rotation x="0" y="0" z="-20" />
@@ -9,11 +9,11 @@
 </Objects>
 <Objects name="New DirectionalLight" _Dirlight="1" Component_size="1">
 <Position x="0" y="0" z="0" />
-<Rotation x="-4.0999999" y="-4.69999981" z="17.3999996" />
+<Rotation x="-1" y="-6.80000019" z="20.7999992" />
 <Scale x="1" y="1" z="1" />
-<Ambient X="0.745097995" Y="0.745090544" Z="0.745090544" />
+<Ambient X="0.705882311" Y="0.705875218" Z="0.705875218" />
 <Diffuse X="1" Y="0.999989986" Z="0.999989986" />
-<Specular X="0" Y="0.0882613659" Z="1" />
+<Specular X="0" Y="0.0882947445" Z="1" />
 </Objects>
 <Objects name="New 2" meshrender="1" _BoxCollision="1" Component_size="2">
 <Position x="-1.67999995" y="1.99000001" z="1" />
@@ -36,8 +36,4 @@
 <MeshRender VertexColorX="0.704719365" VertexColorY="0.758928537" VertexColorZ="0" />
 <BoxCollision Mass="1" />
 </Objects>
-
-  
-  
-  
 </Scene>

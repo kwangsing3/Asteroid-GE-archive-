@@ -22,7 +22,7 @@ public:
 
 	virtual void SaveFile( pugi::xml_node* _node) {}
 	virtual void OpenFile( pugi::xml_node* _node) {}
-
+	virtual void Copy(Actor* _actor) {}
 	Component()
 	{
 		enabled = false;	

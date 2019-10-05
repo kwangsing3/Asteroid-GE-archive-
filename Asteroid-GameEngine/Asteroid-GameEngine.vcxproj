@@ -168,7 +168,7 @@
     <ClCompile Include="..\src\glad.c" />
     <ClCompile Include="ADD_Component.cpp" />
     <ClCompile Include="Asteroid-GameEngine.cpp" />
-    <ClCompile Include="Collision\BoxCollision.cpp" />
+    <ClCompile Include="Component\BoxCollision.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\DirectionalLight.cpp" />
     <ClCompile Include="Component\Meshrender.cpp" />
@@ -236,7 +236,7 @@
     <ClInclude Include="assimp\vector2.h" />
     <ClInclude Include="assimp\vector3.h" />
     <ClInclude Include="assimp\version.h" />
-    <ClInclude Include="Collision\BoxCollision.h" />
+    <ClInclude Include="Component\BoxCollision.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\DirectionalLight.h" />
     <ClInclude Include="Component\Meshrender.h" />

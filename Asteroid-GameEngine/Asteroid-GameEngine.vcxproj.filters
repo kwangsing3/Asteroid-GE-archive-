@@ -21,9 +21,6 @@
     <ClCompile Include="Xml\pugixml.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="Collision\BoxCollision.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="Component\Component.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
@@ -85,6 +82,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="Component\PointLight.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BoxCollision.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
@@ -223,9 +223,6 @@
     <ClInclude Include="assimp\version.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="Collision\BoxCollision.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="Component\Component.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -344,6 +341,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="GraphicEngine\imgui_Custom.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BoxCollision.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

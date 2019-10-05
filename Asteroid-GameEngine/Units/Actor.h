@@ -4,7 +4,7 @@
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include <Component/Meshrender.h>
-#include <Collision/BoxCollision.h>
+#include <Component/BoxCollision.h>
 
 class Transform;
 class DirectionalLight;

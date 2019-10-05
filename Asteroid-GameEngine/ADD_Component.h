@@ -20,7 +20,7 @@ public:
 	static DirectionalLight* Add_DirectionalLight(Actor* _actor = nullptr);
 	static PointLight* Add_PointLight(Actor* _actor = nullptr);
 	static BoxCollision* Add_BoxCollision(Actor* _actor = nullptr, float mass = 1);
-
+	static Actor* Copy_Actor(Actor* _actor);
 };
 
 

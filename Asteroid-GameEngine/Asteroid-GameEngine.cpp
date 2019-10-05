@@ -284,9 +284,9 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		_editorCamera.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
-		WindowUI::Deletecur_actor(WindowUI::cur_SelectObject);
+		std::cout << "DELETE KEY PRESS" << std::endl;//WindowUI::Deletecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
-		WindowUI::Renamecur_actor(WindowUI::cur_SelectObject);
+		std::cout << "RENAME(F2) KEY PRESS" << std::endl;//WindowUI::Renamecur_actor(WindowUI::cur_SelectObject);
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 	{
 		if (_MainWorld->_piv != NULL)_MainWorld->_piv->SwitchDragMode(2);
@@ -294,9 +294,9 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-			std::cout << "CTRL+C" << std::endl;
+			WindowUI::CopyEvent();
 		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-			std::cout << "CTRL+V" << std::endl;
+			WindowUI::PasteEvent();
 	}
 }
 

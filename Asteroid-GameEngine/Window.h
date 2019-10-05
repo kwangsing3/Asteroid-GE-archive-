@@ -18,10 +18,12 @@ class Actor;
 struct SelectObject
 {
 	Actor* _actor;
-	int _index = 0;
 	bool Is_selected = false;
 	bool Is_renaming = false;
-	SelectObject* next = NULL;
+	SelectObject(Actor* _ac)
+	{
+		_actor = _ac;
+	}
 };
 enum  Game_Mode { Mode_2D, Mode_3D };
 extern unsigned int _Width;
@@ -29,17 +31,21 @@ extern unsigned int _Height;
 //SceneManager* _sceneManager;
 //class World;
 //   ---------------------------------UI---------------------------------
-class WindowUI
+class WindowUI                                                                             
 {
 public:
 
-	static SelectObject *cur_SelectObject;
-
+	//static SelectObject* cur_SelectObject;
+	static std::vector<SelectObject*> cur_SelectObject_List;
+	static std::vector<SelectObject*> copy_SelectObject_List;
 	static void Deletecur_actor(SelectObject* cur_actor);
 	static void Renamecur_actor(SelectObject* cur_actor);
 	static void SelectThisActor(Actor* _actor);
 	static void SelectThisObject(SelectObject *actor);
 	static void ListInspectorCur(SelectObject* _sel);
+	static void CopyEvent();
+	static void PasteEvent();
+
 	static bool show_simple_overlay;
 	static bool All_UIElement;
 	static Game_Mode _mode;

@@ -27,7 +27,7 @@ class _Pivot : public Meshrender
 	
 public:
 	btRigidBody* body[3];
-	Actor* _lowwerActor;
+	std::vector<Actor*> _lowwerActor;
 	bool _attaching = false;
 	bool Drag[3] = { false,false,false };
 	bool _DragMode[3] = { false,false,false };
@@ -128,24 +128,70 @@ public:
 	}
 	void Translate(glm::vec3 _pos)
 	{
-		this->_actor->transform->position = _pos;
-		this->UpdateCollision();
-		if (_attaching)
-			this->_lowwerActor->transform->Translate(this->_actor->transform->position);
+		if (_lowwerActor.size() > 1)
+		{
+			for (int i = 0; i < _lowwerActor.size(); i++)
+			{
+				this->_lowwerActor[i]->transform->Translate(this->_lowwerActor[i]->transform->position+(_pos - this->_actor->transform->position));
+			}
+		}
+		else
+		{
+			this->_actor->transform->position = _pos;
+			this->UpdateCollision();
+			if (_attaching)
+			{
+				for (int i = 0; i < _lowwerActor.size(); i++)
+				{
+					this->_lowwerActor[i]->transform->Translate(this->_actor->transform->position);
+				}
+			}
+		}
+			
 	}
 	void Rotate(glm::vec3 _rot)
 	{
-		this->_actor->transform->rotation = _rot;
-		this->UpdateCollision();
-		if (_attaching)
-			this->_lowwerActor->transform->Rotate(this->_actor->transform->rotation);
+		if (_lowwerActor.size() > 1)
+		{
+			for (int i = 0; i < _lowwerActor.size(); i++)
+			{
+				this->_lowwerActor[i]->transform->Rotate(this->_lowwerActor[i]->transform->rotation + (_rot - this->_actor->transform->rotation));
+			}
+		}
+		else
+		{
+			this->_actor->transform->rotation = _rot;
+			this->UpdateCollision();
+			if (_attaching)
+			{
+				for (int i = 0; i < _lowwerActor.size(); i++)
+				{
+					this->_lowwerActor[i]->transform->Rotate(this->_actor->transform->rotation);
+				}
+			}
+		}	
 	}
 	void Scale(glm::vec3 _sca)
 	{
-		this->_actor->transform->scale = _sca;
-		this->UpdateCollision();
-		if (_attaching)
-			this->_lowwerActor->transform->Scale(this->_actor->transform->scale);
+		if (_lowwerActor.size() > 1)
+		{
+			for (int i = 0; i < _lowwerActor.size(); i++)
+			{
+				this->_lowwerActor[i]->transform->Scale(this->_lowwerActor[i]->transform->scale + (_sca - this->_actor->transform->scale));
+			}
+		}
+		else
+		{
+			this->_actor->transform->scale = _sca;
+			this->UpdateCollision();
+			if (_attaching)
+			{
+				for (int i = 0; i < _lowwerActor.size(); i++)
+				{
+					this->_lowwerActor[i]->transform->Scale(this->_actor->transform->scale);
+				}
+			}
+		}
 	}
 	void AttachObject(Actor* _ac)
 	{
@@ -153,7 +199,9 @@ public:
 		if (_ac != NULL)
 		{
 			this->_visable = true;
-			this->_lowwerActor = _ac;
+			 
+			_lowwerActor.clear();
+			_lowwerActor.push_back(_ac);
 			this->_attaching = true;
 			this->_actor->transform->Translate(_ac->transform->position);
 			this->_actor->transform->Rotate(_ac->transform->rotation);
@@ -165,11 +213,40 @@ public:
 		else
 		{
 			this->_visable = false;
-			this->_lowwerActor = NULL;
+			_lowwerActor.clear();
 			this->_attaching = false;
 			DeleteCollision();
 		}
 	}
+
+	void AttachObject_Multiple(Actor* _ac)
+	{
+		
+		if (_ac != NULL)
+		{
+			DeleteCollision();
+			this->_visable = true;
+			_lowwerActor.push_back(_ac);
+			this->_attaching = true;
+
+			glm::vec3 _npos(0.0f);
+			for (int i = 0; i < _lowwerActor.size(); i++)
+				_npos += _lowwerActor[i]->transform->position;
+				
+			_npos /= _lowwerActor.size();
+
+			this->_actor->transform->Translate(_npos);
+
+			this->_actor->transform->Rotate(glm::vec3(0.0f));
+			float _dis = glm::distance(this->_actor->transform->position, _editorCamera.transform.position);
+			this->_actor->transform->Scale(_dis > 1 ? glm::vec3(1.0f)*(1 + _dis / 15) : glm::vec3(1.0f));
+
+			AddCollision();
+		}
+		else
+			return;
+	}
+
 	void SwitchDragMode(int i)
 	{
 		_DragMode[0] = false; _DragMode[1] = false; _DragMode[2] = false;

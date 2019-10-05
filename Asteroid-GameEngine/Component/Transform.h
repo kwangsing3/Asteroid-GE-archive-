@@ -4,14 +4,15 @@
 
 
 class btTransform;
+class Actor;
 class Transform:public Component
 {
 public:
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
-	char* name;
-	bool enabled;
+	std::string name;
+	
 	Transform()
 	{
 		position = glm::vec3(0.0f);
@@ -22,6 +23,7 @@ public:
 	}
 	void SaveFile( pugi::xml_node* _node) override;
 	void OpenFile( pugi::xml_node* _node) override;
+	void Copy(Actor* _actor) override;
 	void Translate(glm::vec3 _pos);
 	void Rotate(glm::vec3 _rot);
 	//void Rotate(glm::Quaternion _qu);

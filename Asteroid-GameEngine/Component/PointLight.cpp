@@ -44,3 +44,18 @@ void PointLight::OpenFile(pugi::xml_node* _node)
 
 
 }
+
+void PointLight::Copy(Actor * _actor)
+{
+	if (_actor == NULL || _actor->_PointLight == NULL) return;
+	this->enabled = _actor->_PointLight->enabled;
+	//-----Component-----
+	this->Ambient = _actor->_PointLight->Ambient;
+	this->Diffuse = _actor->_PointLight->Diffuse;
+	this->Specular = _actor->_PointLight->Specular;
+
+	this->Constant = _actor->_PointLight->Constant;
+	this->linear = _actor->_PointLight->linear;
+	this->quadratic = _actor->_PointLight->quadratic;
+
+}

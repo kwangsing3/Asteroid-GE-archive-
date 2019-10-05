@@ -1,4 +1,4 @@
-#include <Component/Transform.h>
+﻿#include <Component/Transform.h>
 
 #include <Units/Actor.h>
 #include "btBulletCollisionCommon.h"
@@ -36,6 +36,26 @@ void Transform::OpenFile( pugi::xml_node* _node)
 	this->scale.x = _node->child("Scale").attribute("x").as_float();
 	this->scale.y = _node->child("Scale").attribute("y").as_float();
 	this->scale.z = _node->child("Scale").attribute("z").as_float();
+}
+
+void Transform::Copy(Actor * _actor)
+{
+	if (_actor == NULL) return;
+	this->enabled = _actor->transform->enabled;
+	//-----Component-----
+	this->position.x = _actor->transform->position.x;
+	this->position.y = _actor->transform->position.y;
+	this->position.z = _actor->transform->position.z;
+	this->rotation.x = _actor->transform->rotation.x;
+	this->rotation.y = _actor->transform->rotation.y;
+	this->rotation.z = _actor->transform->rotation.z;
+	this->scale.x = _actor->transform->scale.x;
+	this->scale.y = _actor->transform->scale.y;
+	this->scale.z = _actor->transform->scale.z;
+	std::string _ns = _actor->transform->name;
+	this->name = _ns.append(" (Copy)");
+
+
 }
 
 void Transform::Translate(glm::vec3 _pos)

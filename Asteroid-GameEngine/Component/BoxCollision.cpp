@@ -1,4 +1,4 @@
-﻿#include <Collision/BoxCollision.h>
+﻿#include <Component/BoxCollision.h>
 #include <SceneManager.h>
 #include <Window.h>
 
@@ -18,6 +18,18 @@ void BoxCollision::OpenFile(pugi::xml_node* _node)
 	float _f = _node->child("BoxCollision").attribute("Mass").as_float();
 	this->_Mass = _f;
 	UpdateCollision();
+}
+
+void BoxCollision::Copy(Actor * _actor)
+{
+	if (_actor == NULL || _actor->boxcollision == NULL) return;
+	this->enabled = _actor->boxcollision->enabled;
+	//-----Component-----
+	this->_needdebug = _actor->boxcollision->_needdebug;
+
+
+
+
 }
 
 void BoxCollision::CreateBox()
