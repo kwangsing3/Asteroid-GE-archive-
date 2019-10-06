@@ -25,7 +25,8 @@ class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件 
 public:
 	//管理遊戲場景物件
 	static std::vector<Actor*> Objects;
-	static std::vector<Render_Struct*> vec_ObjectsToRender;
+	static std::vector<Render_Struct*> vec_ObjectsToRender_Instancing;
+	static std::vector<Meshrender*> vec_ObjectsToRender;
 	static std::vector<DirectionalLight*> vec_DirectionlLight;
 	static std::vector<PointLight*> vec_PointLight;
 	static std::vector<Shader*> vec_ShaderProgram;
@@ -49,6 +50,7 @@ public:
 
 	static void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
 	static void DrawScene();   //this is test draw scene, only has simple drawing.
+	static void AddToRenderPipeline_Instancing(Meshrender* _mrender);
 	static void AddToRenderPipeline(Meshrender* _mrender);
 	static void UpdateRenderPipeline(Meshrender * _mrender);
 private:
@@ -77,7 +79,8 @@ private:
 	}
 	static glm::vec3 lightPos;
 	static void InitDrawPipline();
-
+	static void Draw_Instancing(bool _drawShadow, unsigned int _dp);
+	static void Draw_Normal(bool _drawShadow, unsigned int _dp);
 
 };
 

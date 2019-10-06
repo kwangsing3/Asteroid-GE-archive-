@@ -15,7 +15,7 @@ class btTransform;
 class btDefaultMotionState;
 enum Shape {Plane ,Cube ,Sphere ,Capsule ,Cylinder, _Model, NONE};
 
-struct ModelStruct
+struct ModelLoadStruct
 {
 	std::vector<Mesh> _meshes;
 	std::string path;
@@ -39,7 +39,7 @@ public:
 	std::vector<Mesh> meshes;
 	std::string directory;
 	glm::mat4 _Mat4model;
-	static std::vector<ModelStruct> ModelList;
+	static std::vector<ModelLoadStruct> ModelList;
 	std::string Model_path;
 	/*  Model Data */
 	btRigidBody* body;
@@ -124,7 +124,7 @@ public:
 	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
 	void ReSetCollisionFlag();
-
+	void Draw(Shader* _shader, bool _renderShadow);
 private:
 
 	void CreateMouseCollision();

@@ -12,7 +12,7 @@
 
 #include <World.h>
 #include <Units/Actor.h>
-std::vector<ModelStruct> Meshrender::ModelList;
+std::vector<ModelLoadStruct> Meshrender::ModelList;
 extern Camera _editorCamera;
 extern World* _MainWorld;
 
@@ -25,6 +25,8 @@ void Meshrender::SaveFile(pugi::xml_node* _node)
 	_n.append_attribute("VertexColorX") = this->_actor->meshrender->VertexColor.x;
 	_n.append_attribute("VertexColorY") = this->_actor->meshrender->VertexColor.y;
 	_n.append_attribute("VertexColorZ") = this->_actor->meshrender->VertexColor.z;
+	_n.append_attribute("Shape") = this->_actor->meshrender->_shape;
+	_n.append_attribute("_path") = this->_actor->meshrender->Model_path.c_str();
 }
 void Meshrender::OpenFile(pugi::xml_node* _node)
 {
@@ -53,7 +55,7 @@ void Meshrender::Copy(Actor* _actor)
 	/*  Model Data */
 }
 
-/*void Meshrender::Draw(Shader* _shader, bool _renderShadow,Transform* _trans)
+void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 {
 	if (!this->_visable)  return;
 	if (_shader==NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
@@ -64,10 +66,10 @@ void Meshrender::Copy(Actor* _actor)
 	if (_renderShadow)
 	{
 		/*
-			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
+			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f*/
 		
 		///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		/*shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 		std::vector<glm::mat4> shadowTransforms;
 		if (SceneManager::vec_DirectionlLight.size() > 0)  //目前只有Directional Light有效果
 		{
@@ -135,7 +137,7 @@ void Meshrender::Copy(Actor* _actor)
 			_shader.setFloat("spotLight.linear", 0.09);
 			_shader.setFloat("spotLight.quadratic", 0.032);
 			_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+			_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 		}
 		_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
 	}
@@ -145,12 +147,12 @@ void Meshrender::Copy(Actor* _actor)
 	_shader->setMat4("projection", _editorCamera.Projection);
 	_shader->setMat4("view", _editorCamera.GetViewMatrix());
 	_Mat4model = glm::mat4(1.0f);
-	_Mat4model = glm::translate(_Mat4model, glm::vec3(_trans->position.x, _trans->position.y, _trans->position.z));
+	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 
-	EulerAngles = glm::vec3(glm::radians(_trans->rotation.x), glm::radians(-_trans->rotation.y), glm::radians(_trans->rotation.z));
+	EulerAngles = glm::vec3(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
 	glm::mat4 RotationMatrix = glm::toMat4(glm::quat(EulerAngles));
 	_Mat4model = _Mat4model * RotationMatrix;
-	_Mat4model = glm::scale(_Mat4model, glm::vec3(_trans->scale.x, _trans->scale.y, _trans->scale.z));
+	_Mat4model = glm::scale(_Mat4model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 	_shader->setMat4("model", _Mat4model);
 	
 	///Shadow
@@ -162,7 +164,9 @@ void Meshrender::Copy(Actor* _actor)
 	/// Draw Pipeline
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].Draw(*_shader);
-}*/
+}
+
+
 //  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.h>
 //btCollisionShape* colShape;
@@ -270,11 +274,13 @@ void Meshrender::loadModel(string const & path)
 
 	// process ASSIMP's root node recursively
 	processNode(scene->mRootNode, scene);
-
-	ModelStruct _NewModel;
-	_NewModel.path = path;
-	_NewModel._meshes = this->meshes;
-	ModelList.push_back(_NewModel);
+	{
+		ModelLoadStruct _NewModel;
+		_NewModel.path = path;
+		_NewModel._meshes = this->meshes;
+		ModelList.push_back(_NewModel);
+	}
+	
 }
 void Meshrender::processNode(aiNode* node, const aiScene* scene)
 {

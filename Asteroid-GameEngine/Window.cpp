@@ -386,6 +386,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			}
 			if (ImGui::Button("Create 100 Asteroids"))
 			{
+
 			
 				unsigned int amount = 100;
 				
@@ -423,6 +424,14 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				}
 
 			}
+			
+			if (ImGui::Button("Create a doll"))
+			{
+				Actor* _ac = ADD_Component::Add_Actor();
+				ADD_Component::Add_Meshrender(_ac, "ExampleModel/model.dae");
+				_ac->transform->name = (char*) "New doll";
+			}
+
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = *height - ImGui::GetWindowHeight();
 			ImGui::End();
