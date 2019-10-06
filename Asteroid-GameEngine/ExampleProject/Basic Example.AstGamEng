@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="2">
+<Scene name="test" Objects_Size="3">
 <Objects name="New doll" meshrender="1" Component_size="1">
 <Position x="0" y="0" z="0" />
 <Rotation x="-90.3000031" y="0" z="0" />
@@ -13,5 +13,11 @@
 <Ambient X="1" Y="1" Z="1" />
 <Diffuse X="0.400000006" Y="0.400000006" Z="0.400000006" />
 <Specular X="0.5" Y="0.5" Z="0.5" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="2.6650002" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" Shape="1" _path="ExampleModel/Cube.obj" />
 </Objects>
 </Scene>

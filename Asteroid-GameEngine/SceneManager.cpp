@@ -158,6 +158,7 @@ void SceneManager::NewScene()
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender_Instancing.clear();
+	vec_ObjectsToRender.clear();
 	Objects.clear();
 
 	delete _MainWorld->_piv;
@@ -294,7 +295,7 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 {
 	if (NeedInitedDraw) InitDrawPipline();
 
-	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
+	
 	Draw_Instancing(_drawShadow, _dp);
 
 	Draw_Normal(_drawShadow, _dp);
@@ -322,6 +323,7 @@ void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp)
 
 void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 {
+	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	float far_plane = 25.0f;
 	if (_drawShadow)
 	{
@@ -380,7 +382,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 	}
 	else
 	{
-		int Shader_index = 4;
+		int Shader_index = 5;
 		int Light_Length = 3;
 		vec_ShaderProgram[Shader_index]->use();
 		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)

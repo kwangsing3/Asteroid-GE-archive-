@@ -64,18 +64,23 @@ private:
 		/*2*/Shader* _DepthShader = new Shader("Shader/shadow_mapping_depth.vs", "Shader/shadow_mapping_depth.fs", "Shader/point_shadows_depth.gs");
 		/*3*/Shader* _ShadowdShader = new Shader("Shader/shadow_mapping.vs", "Shader/shadow_mapping.fs");
 		/*4*/Shader* _ModelShader = new Shader("Shader/ModelShader.vs", "Shader/ModelShader.fs");    //目前的最主要Shader
-		/*5*/Shader* _Simple_TextureShader = new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs");    //目前的最主要Shader
+		/*5*/Shader* _ModelShader_instancing = new Shader("Shader/ModelShader_ins.vs", "Shader/ModelShader_ins.fs");    //目前的最主要Shader instance
+		/*6*/Shader* _Simple_TextureShader = new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs");    //目前的最主要Shader
 		SceneManager::vec_ShaderProgram.push_back(_SimpleShader);
 		SceneManager::vec_ShaderProgram.push_back(_StandardShader);
 		SceneManager::vec_ShaderProgram.push_back(_DepthShader);
 		SceneManager::vec_ShaderProgram.push_back(_ShadowdShader);
 		SceneManager::vec_ShaderProgram.push_back(_ModelShader);
+		SceneManager::vec_ShaderProgram.push_back(_ModelShader_instancing);
 		SceneManager::vec_ShaderProgram.push_back(_Simple_TextureShader);
 
 		//  先暫時放這裡  影子相關
 		SceneManager::vec_ShaderProgram[4]->use();
 		SceneManager::vec_ShaderProgram[4]->setInt("diffuseTexture", 0);
 		SceneManager::vec_ShaderProgram[4]->setInt("depthMap", 1);
+		SceneManager::vec_ShaderProgram[5]->use();
+		SceneManager::vec_ShaderProgram[5]->setInt("diffuseTexture", 0);
+		SceneManager::vec_ShaderProgram[5]->setInt("depthMap", 1);
 	}
 	static glm::vec3 lightPos;
 	static void InitDrawPipline();
