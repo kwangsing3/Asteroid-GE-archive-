@@ -254,7 +254,6 @@
     <ClInclude Include="GraphicEngine\imgui_Custom.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="mesh.h" />
-    <ClInclude Include="model.h" />
     <ClInclude Include="Physics Engine\clew\clew.h" />
     <ClInclude Include="Physics Engine\CommonInterfaces\Common2dCanvasInterface.h" />
     <ClInclude Include="Physics Engine\CommonInterfaces\CommonCallbacks.h" />

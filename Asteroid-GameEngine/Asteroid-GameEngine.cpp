@@ -14,7 +14,7 @@
 #include <Raycast.h>
 
 #include <SceneManager.h>   //要記得刪掉 Debug用
-#include <model.h>
+
 #include <ADD_Component.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

@@ -305,7 +305,7 @@ Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
-
+	vector<VertexBoneData> _bonsVertex;
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -361,7 +361,7 @@ Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
 	// diffuse: texture_diffuseN
 	// specular: texture_specularN
 	// normal: texture_normalN
-
+	_bonsVertex.resize(mesh->mNumVertices);
 	// 1. diffuse maps
 	vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -374,9 +374,19 @@ Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
 	// 4. height maps
 	std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+	if (mesh->HasBones())
+	{
+		for (unsigned int i = 0; i < mesh->mNumBones; i++)
+		{
+			for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++)
+			{
+				_bonsVertex[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(i, mesh->mBones[i]->mWeights[j].mWeight);
+			}
+		}
+	}
 
 	// return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures);
+	return Mesh(vertices, indices, textures, _bonsVertex);
 }
 vector<Texture> Meshrender::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 {

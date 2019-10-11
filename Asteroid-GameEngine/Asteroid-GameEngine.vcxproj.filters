@@ -274,9 +274,6 @@
     <ClInclude Include="mesh.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="Raycast.h">
       <Filter>標頭檔</Filter>
     </ClInclude>

@@ -34,6 +34,43 @@ struct Texture {
 	string path;
 };
 
+struct VertexBoneData
+{
+	unsigned int IDs[4] = { 0,0,0,0 };
+	float Weight[4] = { 0,0,0,0 };
+	VertexBoneData()
+	{
+		memset(IDs, 0, sizeof(IDs));
+		memset(Weight, 0, sizeof(Weight));
+	};
+
+
+	void AddBoneData(unsigned int _index, float _flo)
+	{
+		for (unsigned int i = 0; i < sizeof(IDs) / sizeof(IDs[0]); i++)
+		{
+			if (Weight[i] == 0.0f) {
+				IDs[i] = _index;
+				Weight[i] = _flo;
+				return;
+			}
+		}
+	}
+};
+struct BoneData
+{
+	std::string Name;
+
+	aiMatrix4x4 _OffsetMat4;
+	aiMatrix4x4 FinalTransform;
+	BoneData(std::string _N, aiMatrix4x4 _Mat4, aiMatrix4x4 _fin)
+	{
+		Name = _N; _OffsetMat4 = _Mat4; FinalTransform = _fin;
+	}
+};
+
+
+
 class Mesh {
 public:
 	/*  Mesh Data  */
@@ -41,15 +78,16 @@ public:
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 	unsigned int VAO;
-
+	vector<BoneData*> vec_BonesData;
+	vector<VertexBoneData> _bonsVertex;
 	/*  Functions  */
 	// constructor
-	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, vector<VertexBoneData> _bsv)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
-
+		this->_bonsVertex = _bsv;
 		// now that we have all the required data, set the vertex buffers and its attribute pointers.
 		setupMesh();
 	}
