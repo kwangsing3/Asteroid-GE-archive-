@@ -306,6 +306,7 @@ Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 	vector<VertexBoneData> _bonsVertex;
+	vector<BoneData*> vec_BonesData;
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -382,11 +383,13 @@ Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
 			{
 				_bonsVertex[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(i, mesh->mBones[i]->mWeights[j].mWeight);
 			}
+
+			vec_BonesData.push_back(new BoneData(mesh->mBones[i]->mName.data, mesh->mBones[i]->mOffsetMatrix, scene->mRootNode->mTransformation * mesh->mBones[i]->mOffsetMatrix.Inverse()));
 		}
 	}
-
+	
 	// return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures, _bonsVertex);
+	return Mesh(vertices, indices, textures, _bonsVertex, vec_BonesData);
 }
 vector<Texture> Meshrender::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 {

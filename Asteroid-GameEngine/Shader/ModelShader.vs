@@ -16,7 +16,7 @@ out VS_OUT {
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
-uniform bool Has_Bone
+uniform bool Has_Bone;
 
 uniform mat4 boneTransform[16];
 
@@ -26,15 +26,15 @@ void main()
 	vs_out.Normal = transpose(inverse(mat3(model))) * aNormal;
     vs_out.TexCoords = aTexCoords;
 
-	if(Has_bone)
+	if(Has_Bone)
 	{
 
 		mat4 BoneTransformation = boneTransform[boneID[0]]*Boneweight[0];
 			BoneTransformation += boneTransform[boneID[1]]*Boneweight[1];
 			BoneTransformation += boneTransform[boneID[2]]*Boneweight[2];
 			BoneTransformation += boneTransform[boneID[3]]*Boneweight[3];
-
-	   gl_Position = projection * view * model *(BoneTransformation* vec4(aPos, 1.0f)); 
+		
+	   gl_Position = projection * view * model * (BoneTransformation* vec4(aPos, 1.0f)); 
 	}
 	else
 	{

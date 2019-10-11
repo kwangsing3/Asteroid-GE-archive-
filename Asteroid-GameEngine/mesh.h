@@ -80,14 +80,16 @@ public:
 	unsigned int VAO;
 	vector<BoneData*> vec_BonesData;
 	vector<VertexBoneData> _bonsVertex;
+	aiNode _aiScene;
 	/*  Functions  */
 	// constructor
-	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, vector<VertexBoneData> _bsv)
+	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, vector<VertexBoneData> _bsv, vector<BoneData*> _BonesData)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
 		this->_bonsVertex = _bsv;
+		this->vec_BonesData = _BonesData;
 		// now that we have all the required data, set the vertex buffers and its attribute pointers.
 		setupMesh();
 	}
@@ -121,12 +123,21 @@ public:
 			// and finally bind the texture
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
-		//shader.setBool("HasTexture", textures.size()>0);
+		
+		shader.setBool("Has_Bone", vec_BonesData.size()>0);
+
+		for (unsigned int i = 0; i < vec_BonesData.size(); i++)
+		{
+			shader.setMat4("boneTransform[" + std::to_string(i) + "]", aiMatrix4x4ToGlm(vec_BonesData[i]->FinalTransform));
+		}
+		
+		
 		// draw mesh
 		glBindVertexArray(VAO);
 		//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, 1);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
 
 		// always good practice to set everything back to defaults once configured.
 		glActiveTexture(GL_TEXTURE0);
@@ -134,7 +145,7 @@ public:
 
 private:
 	/*  Render data  */
-	unsigned int VBO, EBO;
+	unsigned int VBO, EBO, m_Buffers;
 
 	/*  Functions    */
 	// initializes all the buffer objects/arrays
@@ -144,7 +155,7 @@ private:
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
-
+		glGenBuffers(1, &m_Buffers);
 		glBindVertexArray(VAO);
 		// load data into vertex buffers
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -172,8 +183,27 @@ private:
 		// vertex bitangent
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
-
+		
+		glBindBuffer(GL_ARRAY_BUFFER, m_Buffers);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(_bonsVertex[0]) * _bonsVertex.size(), &_bonsVertex[0], GL_STATIC_DRAW);
+		glEnableVertexAttribArray(5);
+		glVertexAttribIPointer(5, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)16);
+		
+		
 		glBindVertexArray(0);
+	}
+
+	glm::mat4 aiMatrix4x4ToGlm(const aiMatrix4x4 &from)
+	{
+		glm::mat4 to;
+		//the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
+		to[0][0] = from.a1; to[1][0] = from.a2; to[2][0] = from.a3; to[3][0] = from.a4;
+		to[0][1] = from.b1; to[1][1] = from.b2; to[2][1] = from.b3; to[3][1] = from.b4;
+		to[0][2] = from.c1; to[1][2] = from.c2; to[2][2] = from.c3; to[3][2] = from.c4;
+		to[0][3] = from.d1; to[1][3] = from.d2; to[2][3] = from.d3; to[3][3] = from.d4;
+		return to;
 	}
 };
 #endif
