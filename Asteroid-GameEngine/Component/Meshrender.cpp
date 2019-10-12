@@ -163,7 +163,7 @@ void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 
 	/// Draw Pipeline
 	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i].Draw(*_shader);
+		meshes[i].Draw(*_shader,scene);
 }
 
 
@@ -261,8 +261,8 @@ void Meshrender::ReSetCollisionFlag()
 void Meshrender::loadModel(string const & path)
 {
 	// read file via ASSIMP
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	
+	scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	// check for errors
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 	{
@@ -278,6 +278,9 @@ void Meshrender::loadModel(string const & path)
 		ModelLoadStruct _NewModel;
 		_NewModel.path = path;
 		_NewModel._meshes = this->meshes;
+		//_NewModel.importer = this->importer;
+		//_NewModel._sc = this->scene;
+
 		ModelList.push_back(_NewModel);
 	}
 	
@@ -387,9 +390,12 @@ Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
 			vec_BonesData.push_back(new BoneData(mesh->mBones[i]->mName.data, mesh->mBones[i]->mOffsetMatrix, scene->mRootNode->mTransformation * mesh->mBones[i]->mOffsetMatrix.Inverse()));
 		}
 	}
+	aiMatrix4x4 m_GlobalInverseTransform = scene->mRootNode->mTransformation;
+	m_GlobalInverseTransform.Inverse();
+	
 	
 	// return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures, _bonsVertex, vec_BonesData);
+	return Mesh(vertices, indices, textures, _bonsVertex, vec_BonesData, m_GlobalInverseTransform);
 }
 vector<Texture> Meshrender::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 {

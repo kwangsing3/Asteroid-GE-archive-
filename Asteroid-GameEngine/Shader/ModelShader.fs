@@ -130,7 +130,8 @@ void main()
     float shadow = ShadowCalculation(fs_in.FragPos);                      
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;   
 	
-	 FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+	FragColor = vec4(result*Color, 1.0);
+	// FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
 	// FragColor = vec4(1,1,1,1.0);
 }
 

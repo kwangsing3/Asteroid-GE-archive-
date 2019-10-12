@@ -19,6 +19,8 @@ struct ModelLoadStruct
 {
 	std::vector<Mesh> _meshes;
 	std::string path;
+	Assimp::Importer importer;
+	const aiScene* _sc;
 };
 enum RenderMode { RMode2D, RMode3D };
 
@@ -41,9 +43,12 @@ public:
 	glm::mat4 _Mat4model;
 	static std::vector<ModelLoadStruct> ModelList;
 	std::string Model_path;
+
 	/*  Model Data */
 	btRigidBody* body;
-	
+	const aiScene* scene;
+	Assimp::Importer importer;
+
 	Meshrender() { if(_shape!=NONE)std::cout << "error: it couldn't be add without constructors "<<std::endl;}
 	Meshrender(Actor* _a, Shape _shape)
 	{

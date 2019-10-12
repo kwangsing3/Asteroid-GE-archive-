@@ -34,6 +34,7 @@ void main()
 			BoneTransformation += boneTransform[boneID[2]]*Boneweight[2];
 			BoneTransformation += boneTransform[boneID[3]]*Boneweight[3];
 		
+
 	   gl_Position = projection * view * model * (BoneTransformation* vec4(aPos, 1.0f)); 
 	}
 	else

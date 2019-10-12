@@ -431,7 +431,12 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				ADD_Component::Add_Meshrender(_ac, "ExampleModel/model.dae");
 				_ac->transform->name = (char*) "New doll";
 			}
-
+			if (ImGui::Button("Create a bot"))
+			{
+				Actor* _ac = ADD_Component::Add_Actor();
+				ADD_Component::Add_Meshrender(_ac, "ExampleModel/left_shimmy.fbx");
+				_ac->transform->name = (char*) "New dragon";
+			}
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = *height - ImGui::GetWindowHeight();
 			ImGui::End();
