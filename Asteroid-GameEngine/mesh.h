@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <assimp/scene.h>
 #include <shader_m.h>
 
 #include <string>
@@ -201,55 +202,16 @@ private:
 		glBindBuffer(GL_ARRAY_BUFFER, m_Buffers);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(_bonsVertex[0]) * _bonsVertex.size(), &_bonsVertex[0], GL_STATIC_DRAW);
 		glEnableVertexAttribArray(5);
-		glVertexAttribIPointer(5, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+		glVertexAttribIPointer(5, 4, GL_INT, sizeof(VertexBoneData), (void*)offsetof(VertexBoneData, IDs));
 		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)16);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (void*)offsetof(VertexBoneData, Weight));
 		
 		
 		glBindVertexArray(0);
 	}
 
 
-	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform, const aiScene* _sce)
-	{
-		string NodeName(pNode->mName.data);
-		const aiAnimation* pAnimation = _sce->mAnimations[0];
-		aiMatrix4x4 NodeTransformation(pNode->mTransformation);
-		const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
-
-		if (pNodeAnim) {
-			// Interpolate scaling and generate scaling transformation matrix
-			aiVector3D Scaling;
-			CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
-			aiMatrix4x4 ScalingM;
-			ScalingM = InitScaleTransform(Scaling.x, Scaling.y, Scaling.z);
-			
-			// Interpolate rotation and generate rotation transformation matrix
-			aiQuaternion RotationQ;
-			CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
-			aiMatrix4x4 RotationM = aiMatrix4x4(RotationQ.GetMatrix());
-
-			// Interpolate translation and generate translation transformation matrix
-			aiVector3D Translation;
-			CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
-			aiMatrix4x4 TranslationM;
-			TranslationM = InitTranslationTransform(Translation.x, Translation.y, Translation.z);
-
-			// Combine the above transformations
-			NodeTransformation = TranslationM * RotationM * ScalingM;
-		}
-		aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
-
-		unsigned int BoneIndex = findIndex(vec_BonesData,NodeName);
-		aiMatrix4x4 _mat = vec_BonesData[BoneIndex]->_OffsetMat4;
-		vec_BonesData[BoneIndex]->FinalTransform = (GlobalTransformation*vec_BonesData[BoneIndex]->_OffsetMat4.Inverse() )*  (vec_BonesData[BoneIndex]->_OffsetMat4 * m_GlobalInverseTransform) /**/   ;
-		
-		//vec_BonesData[BoneIndex]->_OffsetMat4.Inverse() * (vec_BonesData[BoneIndex]->_OffsetMat4 * m_GlobalInverseTransform )  到現在成功的例子
-
-		for (unsigned int i = 0; i < pNode->mNumChildren; i++) {
-			ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation, _sce);
-		}
-	}
+	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform, const aiScene* _sce);
 
 
 	glm::mat4 aiMatrix4x4ToGlm(const aiMatrix4x4 &from)
