@@ -25,6 +25,7 @@ public:
 	void OpenFile( pugi::xml_node* _node) override;
 	void Copy(Actor* _actor) override;
 	void Translate(glm::vec3 _pos);
+	void Translate(glm::mat4 _pos);
 	void Rotate(glm::vec3 _rot);
 	//void Rotate(glm::Quaternion _qu);
 	void Scale(glm::vec3 _scal);
