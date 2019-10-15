@@ -15,7 +15,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
+class Meshrender;
 struct Vertex {
 	// position
 	glm::vec3 Position;
@@ -152,7 +152,7 @@ public:
 		//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, 1);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
-
+		
 
 		// always good practice to set everything back to defaults once configured.
 		glActiveTexture(GL_TEXTURE0);
@@ -161,7 +161,7 @@ public:
 private:
 	/*  Render data  */
 	unsigned int VBO, EBO, m_Buffers;
-
+	
 	/*  Functions    */
 	// initializes all the buffer objects/arrays
 	void setupMesh()

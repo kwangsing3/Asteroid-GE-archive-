@@ -2,6 +2,8 @@
 
 #include <Units/Actor.h>
 #include "btBulletCollisionCommon.h"
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 //#include <glm/gtx/quaternion.hpp>
 //#include <Math/Math.h>
 
@@ -63,6 +65,17 @@ void Transform::Translate(glm::vec3 _pos)
 	this->position= _pos;
 	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
 	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+}
+
+void Transform::Translate(glm::mat4 _pos)
+{
+	//glm::mat4 transformation; // your transformation matrix.
+	//glm::vec3 scale;
+	glm::quat rotation;
+	glm::vec3 translation;
+	glm::vec3 skew;
+	glm::vec4 perspective;
+	glm::decompose(_pos, this->scale, rotation, this->position, skew, perspective);
 }
 
 void Transform::Rotate(glm::vec3 _rot)
