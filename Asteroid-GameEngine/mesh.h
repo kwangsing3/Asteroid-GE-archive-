@@ -224,7 +224,7 @@ private:
 		to[0][3] = from.d1; to[1][3] = from.d2; to[2][3] = from.d3; to[3][3] = from.d4;
 		return to;
 	}
-	unsigned int findIndex(std::vector<BoneData*> _vecB,std::string name)
+	int findIndex(std::vector<BoneData*> _vecB,std::string name)
 	{
 		for (unsigned int i = 0; i < _vecB.size(); i++)
 		{
@@ -233,6 +233,8 @@ private:
 				return i;
 			}
 		}
+
+		return -1;
 	}
 
 	const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const string NodeName)

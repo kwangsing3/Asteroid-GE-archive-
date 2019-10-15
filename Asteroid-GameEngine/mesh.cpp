@@ -4,7 +4,7 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 {
 	string NodeName(pNode->mName.data);
 
-	unsigned int BoneIndex = findIndex(vec_BonesData, NodeName);
+	int BoneIndex = findIndex(vec_BonesData, NodeName);
 	const aiAnimation* pAnimation = _sce->mAnimations[0];
 	aiMatrix4x4 NodeTransformation(pNode->mTransformation);
 	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
@@ -36,8 +36,11 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 
 	aiMatrix4x4 AnimationMatrix = ParentTransform * NodeTransformation;
 
-
-	vec_BonesData[BoneIndex]->FinalTransform = AnimationMatrix * BindPosMatrix.Inverse();
+	if (BoneIndex != -1)
+	{
+		vec_BonesData[BoneIndex]->FinalTransform = AnimationMatrix * BindPosMatrix.Inverse();
+	}
+	
 
 
 	//aiMatrix4x4 _mat = ParentTransform * NodeTransformation;   
@@ -45,7 +48,7 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 
 	for (unsigned int i = 0; i < pNode->mNumChildren; i++) 
 	{
-		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], BindPosMatrix, _sce);
+		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], AnimationMatrix, _sce);
 	}
 	
 }
