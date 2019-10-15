@@ -41,13 +41,10 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 		NodeTransformation = TranslationM * RotationM * ScalingM;
 	}
 
-	aiMatrix4x4 AnimationMatrix = BindPosMatrix * NodeTransformation;
-	
-	
-	
 
 	if (BoneIndex != -1)
 	{
+		
 		vec_BonesData[BoneIndex]->FinalTransform = BindPosMatrix.Inverse() * AnimationMatrix;
 	}
 	
