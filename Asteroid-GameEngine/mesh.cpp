@@ -1,4 +1,11 @@
 ﻿#include <mesh.h>
+#include <Units/Actor.h>
+#include <Component/Meshrender.h>
+
+
+
+
+
 
 void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const aiMatrix4x4 & ParentTransform, const aiScene * _sce)
 {
@@ -34,10 +41,10 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 		NodeTransformation = TranslationM * RotationM * ScalingM;
 	}
 
-	aiMatrix4x4 AnimationMatrix = ParentTransform * NodeTransformation;
-
-
-	vec_BonesData[BoneIndex]->FinalTransform = AnimationMatrix * BindPosMatrix.Inverse();
+	aiMatrix4x4 AnimationMatrix = BindPosMatrix * NodeTransformation;
+	
+	
+	vec_BonesData[BoneIndex]->FinalTransform =  BindPosMatrix.Inverse() * AnimationMatrix ;
 
 
 	//aiMatrix4x4 _mat = ParentTransform * NodeTransformation;   
@@ -45,7 +52,9 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 
 	for (unsigned int i = 0; i < pNode->mNumChildren; i++) 
 	{
-		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], BindPosMatrix, _sce);
+		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], AnimationMatrix, _sce);
 	}
+	
+	
 	
 }
