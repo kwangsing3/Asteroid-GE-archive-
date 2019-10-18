@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include <Xml/pugixml.hpp>
+#include <Xml/include/pugixml.hpp>
 
 class Actor;
 

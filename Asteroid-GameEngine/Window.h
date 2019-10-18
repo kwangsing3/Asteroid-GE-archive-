@@ -2,7 +2,7 @@
 #define WINDOW_H
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <Xml/pugixml.hpp>
+#include <Xml/include/pugixml.hpp>
 #include <fstream>
 #include <iostream>
 #include <vector>

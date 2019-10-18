@@ -20,7 +20,6 @@ subject to the following restrictions:
 #include "LinearMath/btVector3.h"
 #include "LinearMath/btMatrix3x3.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"  //for the shape types
-
 class btSerializer;
 
 ///The btCollisionShape class provides an interface for collision shapes that can be shared among btCollisionObjects.
@@ -31,7 +30,7 @@ protected:
 	int m_shapeType;
 	void* m_userPointer;
 	int m_userIndex;
-	
+
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 

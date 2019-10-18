@@ -40,7 +40,7 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 		// Combine the above transformations
 		NodeTransformation = TranslationM * RotationM * ScalingM;
 	}
-
+	aiMatrix4x4 AnimationMatrix= ParentTransform * NodeTransformation;
 
 	if (BoneIndex != -1)
 	{
@@ -51,7 +51,7 @@ void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const ai
 
 	//aiMatrix4x4 _mat = ParentTransform * NodeTransformation;   
 	//也沒有計算動畫的話 CurrentBoneWorldMatrix * _mat.Inverse() 是到現在成功的例子
-
+	
 	for (unsigned int i = 0; i < pNode->mNumChildren; i++) 
 	{
 		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], AnimationMatrix, _sce);

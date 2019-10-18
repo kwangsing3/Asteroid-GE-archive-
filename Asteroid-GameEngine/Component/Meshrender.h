@@ -4,7 +4,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
+#include <Units/Actor.h>
 #include <mesh.h>
 
 class btRigidBody;
@@ -19,8 +19,8 @@ struct ModelLoadStruct
 {
 	std::vector<Mesh> _meshes;
 	std::string path;
-	Assimp::Importer importer;
-	const aiScene* _sc;
+	//Assimp::Importer importer;
+	//const aiScene* _sc;
 };
 enum RenderMode { RMode2D, RMode3D };
 

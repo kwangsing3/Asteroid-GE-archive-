@@ -17,7 +17,7 @@
 #include <SceneManager.h>
 #include <ADD_Component.h>
 //#include <Window.h>
-//#include <Component/Meshrender.h>
+#include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
 extern Camera _editorCamera;

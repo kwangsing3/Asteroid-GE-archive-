@@ -24,10 +24,9 @@ subject to the following restrictions:
 #define WANTS_DEACTIVATION 3
 #define DISABLE_DEACTIVATION 4
 #define DISABLE_SIMULATION 5
-
+class Actor;
 struct btBroadphaseProxy;
 class btCollisionShape;
-
 struct btCollisionShapeData;
 #include "LinearMath/btMotionState.h"
 #include "LinearMath/btAlignedAllocator.h"
@@ -42,17 +41,16 @@ typedef btAlignedObjectArray<class btCollisionObject*> btCollisionObjectArray;
 #define btCollisionObjectData btCollisionObjectFloatData
 #define btCollisionObjectDataName "btCollisionObjectFloatData"
 #endif
-#include <Units/Actor.h>
+
 /// btCollisionObject can be used to manage collision detection objects.
 /// btCollisionObject maintains all information that is needed for a collision detection: Shape, Transform and AABB proxy.
 /// They can be added to the btCollisionWorld.
 ATTRIBUTE_ALIGNED16(class)
-
 btCollisionObject
 {
 protected:
 	btTransform m_worldTransform;
-	
+
 	///m_interpolationWorldTransform is used for CCD and interpolation
 	///it can be either previous or future (predicted) transform
 	btTransform m_interpolationWorldTransform;
@@ -126,8 +124,7 @@ protected:
 
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
-
-	Actor* _ActorInBullet = NULL;
+	Actor* _ActorInBullet;
 	enum CollisionFlags
 	{
 		CF_STATIC_OBJECT = 1,
