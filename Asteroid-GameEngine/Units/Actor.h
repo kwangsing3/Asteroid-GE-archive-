@@ -1,16 +1,12 @@
 ﻿#ifndef ACTOR_H
 #define ACTOR_H
+
 #include <Component/Transform.h>
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include <Component/Meshrender.h>
 #include <Component/BoxCollision.h>
 
-class Transform;
-class DirectionalLight;
-class PointLight;
-class Meshrender;
-class BoxCollision;
 
 class Actor
 {
@@ -37,7 +33,7 @@ public:
 
 	}
 
-	virtual void Draw();
+	
 private:
 
 };

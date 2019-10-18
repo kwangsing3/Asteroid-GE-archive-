@@ -1,6 +1,7 @@
 #include <Units/Actor.h>
 
-#include <iostream>
+
+
 
 /*#include <Component/Transform.h>
 #include <Component/DirectionalLight.h>
@@ -11,8 +12,3 @@
 
 
 
-
-void Actor::Draw()
-{
-	printf("draw from actor");
-}

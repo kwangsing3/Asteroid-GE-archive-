@@ -2,12 +2,13 @@
 #define ADD_FUNCTION_H
 
 #include <iostream>
+#include <AGE_Model.h>
 class Actor;
 class Meshrender;
 class DirectionalLight;
 class PointLight;
 class BoxCollision;
-enum  Shape;
+
 
 
 class ADD_Component

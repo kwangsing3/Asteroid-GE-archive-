@@ -393,7 +393,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			{
 				
 				//_cur_World->dynamicsWorld.
-				if (RayCallback.m_collisionObject->_ActorInBullet !=NULL&&RayCallback.m_collisionObject->_ActorInBullet->meshrender->_shape == NONE)  //確定是否擊中Pivot
+				if (RayCallback.m_collisionObject->_ActorInBullet !=NULL&&RayCallback.m_collisionObject->_ActorInBullet->meshrender->_model->_shape == Shape::DEBUG)  //確定是否擊中Pivot
 				{
 					_MainWorld->_piv->_actor = RayCallback.m_collisionObject->_ActorInBullet;
 					_MainWorld->_piv->Drag[0] = false; _MainWorld->_piv->Drag[1] = false; _MainWorld->_piv->Drag[2] = false;

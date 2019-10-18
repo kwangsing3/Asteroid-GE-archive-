@@ -2,21 +2,26 @@
 
 #include <Xml/include/pugixml.hpp>
 
-#include <Units/Actor.h>
+
 #include <Component/DirectionalLight.h>
 #include <Component/PointLight.h>
 #include <Component/Meshrender.h>
 #include <Component/BoxCollision.h>
+#include <Units/Actor.h>
 #include <World.h>
 #include <Window.h>
 #include <ADD_Component.h>
+#include <Mesh.h>
+
 std::vector<Shader*> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Render_Struct*> SceneManager::vec_ObjectsToRender_Instancing;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
+std::vector<ModelLoadStruct*> SceneManager::ModelList;
 std::vector<Actor*> SceneManager::Objects;
 glm::vec3 SceneManager::lightPos;
+
 bool SceneManager::NeedReloadShader = false;
 bool SceneManager::NeedInitedDraw = true;
 extern World* _MainWorld;
@@ -74,7 +79,7 @@ void SceneManager::OpenFile()
 			if (tool.child("MeshRender").attribute("Shape").as_int() == 5)
 				ADD_Component::Add_Meshrender(_Actor, tool.child("MeshRender").attribute("_path").as_string())->OpenFile(&tool);
 			else
-				ADD_Component::Add_Meshrender(_Actor, Cube)->OpenFile(&tool);
+				ADD_Component::Add_Meshrender(_Actor, Shape::Cube)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
@@ -112,7 +117,7 @@ void SceneManager::SaveFile()
 		//_cur.append_attribute("ID") = Objects[i]->ID;
 
 		//過濾坐標軸
-		if (Objects[i]->meshrender != NULL && Objects[i]->meshrender->_shape == NONE)
+		if (Objects[i]->meshrender != NULL && Objects[i]->meshrender->_model->_shape == Shape::DEBUG)
 			continue;
 
 		component_size = 0;
@@ -171,7 +176,7 @@ void SceneManager::AddToRenderPipeline_Instancing(Meshrender * _mrender)
 	NeedInitedDraw = true;
 	for (int i = 0; i < vec_ObjectsToRender_Instancing.size(); i++)
 	{
-		if (vec_ObjectsToRender_Instancing[i]->_meshrender->Model_path == _mrender->Model_path)
+		if (vec_ObjectsToRender_Instancing[i]->_meshrender->_model->_ModelPath == _mrender->_model->_ModelPath)
 		{
 			vec_ObjectsToRender_Instancing[i]->amount += 1;
 			vec_ObjectsToRender_Instancing[i]->transformList.push_back(_mrender->_actor->transform);
@@ -197,7 +202,7 @@ void SceneManager::UpdateRenderPipeline(Meshrender * _mrender)
 	NeedInitedDraw = true;
 	for (int i = 0; i < vec_ObjectsToRender_Instancing.size(); i++)
 	{
-		if (vec_ObjectsToRender_Instancing[i]->_meshrender->Model_path == _mrender->Model_path)
+		if (vec_ObjectsToRender_Instancing[i]->_meshrender->_model->_ModelPath == _mrender->_model->_ModelPath)
 		{
 			for (int x = 0; x < vec_ObjectsToRender_Instancing[i]->transformList.size(); x++)
 			{
@@ -267,9 +272,9 @@ void SceneManager::InitDrawPipline()
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(GL_ARRAY_BUFFER, vec_ObjectsToRender_Instancing[y]->DrawingAmount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
 		//Bind to Vertex Array
-		for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->meshes.size(); i++)
+		for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); i++)
 		{
-			unsigned int VAO = vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[i].VAO;
+			unsigned int VAO = vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[i]->VAO;
 			glBindVertexArray(VAO);
 			// set attribute pointers for matrix (4 times vec4)
 			glEnableVertexAttribArray(3);
@@ -301,29 +306,19 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 	Draw_Normal(_drawShadow, _dp);
 
 }
-void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp)
+void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 {
 	if (vec_ObjectsToRender.empty()) return;
 
-	if (_drawShadow)
+	for (int i = 0; i < vec_ObjectsToRender.size(); i++)
 	{
-		for (int i = 0; i < vec_ObjectsToRender.size(); i++)
-		{
-			vec_ObjectsToRender[i]->Draw(vec_ShaderProgram[2], _drawShadow);
-		}
-	}
-	else
-	{
-		for (int i = 0; i < vec_ObjectsToRender.size(); i++)
-		{
-			vec_ObjectsToRender[i]->Draw(vec_ShaderProgram[4], _drawShadow);
-		}
+		vec_ObjectsToRender[i]->Draw(vec_ShaderProgram[_drawShadow ? 2 : 4], _drawShadow);
 	}
 }
 
 void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 {
-	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
+	/*lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	float far_plane = 25.0f;
 	if (_drawShadow)
 	{
@@ -371,7 +366,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].VAO);
 
 
-				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
+				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
@@ -452,7 +447,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 					_shader.setFloat("spotLight.linear", 0.09);
 					_shader.setFloat("spotLight.quadratic", 0.032);
 					_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
+					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 			}
 			vec_ShaderProgram[Shader_index]->setVec3("Color", vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.x, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.y, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.z);
 			///Shadow
@@ -470,8 +465,8 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 				{
 					glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
 					// retrieve texture number (the N in diffuse_textureN)
-					string number;
-					string name = vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded[i].type;
+					std::string number;
+					std::string name = vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded[i].type;
 					if (name == "texture_diffuse")
 						number = std::to_string(diffuseNr++);
 					else if (name == "texture_specular")
@@ -493,98 +488,13 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			{
 				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].VAO);
 				//glActiveTexture(GL_TEXTURE1);
-				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
+				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
 			}
 		}
-	}
-
+	}*/
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Debug DrawScene
-void SceneManager::DrawScene()  
-{
-	int Shader_index = 5;
-	if (NeedInitedDraw) InitDrawPipline();
-	
-	if (vec_ShaderProgram[Shader_index] == NULL) { std::cout << "Meshrender Shader laod failed" << std::endl; return; }
-	for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
-	{
-		if (!vec_ObjectsToRender_Instancing[y]->_meshrender->_visable) continue;
-		vec_ShaderProgram[Shader_index]->use();
-		vec_ShaderProgram[Shader_index]->setMat4("projection", _editorCamera.Projection);
-		vec_ShaderProgram[Shader_index]->setMat4("view", _editorCamera.GetViewMatrix());
-		//Load Texture
-		{                                       
-			unsigned int diffuseNr = 1;
-			unsigned int specularNr = 1;
-			unsigned int normalNr = 1;
-			unsigned int heightNr = 1;
-			for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded.size(); i++)
-			{
-				glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-				// retrieve texture number (the N in diffuse_textureN)
-				string number;
-				string name = vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded[i].type;
-				if (name == "texture_diffuse")
-					number = std::to_string(diffuseNr++);
-				else if (name == "texture_specular")
-					number = std::to_string(specularNr++); // transfer unsigned int to stream
-				else if (name == "texture_normal")
-					number = std::to_string(normalNr++); // transfer unsigned int to stream
-				else if (name == "texture_height")
-					number = std::to_string(heightNr++); // transfer unsigned int to stream
-														 // now set the sampler to the correct texture unit
-				glUniform1i(glGetUniformLocation(vec_ShaderProgram[4]->ID, (name + number).c_str()), i);
-				// and finally bind the texture
-				glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded[i].id);
-			}
-
-		}
-
-
-		for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->meshes.size(); xi++)
-		{
-			glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].VAO);
-			//glActiveTexture(GL_TEXTURE1);
-			//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化*/
-			glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->amount);
-			glBindVertexArray(0);
-			//glActiveTexture(GL_TEXTURE0);
-		}
-
-
-
-
-
-	}
-
-}

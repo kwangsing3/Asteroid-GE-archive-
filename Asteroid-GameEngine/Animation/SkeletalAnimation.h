@@ -1,52 +1,73 @@
-#ifndef SKELETALANIMATION
-#define SKELETALANIMATION
+#ifndef ANIMATION_H
+#define ANIMATION_H
 
-#include <assimp/scene.h>
 #include <iostream>
-#include <vector>
-
-struct Animation
+#include <Assimp/scene.h>
+struct AGE_SkeletalAnimation
 {
 	std::string Name;
-	double Duration;
-	std::vector<aiNodeAnim*> _Channel;
-	Animation(std::string _n,double _d, std::vector<aiNodeAnim*> _c)
+	float mTicksPerSecond;
+	double mDuration;
+
+	AGE_SkeletalAnimation(std::string _n, double _d)
 	{
 		Name = _n;
-		Duration = _d;
-		_Channel = _c;
+		mDuration = _d;
 	}
-
 };
 
 
-class SkeletalAnimation
-{
 
-public:
-	bool HasAnimation = false;
-	std::vector<Animation*> _Animations;
-	SkeletalAnimation(const aiScene* _scene)
-	{
-		this->HasAnimation = _scene->HasAnimations();
-		for (int i = 0; i < _scene->mNumAnimations; i++)
-		{
-			std::vector<aiNodeAnim*> _cc;
-			for (int x = 0; x < _scene->mAnimations[i]->mNumChannels; x++)
-			{
-				_cc.push_back(_scene->mAnimations[i]->mChannels[x]);
-			}
+struct AGE_Node
+{	
+	aiString mName;
+	/** The transformation relative to the node's parent. */
+	aiMatrix4x4 mTransformation;
 
+	/** Parent node. NULL if this node is the root node. */
+	aiNode* mParent;
 
-			Animation* _na = new Animation(_scene->mAnimations[i]->mName.data,_scene->mAnimations[i]->mDuration, _cc);
-			_Animations.push_back(_na);
-			
-		}
-		
-		
+	/** The number of child nodes of this node. */
+	unsigned int mNumChildren;
+
+	/** The child nodes of this node. NULL if mNumChildren is 0. */
+	aiNode** mChildren;
+	/** The number of meshes of this node. */
+	unsigned int mNumMeshes;
+
+	/** The meshes of this node. Each entry is an index into the
+	  * mesh list of the #aiScene.
+	  */
+	unsigned int* mMeshes;
+
+	/** Metadata associated with this node or NULL if there is no metadata.
+	  *  Whether any metadata is generated depends on the source file format. See the
+	  * @link importer_notes @endlink page for more information on every source file
+	  * format. Importers that don't document any metadata don't write any.
+	  */
+	aiMetadata* mMetaData;
+
+	/** Constructor */
+	AGE_Node() {};
+	/** Destructor */
+	~AGE_Node() {};
+	inline
+		const aiNode* FindNode(const aiString& name) const {
+		return FindNode(name.data);
 	}
-
+	inline
+		aiNode* FindNode(const aiString& name) {
+		return FindNode(name.data);
+	}
+	const aiNode* FindNode(const char* name) const;
+	aiNode* FindNode(const char* name);
+	void addChildren(unsigned int numChildren, aiNode** children);
 };
 
 
-#endif // !SKELETALANIMATION
+
+
+#endif // !ANIMATION_H
+
+
+

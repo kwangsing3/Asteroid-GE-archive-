@@ -9,6 +9,7 @@ class Meshrender;
 class DirectionalLight;
 class PointLight;
 class Transform;
+class Mesh;
 struct Render_Struct
 {
 	Meshrender* _meshrender;
@@ -19,6 +20,14 @@ struct Render_Struct
 	std::vector<Transform*> DrawingtransformList;
 	std::vector<bool*> _visableList;
 };
+
+struct ModelLoadStruct
+{
+	std::vector<Mesh*> _meshes;
+	std::string path;
+};
+
+
 
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
 {
@@ -35,21 +44,22 @@ public:
 	static void OpenFile();
 	static void SaveFile();
 	static void NewScene();
-	static bool NeedInitedDraw;
-	
-	SceneManager()
-	{
-		CreateShader();
-	}
 	void CheckReloadShader()
 	{
 		if (!NeedReloadShader) return;
 		this->NeedReloadShader = false;
 		CreateShader();
 	}
+	static bool NeedInitedDraw;
+	static std::vector<ModelLoadStruct*> ModelList;
+	SceneManager()
+	{
+		CreateShader();
+	}
+	
 
 	static void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
-	static void DrawScene();   //this is test draw scene, only has simple drawing.
+	//static void DrawScene();   //this is test draw scene, only has simple drawing.
 	static void AddToRenderPipeline_Instancing(Meshrender* _mrender);
 	static void AddToRenderPipeline(Meshrender* _mrender);
 	static void UpdateRenderPipeline(Meshrender * _mrender);
@@ -86,7 +96,6 @@ private:
 	static void InitDrawPipline();
 	static void Draw_Instancing(bool _drawShadow, unsigned int _dp);
 	static void Draw_Normal(bool _drawShadow, unsigned int _dp);
-
 };
 
 

@@ -84,7 +84,13 @@
     <ClCompile Include="Component\BoxCollision.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="mesh.cpp">
+    <ClCompile Include="Mesh.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="AGE_Model.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalMesh.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>
@@ -265,9 +271,6 @@
     <ClInclude Include="Units\Camera.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="Raycast.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -335,6 +338,18 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Component\BoxCollision.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\SkeletalAnimation.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="AGE_Model.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalMesh.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

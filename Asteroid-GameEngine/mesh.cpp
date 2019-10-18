@@ -1,62 +1,59 @@
-﻿#include <mesh.h>
-#include <Units/Actor.h>
-#include <Component/Meshrender.h>
+﻿#include <Mesh.h>
 
 
+#include <Units/Camera.h>
 
 
+#include <shader_m.h>
+#include <SceneManager.h>
 
 
-void Mesh::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const aiMatrix4x4 & ParentTransform, const aiScene * _sce)
+void Mesh::Draw(Shader* shader)
 {
-	string NodeName(pNode->mName.data);
-
-	int BoneIndex = findIndex(vec_BonesData, NodeName);
-	const aiAnimation* pAnimation = _sce->mAnimations[0];
-	aiMatrix4x4 NodeTransformation(pNode->mTransformation);
-	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
-	
-	aiMatrix4x4 BindPosMatrix = ParentTransform * NodeTransformation;
-	//aiMatrix4x4 AnimationMatrix;
-	if (pNodeAnim) 
+	//shader->use();
+	// bind appropriate textures
+	unsigned int diffuseNr = 1;
+	unsigned int specularNr = 1;
+	unsigned int normalNr = 1;
+	unsigned int heightNr = 1;
+	//***************************************
+	// Bind Textures
+	//***************************************
+	for (unsigned int i = 0; i < this->_Textures.size(); i++)
 	{
-		// Interpolate scaling and generate scaling transformation matrix
-		aiVector3D Scaling;
-		CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
-		aiMatrix4x4 ScalingM;
-		ScalingM = InitScaleTransform(Scaling.x, Scaling.y, Scaling.z);
-
-		// Interpolate rotation and generate rotation transformation matrix
-		aiQuaternion RotationQ;
-		CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
-		aiMatrix4x4 RotationM = aiMatrix4x4(RotationQ.GetMatrix());
-
-		// Interpolate translation and generate translation transformation matrix
-		aiVector3D Translation;
-		CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
-		aiMatrix4x4 TranslationM;
-		TranslationM = InitTranslationTransform(Translation.x, Translation.y, Translation.z);
-
-		// Combine the above transformations
-		NodeTransformation = TranslationM * RotationM * ScalingM;
+		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+		// retrieve texture number (the N in diffuse_textureN)
+		std::string number;
+		std::string name = this->_Textures[i].type;
+		if (name == "texture_diffuse")
+			number = std::to_string(diffuseNr++);
+		else if (name == "texture_specular")
+			number = std::to_string(specularNr++); // transfer unsigned int to stream
+		else if (name == "texture_normal")
+			number = std::to_string(normalNr++); // transfer unsigned int to stream
+		else if (name == "texture_height")
+			number = std::to_string(heightNr++); // transfer unsigned int to stream
+												 // now set the sampler to the correct texture unit
+		glUniform1i(glGetUniformLocation(shader->ID, (name + number).c_str()), i);
+		// and finally bind the texture
+		glBindTexture(GL_TEXTURE_2D, this->_Textures[i].id);
 	}
-	aiMatrix4x4 AnimationMatrix= ParentTransform * NodeTransformation;
+	//***************************************
+	// Shader Uniforms
+	//***************************************
 
-	if (BoneIndex != -1)
-	{
-		
-		vec_BonesData[BoneIndex]->FinalTransform = BindPosMatrix.Inverse() * AnimationMatrix;
-	}
-	
 
-	//aiMatrix4x4 _mat = ParentTransform * NodeTransformation;   
-	//也沒有計算動畫的話 CurrentBoneWorldMatrix * _mat.Inverse() 是到現在成功的例子
-	
-	for (unsigned int i = 0; i < pNode->mNumChildren; i++) 
-	{
-		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], AnimationMatrix, _sce);
-	}
-	
-	
-	
+
+
+	// draw mesh
+	glBindVertexArray(VAO);
+	//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, 1);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+
+	// always good practice to set everything back to defaults once configured.
+	glActiveTexture(GL_TEXTURE0);
 }
+
+

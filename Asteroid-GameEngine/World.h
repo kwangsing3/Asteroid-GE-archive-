@@ -16,21 +16,25 @@
 
 #include <SceneManager.h>
 #include <ADD_Component.h>
+#include <Units/Actor.h>
 //#include <Window.h>
 #include <Component/Meshrender.h>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
 extern Camera _editorCamera;
 
-class _Pivot : public Meshrender
+class _Pivot : public AGE_Model
 {
 	
 public:
 	btRigidBody* body[3];
+	Actor* _actor;
+	bool _visable = false;
 	std::vector<Actor*> _lowwerActor;
 	bool _attaching = false;
 	bool Drag[3] = { false,false,false };
 	bool _DragMode[3] = { false,false,false };
+	bool _needdebug = true;
 	std::vector<btCollisionShape*> colshape;
 	int _group = 1;
 	int _mask = 1;
@@ -38,21 +42,15 @@ public:
 
 	_Pivot(Actor* _a)
 	{
-		_visable = false;
 		SwitchDragMode(0);
 		_actor = _a;
 		_actor->transform->name = (char*) "Pivot";
-		_actor->meshrender = new Meshrender(_a, NONE);
-		this->_mode = RenderMode(1);
-		this->enabled = true;
 		this->CreatePivot();
-		this->VertexColor = glm::vec3(1, 1, 1);
-
 		CreateMouseCollision();     
 	}
 	void CreatePivot()
 	{
-		_shape = Shape::NONE;
+		_shape = Shape::DEBUG;
 		float PIVOTVERTICES[] = {
 		0.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
 		1.0f,0.0f,0.0f,   1.0f,0.0f,0.0f,
@@ -90,7 +88,7 @@ public:
 		//Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
 		
 
-		SceneManager::AddToRenderPipeline(this);
+		//SceneManager::AddToRenderPipeline(this);
 	}
 	void Draw(Shader* _shader,bool _renderShadow)// override
 	{
@@ -118,7 +116,7 @@ public:
 				model = model * RotationMatrix;
 				model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 				_shader->setMat4("model", model);
-				_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
+				//_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
 				//_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
 				//_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
 			}
@@ -218,7 +216,6 @@ public:
 			DeleteCollision();
 		}
 	}
-
 	void AttachObject_Multiple(Actor* _ac)
 	{
 		
@@ -268,7 +265,7 @@ public:
 private:
 	int Collision_flag = 0;
 	void CreateMouseCollision();
-	void UpdateCollision() override;
+	void UpdateCollision();
 	void DeleteCollision();
 	void AddCollision();
 

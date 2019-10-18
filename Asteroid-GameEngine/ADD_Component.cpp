@@ -22,7 +22,7 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _sha);
 	_actor->meshrender = _mesh;
-	if(_sha==_Model)
+	if(_sha== Shape::_Model)
 		SceneManager::AddToRenderPipeline(_mesh);
 	else
 		SceneManager::AddToRenderPipeline_Instancing(_mesh);
@@ -35,7 +35,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _path);
 	_actor->meshrender = _mesh;
-	if (_mesh->_shape == _Model)
+	if (_mesh->_model->_shape == Shape::_Model)
 		SceneManager::AddToRenderPipeline(_mesh);
 	else
 		SceneManager::AddToRenderPipeline_Instancing(_mesh);
@@ -65,7 +65,7 @@ PointLight* ADD_Component::Add_PointLight(Actor* _actor)
 BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor, float mass)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
-	if (_ac->meshrender == NULL) ADD_Component::Add_Meshrender(_ac, Cube);
+	if (_ac->meshrender == NULL) ADD_Component::Add_Meshrender(_ac, Shape::Cube);
 	BoxCollision* _box = new BoxCollision(_actor, mass);
 	//_ac->transform->name = (char*)"Cube";
 	_ac->boxcollision = _box;
@@ -80,7 +80,7 @@ Actor* ADD_Component::Copy_Actor(Actor* _actor)
 	_ac->transform->Copy(_actor);    
 
 	if (_actor->meshrender != NULL)
-		ADD_Component::Add_Meshrender(_ac, _actor->meshrender->_shape)->Copy(_actor);
+		ADD_Component::Add_Meshrender(_ac, _actor->meshrender->_model->_shape)->Copy(_actor);
 	if (_actor->_Dirlight != NULL)
 		ADD_Component::Add_DirectionalLight(_ac)->Copy(_actor);
 	if (_actor->_PointLight != NULL)

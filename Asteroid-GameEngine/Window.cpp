@@ -4,9 +4,13 @@
 
 #include <Units/Actor.h>
 #include <ADD_Component.h>
+
 #include <World.h>
 #include <SceneManager.h>
 #include <Units/Camera.h>
+
+//#include <AGE_Model.h>
+
 GLFWwindow* Window::MainGLFWwindow = NULL;
 //Default  settings
 
@@ -261,6 +265,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 				float f0 = _sel->_actor->boxcollision->_Mass;
 				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
 				{
+					
 					_sel->_actor->boxcollision->_Mass = f0;
 					_sel->_actor->boxcollision->UpdateCollision();
 				}
@@ -356,13 +361,13 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			if (ImGui::Button("Create a cube"))
 			{
 				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac,Cube);
+				ADD_Component::Add_Meshrender(_ac,Shape::Cube);
 				_ac->transform->name = (char*) "New Cube";
 			}
 			if (ImGui::Button("Create a sphere"))
 			{
 				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac, Sphere);
+				ADD_Component::Add_Meshrender(_ac,Shape::Sphere);
 				_ac->transform->name = (char*) "New Sphere";
 			}
 			if (ImGui::Button("Create a planet"))
@@ -579,7 +584,7 @@ static void MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Add Component"))
 		{
-			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor,Cube); }
+			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor, Shape::Cube); }
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_DirectionalLight(WindowUI::cur_SelectObject_List[0]->_actor); }

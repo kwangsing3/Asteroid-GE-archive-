@@ -8,7 +8,7 @@
 
 //unsigned int World::depthMapFBO;
 extern World* _MainWorld;
-void _Pivot::CreateMouseCollision()   // 重複執行太多次了
+void _Pivot::CreateMouseCollision()   
 {
 	_needdebug = true;
 	if (this->_visable)
@@ -74,7 +74,7 @@ void _Pivot::AddCollision()
 }
 
 #include <stb_image.h>
-unsigned int loadCubemap(vector<std::string> faces)
+unsigned int loadCubemap(std::vector<std::string> faces)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);

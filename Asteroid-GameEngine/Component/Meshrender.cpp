@@ -1,18 +1,12 @@
 ﻿#include <Component/Meshrender.h>
 
-#ifndef STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#endif // !STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#include <glm/gtx/quaternion.hpp>
-
-#include <Units/Camera.h>
-#include <Window.h>
 #include <shader_m.h>
-
+#include <Component/Transform.h>
 #include <World.h>
 #include <Units/Actor.h>
-std::vector<ModelLoadStruct> Meshrender::ModelList;
+
+
+
 extern Camera _editorCamera;
 extern World* _MainWorld;
 
@@ -25,8 +19,8 @@ void Meshrender::SaveFile(pugi::xml_node* _node)
 	_n.append_attribute("VertexColorX") = this->_actor->meshrender->VertexColor.x;
 	_n.append_attribute("VertexColorY") = this->_actor->meshrender->VertexColor.y;
 	_n.append_attribute("VertexColorZ") = this->_actor->meshrender->VertexColor.z;
-	_n.append_attribute("Shape") = this->_actor->meshrender->_shape;
-	_n.append_attribute("_path") = this->_actor->meshrender->Model_path.c_str();
+	//_n.append_attribute("Shape") = this->_actor->meshrender->_shape;
+	//_n.append_attribute("_path") = this->_actor->meshrender->Model_path.c_str();
 }
 void Meshrender::OpenFile(pugi::xml_node* _node)
 {
@@ -42,17 +36,15 @@ void Meshrender::Copy(Actor* _actor)
 	this->_needdebug = _actor->meshrender->_needdebug;
 	this->_visable = _actor->meshrender->_visable;
 	this->VertexColor = _actor->meshrender->VertexColor;
-	this->_shape = _actor->meshrender->_shape;
-	this->_mode = _actor->meshrender->_mode;
-	/*  Model Data */
+	/*this->_shape = _actor->meshrender->_shape;
 	this->textures_loaded= _actor->meshrender->textures_loaded;
 	this->meshes = _actor->meshrender->meshes;
 	this->directory = _actor->meshrender->directory;
 	this->_Mat4model = _actor->meshrender->_Mat4model;
-	this->Model_path = _actor->meshrender->Model_path;
+	this->Model_path = _actor->meshrender->Model_path;*/
 
 	
-	/*  Model Data */
+	
 }
 
 void Meshrender::Draw(Shader* _shader, bool _renderShadow)
@@ -65,8 +57,8 @@ void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	if (_renderShadow)
 	{
-		/*
-			紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f*/
+		
+			//紀錄一下  目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
 		
 		///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
@@ -146,7 +138,7 @@ void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 	// 共通
 	_shader->setMat4("projection", _editorCamera.Projection);
 	_shader->setMat4("view", _editorCamera.GetViewMatrix());
-	_Mat4model = glm::mat4(1.0f);
+	glm::mat4 _Mat4model(1.0f);
 	_Mat4model = glm::translate(_Mat4model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
 
 	EulerAngles = glm::vec3(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
@@ -162,8 +154,9 @@ void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 	// 共通
 
 	/// Draw Pipeline
-	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i].Draw(*_shader,scene);
+	for (unsigned int i = 0; i < this->_model->_meshes.size(); i++)
+		this->_model->_meshes[i]->Draw(_shader);
+
 }
 
 
@@ -173,7 +166,6 @@ void Meshrender::Draw(Shader* _shader, bool _renderShadow)
 void Meshrender::CreateMouseCollision()
 {
 	_MainWorld->InitPhysics = true;
-
 	btVector3 localInertia(0, 0, 0);
 	//create a dynamic rigidbody
 	if (colShape == NULL)
@@ -181,7 +173,6 @@ void Meshrender::CreateMouseCollision()
 		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
 		_MainWorld->m_collisionShapes.push_back(colShape);
 	}
-
 	btScalar mass(0);
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -237,244 +228,15 @@ void Meshrender::UpdateCollision()
 	}
 	
 }
-
 void Meshrender::SetVisable(bool _bool)
 {
 	this->_visable = _bool;
 	SceneManager::UpdateRenderPipeline(this);
 }
-
-
 void Meshrender::ReSetCollisionFlag()
 {
 	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 	this->body->setCollisionFlags(Collision_flag);
 }
 
-
-
-
-
-
-
-//  --------------------------------- Model Loading --------------------------------- 
-void Meshrender::loadModel(string const & path)
-{
-	// read file via ASSIMP
-	
-	scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-	// check for errors
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
-	{
-		cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
-		return;
-	}
-	// retrieve the directory path of the filepath
-	directory = path.substr(0, path.find_last_of('/'));
-
-	// process ASSIMP's root node recursively
-	processNode(scene->mRootNode, scene);
-	{
-		ModelLoadStruct _NewModel;
-		_NewModel.path = path;
-		_NewModel._meshes = this->meshes;
-		//_NewModel.importer = this->importer;
-		//_NewModel._sc = this->scene;
-
-		ModelList.push_back(_NewModel);
-	}
-	
-}
-void Meshrender::processNode(aiNode* node, const aiScene* scene)
-{
-	// process each mesh located at the current node
-	for (unsigned int i = 0; i < node->mNumMeshes; i++)
-	{
-		// the node object only contains indices to index the actual objects in the scene. 
-		// the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene));
-	}
-	// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
-	for (unsigned int i = 0; i < node->mNumChildren; i++)
-	{
-		processNode(node->mChildren[i], scene);
-	}
-
-}
-Mesh Meshrender::processMesh(aiMesh* mesh, const aiScene* scene)
-{
-	// data to fill
-	vector<Vertex> vertices;
-	vector<unsigned int> indices;
-	vector<Texture> textures;
-	vector<VertexBoneData> _bonsVertex;
-	vector<BoneData*> vec_BonesData;
-	// Walk through each of the mesh's vertices
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-	{
-		Vertex vertex;
-		glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
-		// positions
-		vector.x = mesh->mVertices[i].x;
-		vector.y = mesh->mVertices[i].y;
-		vector.z = mesh->mVertices[i].z;
-		vertex.Position = vector;
-		// normals
-		vector.x = mesh->mNormals[i].x;
-		vector.y = mesh->mNormals[i].y;
-		vector.z = mesh->mNormals[i].z;
-		vertex.Normal = vector;
-		// texture coordinates
-		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-		{
-			glm::vec2 vec;
-			// a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
-			// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.TexCoords = vec;
-		}
-		else
-			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-		// tangent
-		vector.x = mesh->mTangents[i].x;
-		vector.y = mesh->mTangents[i].y;
-		vector.z = mesh->mTangents[i].z;
-		vertex.Tangent = vector;
-		// bitangent
-		vector.x = mesh->mBitangents[i].x;
-		vector.y = mesh->mBitangents[i].y;
-		vector.z = mesh->mBitangents[i].z;
-		vertex.Bitangent = vector;
-		vertices.push_back(vertex);
-	}
-	// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
-	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-	{
-		aiFace face = mesh->mFaces[i];
-		// retrieve all indices of the face and store them in the indices vector
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			indices.push_back(face.mIndices[j]);
-	}
-	// process materials
-	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-	// we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-	// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-	// Same applies to other texture as the following list summarizes:
-	// diffuse: texture_diffuseN
-	// specular: texture_specularN
-	// normal: texture_normalN
-	_bonsVertex.resize(mesh->mNumVertices);
-	// 1. diffuse maps
-	vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	// 2. specular maps
-	vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-	// 3. normal maps
-	std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-	// 4. height maps
-	std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-	if (mesh->HasBones())
-	{
-		for (unsigned int i = 0; i < mesh->mNumBones; i++)
-		{
-			for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++)
-			{
-				_bonsVertex[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(i, mesh->mBones[i]->mWeights[j].mWeight);
-			}
-
-			vec_BonesData.push_back(new BoneData(mesh->mBones[i]->mName.data, mesh->mBones[i]->mOffsetMatrix, scene->mRootNode->mTransformation * mesh->mBones[i]->mOffsetMatrix.Inverse()));
-		}
-	}
-	aiMatrix4x4 m_GlobalInverseTransform = scene->mRootNode->mTransformation;
-	m_GlobalInverseTransform.Inverse();
-	
-	
-	// return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures, _bonsVertex, vec_BonesData, m_GlobalInverseTransform);
-}
-vector<Texture> Meshrender::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
-{
-	vector<Texture> textures;
-	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-	{
-		aiString str;
-		mat->GetTexture(type, i, &str);
-		// check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-		bool skip = false;
-		for (unsigned int j = 0; j < textures_loaded.size(); j++)
-		{
-			if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
-			{
-				textures.push_back(textures_loaded[j]);
-				skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
-				break;
-			}
-		}
-		if (!skip)
-		{   // if texture hasn't been loaded already, load it
-			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), this->directory);
-			texture.type = typeName;
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
-		}
-	}
-	if (mat->GetTextureCount(type) < 1)
-	{
-		Texture texture;
-		aiString str("DefaultColor.jpg");
-		texture.id = TextureFromFile(str.C_Str(), this->directory);
-		texture.type = typeName;
-		texture.path = str.C_Str();
-		textures.push_back(texture);
-		textures_loaded.push_back(texture);
-	}
-
-	return textures;
-}
-unsigned int Meshrender::TextureFromFile(const char * path, const string & directory)
-{
-	string filename = string(path);
-	filename = directory + '/' + filename;
-
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
-		stbi_image_free(data);
-	}
-
-	return textureID;
-}
 
