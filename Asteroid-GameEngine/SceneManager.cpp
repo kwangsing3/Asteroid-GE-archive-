@@ -11,7 +11,7 @@
 #include <World.h>
 #include <Window.h>
 #include <ADD_Component.h>
-#include <Mesh.h>
+#include <AGE_Mesh.h>
 
 std::vector<Shader*> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;

@@ -28,17 +28,17 @@ struct AGE_Node
 	aiNode* mParent;
 
 	/** The number of child nodes of this node. */
-	unsigned int mNumChildren;
+	unsigned int mNumChildren = 0;
 
 	/** The child nodes of this node. NULL if mNumChildren is 0. */
-	aiNode** mChildren;
+	aiNode** mChildren=NULL;
 	/** The number of meshes of this node. */
-	unsigned int mNumMeshes;
+	unsigned int mNumMeshes = 0;
 
 	/** The meshes of this node. Each entry is an index into the
 	  * mesh list of the #aiScene.
 	  */
-	unsigned int* mMeshes;
+	unsigned int* mMeshes= NULL;
 
 	/** Metadata associated with this node or NULL if there is no metadata.
 	  *  Whether any metadata is generated depends on the source file format. See the

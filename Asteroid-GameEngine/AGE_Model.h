@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <SceneManager.h>
-#include <Mesh.h>
+#include <AGE_Mesh.h>
 #include <SkeletalMesh.h>
 
 enum struct Shape{ Plane, Cube, Sphere, Capsule, Cylinder, _Model, DEBUG };

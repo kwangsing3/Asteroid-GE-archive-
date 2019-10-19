@@ -126,21 +126,20 @@ aiMatrix4x4 InitTranslationTransform(float x, float y, float z)
 	m[3][0] = 0.0f; m[3][1] = 0.0f; m[3][2] = 0.0f; m[3][3] = 1.0f;
 	return m;
 }
-void SkeletalMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform, const aiScene* _sce)
+void SkeletalMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const glm::mat4 ParentTransform, const aiScene* _sce)
 {
 	std::string NodeName(pNode->mName.data);
 	int BoneIndex = findIndex(this->vec_BonesData, NodeName);
 	const aiAnimation* pAnimation = _sce->mAnimations[0];
-	aiMatrix4x4 NodeTransformation(pNode->mTransformation);
+	glm::mat4 NodeTransformation = aiMatrix4x4ToGlm(pNode->mTransformation);
 	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
-
-	aiMatrix4x4 BindPosMatrix = ParentTransform * NodeTransformation;
+	
 	//aiMatrix4x4 AnimationMatrix;
 	if (pNodeAnim)
 	{
 		// Interpolate scaling and generate scaling transformation matrix
 		aiVector3D Scaling;
-		CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
+		CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);                    //aiMatrix4x4 的互相相乘有非常嚴重的問題
 		aiMatrix4x4 ScalingM;
 		ScalingM = InitScaleTransform(Scaling.x, Scaling.y, Scaling.z);
 
@@ -156,17 +155,19 @@ void SkeletalMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, c
 		TranslationM = InitTranslationTransform(Translation.x, Translation.y, Translation.z);
 
 		// Combine the above transformations
-		NodeTransformation = TranslationM * RotationM * ScalingM;
-	}
-	aiMatrix4x4 AnimationMatrix = ParentTransform * NodeTransformation;
-	if (BoneIndex != -1)
-	{
-		vec_BonesData[BoneIndex]->FinalTransform = BindPosMatrix.Inverse() * AnimationMatrix;
+		NodeTransformation = aiMatrix4x4ToGlm(TranslationM) * aiMatrix4x4ToGlm(RotationM) * aiMatrix4x4ToGlm(ScalingM);
 	}
 
+	glm::mat4 GlobalTransformation = ParentTransform * NodeTransformation;
+
+	if (BoneIndex != -1)
+	{
+		vec_BonesData[BoneIndex]->FinalTransform = glm::inverse(aiMatrix4x4ToGlm(_aiScene->mRootNode->mTransformation)) * GlobalTransformation * aiMatrix4x4ToGlm(vec_BonesData[BoneIndex]->_OffsetMat4);
+	}
+	
 	for (unsigned int i = 0; i < pNode->mNumChildren; i++)
 	{
-		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], AnimationMatrix, _sce);
+		ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation, _sce);
 	}
 
 }
@@ -184,10 +185,10 @@ void SkeletalMesh::Draw(Shader* shader)
 	float TimeInTicks = glfwGetTime() * TicksPerSecond;
 	float AnimationTime = fmod(TimeInTicks, (float)_aiScene->mAnimations[0]->mDuration);
 
-	ReadNodeHeirarchy(AnimationTime, _aiScene->mRootNode, Identity, _aiScene);
+	ReadNodeHeirarchy(AnimationTime, _aiScene->mRootNode, glm::mat4(1.0f), _aiScene);
 	for (unsigned int i = 0; i < vec_BonesData.size(); i++)
 	{
-		shader->setMat4("boneTransform[" + std::to_string(i) + "]", aiMatrix4x4ToGlm(vec_BonesData[i]->FinalTransform));
+		shader->setMat4("boneTransform[" + std::to_string(i) + "]", vec_BonesData[i]->FinalTransform );
 	}
 	Mesh::Draw(shader);
 }

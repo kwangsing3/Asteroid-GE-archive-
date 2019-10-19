@@ -173,12 +173,12 @@ int main()
 	
 	//記得拿掉
 	
-	double previousTime = glfwGetTime();
+	float previousTime = glfwGetTime();
 	int frameCount = 0;
 
 	while (!Window::WindowShouldClose)
 	{
-		double currentFrame = glfwGetTime();
+		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		frameCount++;
@@ -315,8 +315,8 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	
 
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+	double xoffset = xpos - lastX;
+	double yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 	// Pivot Drag Function
 	if (isClickingPivot && _MainWorld->_piv != NULL)
 	{

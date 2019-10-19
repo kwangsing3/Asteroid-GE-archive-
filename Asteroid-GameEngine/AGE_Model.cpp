@@ -167,15 +167,18 @@ SkeletalMesh* AGE_Model::processSkeletalMesh(aiMesh* mesh, const aiScene* scene)
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	vec_VertexWithBones.resize(vertices.size());
-	for (unsigned int i = 0; i < mesh->mNumBones; i++)
+	for (unsigned int x = 0; x < mesh->mNumBones; x++)
 	{
-		for (unsigned int j = 0; j < mesh->mBones[i]->mNumWeights; j++)
+		for (unsigned int j = 0; j < mesh->mBones[x]->mNumWeights; j++)
 		{
-			vec_VertexWithBones[mesh->mBones[i]->mWeights[j].mVertexId].AddBoneData(i, mesh->mBones[i]->mWeights[j].mWeight);
+			vec_VertexWithBones[mesh->mBones[x]->mWeights[j].mVertexId].AddBoneData(x, mesh->mBones[x]->mWeights[j].mWeight);
 		}
 
-		vec_BonesData.push_back(new BoneData(mesh->mBones[i]->mName.data, mesh->mBones[i]->mOffsetMatrix, scene->mRootNode->mTransformation * mesh->mBones[i]->mOffsetMatrix.Inverse()));
+		vec_BonesData.push_back(new BoneData(mesh->mBones[x]->mName.data, mesh->mBones[x]->mOffsetMatrix));
 	}
+
+
+
 
 	return new SkeletalMesh(vertices, indices, textures, vec_VertexWithBones, vec_BonesData, scene);
 }

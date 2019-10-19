@@ -190,7 +190,7 @@
     <ClCompile Include="GraphicEngine\imgui_impl_opengl3.cpp" />
     <ClCompile Include="GraphicEngine\imgui_widgets.cpp" />
     <ClCompile Include="hide\MainUI.cpp" />
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="AGE_Mesh.cpp" />
     <ClCompile Include="Physics Engine\clew\clew.c" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -265,7 +265,7 @@
     <ClInclude Include="GraphicEngine\imstb_truetype.h" />
     <ClInclude Include="GraphicEngine\imgui_Custom.h" />
     <ClInclude Include="Math\Math.h" />
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="AGE_Mesh.h" />
     <ClInclude Include="Physics Engine\clew\clew.h" />
     <ClInclude Include="Physics Engine\CommonInterfaces\Common2dCanvasInterface.h" />
     <ClInclude Include="Physics Engine\CommonInterfaces\CommonCallbacks.h" />

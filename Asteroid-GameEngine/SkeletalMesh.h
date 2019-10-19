@@ -1,6 +1,6 @@
 ﻿#ifndef SKELETALMESH_H
 #define SKELETALMESH_H
-#include <Mesh.h>
+#include <AGE_Mesh.h>
 #include <assimp/scene.h>
 class aiScene;
 struct Vertex_hasBone
@@ -29,10 +29,10 @@ struct BoneData
 	std::string Name;
 
 	aiMatrix4x4 _OffsetMat4;
-	aiMatrix4x4 FinalTransform;
-	BoneData(std::string _N, aiMatrix4x4 _Mat4, aiMatrix4x4 _fin)
+	glm::mat4 FinalTransform;
+	BoneData(std::string _N, aiMatrix4x4 _Mat4)
 	{
-		Name = _N; _OffsetMat4 = _Mat4; FinalTransform = _fin;
+		Name = _N; _OffsetMat4 = _Mat4; FinalTransform = glm::mat4(1.0f);
 	}
 };
 
@@ -98,7 +98,7 @@ private:
 
 		glBindVertexArray(0);
 	}
-	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const aiMatrix4x4& ParentTransform, const aiScene* _sce);
+	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const glm::mat4 ParentTransform, const aiScene* _sce);
 	int findIndex(std::vector<BoneData*> _vecB, std::string name);
 	const aiScene* _aiScene;
 

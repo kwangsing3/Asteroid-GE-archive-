@@ -30,37 +30,9 @@ class Shader;
 
 class Mesh    //傳入已經分配好的數值來製作Mesh
 {
-
-	 
-public:
-	
-	//***************************************
-	// Model data
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> _Textures;
-		
-		unsigned int VAO;
-		std::string _ModelPath;
-
-	//***************************************
-	// Shader Uniform
-		glm::mat4 _Mat4model = glm::mat4(1.0f);
-	//***************************************
-	Mesh() {};
-	Mesh(std::vector<Vertex> vert, std::vector<unsigned int> indi,std::vector<Texture> _Text)
-	{
-		this->vertices = vert;
-		this->indices = indi;
-		this->_Textures = _Text;
-		setupMesh();
-	}
-
-	virtual void Draw(Shader* shader);
-
 private:
 
-	unsigned int VBO, EBO;
+	unsigned int VBO=0, EBO=0;
 	void setupMesh()
 	{
 		glGenVertexArrays(1, &VAO);
@@ -92,7 +64,31 @@ private:
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 		glBindVertexArray(0);
 	}
-	
+public:
+
+	//***************************************
+	// Model data
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	std::vector<Texture> _Textures;
+
+	unsigned int VAO = 0;
+	std::string _ModelPath;
+
+	//***************************************
+	// Shader Uniform
+	glm::mat4 _Mat4model = glm::mat4(1.0f);
+	//***************************************
+	Mesh() {};
+	Mesh(std::vector<Vertex> vert, std::vector<unsigned int> indi, std::vector<Texture> _Text)
+	{
+		this->vertices = vert;
+		this->indices = indi;
+		this->_Textures = _Text;
+		setupMesh();
+	}
+
+	virtual void Draw(Shader* shader);
 	
 
 };
