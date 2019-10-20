@@ -271,7 +271,7 @@ std::vector<Texture> AGE_Model::loadMaterialTextures(aiMaterial* mat, aiTextureT
 	{
 		Texture texture;
 		aiString str("DefaultColor.jpg");
-		texture.id = TextureFromFile(str.C_Str(), this->_ModelPath);
+		texture.id = TextureFromFile(str.C_Str(), this->directory);
 		texture.type = typeName;
 		texture.path = str.C_Str();
 		textures.push_back(texture);

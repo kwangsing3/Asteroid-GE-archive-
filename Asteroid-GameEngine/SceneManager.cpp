@@ -318,7 +318,7 @@ void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 
 void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 {
-	/*lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
+	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	float far_plane = 25.0f;
 	if (_drawShadow)
 	{
@@ -361,13 +361,13 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			// 共通
 			/// Draw Pipeline
 
-			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->meshes.size(); xi++)
+			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
 			{
-				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].VAO);
+				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
 
 
 				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
-				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
+				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
 			}
@@ -383,14 +383,13 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
 		{
 			if (!vec_ObjectsToRender_Instancing[y]->Drawing) continue;
-			if (vec_ObjectsToRender_Instancing[y]->_meshrender->_shape == NONE)
+			if (vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_shape == Shape::DEBUG)
 			{
 				if (_MainWorld->_piv != NULL) _MainWorld->_piv->Draw(vec_ShaderProgram[0], false);
 				continue;
 			}
 
 			if (vec_ShaderProgram[Shader_index] == NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
-
 
 			vec_ShaderProgram[Shader_index]->use();
 			vec_ShaderProgram[Shader_index]->setMat4("projection", _editorCamera.Projection);
@@ -447,7 +446,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 					_shader.setFloat("spotLight.linear", 0.09);
 					_shader.setFloat("spotLight.quadratic", 0.032);
 					_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 			}
 			vec_ShaderProgram[Shader_index]->setVec3("Color", vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.x, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.y, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.z);
 			///Shadow
@@ -455,18 +454,17 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			vec_ShaderProgram[Shader_index]->setVec3("viewPos", _editorCamera.transform.position);
 			vec_ShaderProgram[Shader_index]->setVec3("lightPos", lightPos);
 
-
 			{
 				unsigned int diffuseNr = 1;
 				unsigned int specularNr = 1;
 				unsigned int normalNr = 1;
 				unsigned int heightNr = 1;
-				for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded.size(); i++)
+				for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded.size(); i++)
 				{
 					glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
 					// retrieve texture number (the N in diffuse_textureN)
 					std::string number;
-					std::string name = vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded[i].type;
+					std::string name = vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded[i].type;
 					if (name == "texture_diffuse")
 						number = std::to_string(diffuseNr++);
 					else if (name == "texture_specular")
@@ -478,23 +476,22 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 															 // now set the sampler to the correct texture unit
 					glUniform1i(glGetUniformLocation(vec_ShaderProgram[4]->ID, (name + number).c_str()), i);
 					// and finally bind the texture
-					glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender_Instancing[y]->_meshrender->textures_loaded[i].id);
+					glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded[i].id);
 				}
 
 			}
 
-
-			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->meshes.size(); xi++)
+			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
 			{
-				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].VAO);
+				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
 				//glActiveTexture(GL_TEXTURE1);
 				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
-				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->meshes[xi].indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
+				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
 			}
 		}
-	}*/
+	}
 }
 
 

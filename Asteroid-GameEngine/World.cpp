@@ -118,6 +118,9 @@ void World::init_PhysicsProgress()
 	depose_init_PhysicsProgress();
 	for (int i = 0;i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
+		if (this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender == NULL) 
+			continue;
+
 		_PhysicsProgress.push_back(new _PhysicsStrut(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, 
 			this->m_dynamicsWorld->getCollisionObjectArray()[i]== this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender->body?true:false
 			));

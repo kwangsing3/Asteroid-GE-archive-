@@ -164,7 +164,7 @@ int main()
 
 	//---------------------------------------
 	//記得拿掉
-	SceneManager::OpenFile();//調試用函數
+	//SceneManager::OpenFile();//調試用函數
 	
 	
 

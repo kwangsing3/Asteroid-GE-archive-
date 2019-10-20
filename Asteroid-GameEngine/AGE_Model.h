@@ -20,7 +20,7 @@ private:
 	std::string directory;
 	void CreateShape(Shape _sha)
 	{
-		this->_shape = _shape;
+		this->_shape = _sha;
 		std::string DefaultShapePath;
 		switch (_shape)
 		{
@@ -75,10 +75,11 @@ private:
 	std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 
 
-	std::vector<Texture> textures_loaded;
+	
 public:
 	Shape _shape = Shape::DEBUG;
 	std::vector<Mesh*> _meshes;
+	std::vector<Texture> textures_loaded;
 	std::string _ModelPath;
 	AGE_Model() {};
 	AGE_Model(Shape _sha) { CreateShape(_sha); };
