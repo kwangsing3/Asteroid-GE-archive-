@@ -25,6 +25,11 @@ struct ModelLoadStruct
 {
 	std::vector<Mesh*> _meshes;
 	std::string path;
+	ModelLoadStruct(std::string _pat, std::vector<Mesh*> _mesh)
+	{
+		path = _pat; _meshes = _mesh;
+	}
+
 };
 
 
@@ -42,6 +47,7 @@ public:
 	static bool NeedReloadShader;
 	//載入檔案
 	static void OpenFile();
+	static void OpenFile(int _index);
 	static void SaveFile();
 	static void NewScene();
 	void CheckReloadShader()
@@ -52,6 +58,7 @@ public:
 	}
 	static bool NeedInitedDraw;
 	static std::vector<ModelLoadStruct*> ModelList;
+	static std::string _FilePAth;
 	SceneManager()
 	{
 		CreateShader();
@@ -92,7 +99,7 @@ private:
 		SceneManager::vec_ShaderProgram[5]->setInt("diffuseTexture", 0);
 		SceneManager::vec_ShaderProgram[5]->setInt("depthMap", 1);
 	}
-	static glm::vec3 lightPos;
+	//static glm::vec3 lightPos;
 	static void InitDrawPipline();
 	static void Draw_Instancing(bool _drawShadow, unsigned int _dp);
 	static void Draw_Normal(bool _drawShadow, unsigned int _dp);

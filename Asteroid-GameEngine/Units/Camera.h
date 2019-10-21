@@ -35,9 +35,9 @@ class CameraTransform
 {
 public:
 	glm::vec3 position;
-	glm::vec3 rotation;
+	//glm::vec3 rotation;
 	char* name;
-	bool enabled;
+
 
 };
 
@@ -104,8 +104,8 @@ public:
 	}
 	void EnableFrameBuffer(bool _enable);
 	unsigned int GetframeBuffer();
-
-
+	void SaveFile(pugi::xml_node* _node);
+	void OpenFile(pugi::xml_node* _node);
 
 
 

@@ -164,12 +164,25 @@ int main()
 
 	//---------------------------------------
 	//記得拿掉
-	//SceneManager::OpenFile();//調試用函數
+	SceneManager::OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
 	
+	/*Meshrender* _M = ADD_Component::Add_Meshrender(ADD_Component::Add_Actor(), Shape::Cube);
+	_M->_actor->transform->name = "Floor";
+	ADD_Component::Add_BoxCollision(_M->_actor, 0);
+
+	for (int k = 0; k < 5; k++)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				Meshrender* _newM = ADD_Component::Add_Meshrender(ADD_Component::Add_Actor(), Shape::Cube);
+				_newM->_actor->transform->Translate(glm::vec3( k*2, i*2, j*2));
+				ADD_Component::Add_BoxCollision(_newM->_actor,1);
+			}
+		}
+	}*/
 	
-
-
-
 	
 	//記得拿掉
 	
@@ -182,7 +195,7 @@ int main()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		frameCount++;
-		if (currentFrame - previousTime >= 1.0)
+		if (currentFrame - previousTime >= 1.0f)
 		{
 			// Display the frame count here any way you want.
 			WindowUI::_FPS = frameCount;
@@ -393,7 +406,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			{
 				
 				//_cur_World->dynamicsWorld.
-				if (RayCallback.m_collisionObject->_ActorInBullet !=NULL&&RayCallback.m_collisionObject->_ActorInBullet->meshrender->_model->_shape == Shape::DEBUG)  //確定是否擊中Pivot
+				if (RayCallback.m_collisionObject->_ActorInBullet !=NULL&&RayCallback.m_collisionObject->_ActorInBullet->transform->name== (char*)"Pivot")  //確定是否擊中Pivot
 				{
 					_MainWorld->_piv->_actor = RayCallback.m_collisionObject->_ActorInBullet;
 					_MainWorld->_piv->Drag[0] = false; _MainWorld->_piv->Drag[1] = false; _MainWorld->_piv->Drag[2] = false;

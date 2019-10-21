@@ -13,26 +13,54 @@
 #include <ADD_Component.h>
 #include <AGE_Mesh.h>
 
+std::string _Examples_List[5] = 
+{
+	"EXampleProject/Basic Example.AstGamEng",
+	"EXampleProject/Constraints.AstGamEng",
+	"EXampleProject/Motorized Hinge.AstGamEng",
+	"EXampleProject/Rolling Friction.AstGamEng",
+	"EXampleProject/TestHinge Torque.AstGamEng",
+};
+
+
+//*********************************
+//Render Request
+//*********************************
+float near_plane = 1.0f;
+float far_plane = 25.0f;
+glm::mat4 shadowProj, lightView;
+glm::mat4 lightSpaceMatrix;
+glm::vec3 lightPos;
+
+
+std::vector<Actor*> SceneManager::Objects;
 std::vector<Shader*> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
 std::vector<Render_Struct*> SceneManager::vec_ObjectsToRender_Instancing;
 std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
+
 std::vector<ModelLoadStruct*> SceneManager::ModelList;
-std::vector<Actor*> SceneManager::Objects;
-glm::vec3 SceneManager::lightPos;
+
+//glm::vec3 SceneManager::lightPos;
 
 bool SceneManager::NeedReloadShader = false;
 bool SceneManager::NeedInitedDraw = true;
 extern World* _MainWorld;
 
-const char* _FilePAth = "ExampleProject/Basic Example.AstGamEng";
-
+std::string SceneManager::_FilePAth;
+void SceneManager::OpenFile(int _index) 
+{
+	if (_index > _Examples_List->size() - 1 || _index == -1) return;
+	_FilePAth = _Examples_List[_index];  
+	OpenFile(); 
+}
 void SceneManager::OpenFile()
 {
 	SceneManager::NewScene();
-	
 	std::cout << "Open File Function" << std::endl;
+	if (_FilePAth.empty()) return;
+
 	pugi::xml_document _doc;
 	std::ifstream _XMLstream;
 	try
@@ -89,14 +117,17 @@ void SceneManager::OpenFile()
 		}
 		if (_check != _componentSize) { std::cout << _char << ": Component_size error" << std::endl; }
 	}
-
+	if (_editorCamera.enabled)
+	{
+		_editorCamera.OpenFile(&_root);
+	}
 
 	_XMLstream.close();
 }
-
 void SceneManager::SaveFile()
 {
-	std::cout << "Save File Function" << std::endl;
+	if (_FilePAth.empty()) _FilePAth = _Examples_List[3];
+
 	pugi::xml_document doc;
 	//增加說明
 	pugi::xml_node decl = doc.prepend_child(pugi::node_declaration);
@@ -106,8 +137,9 @@ void SceneManager::SaveFile()
 	pugi::xml_node root = doc.append_child("Scene");
 	//給節點增加屬性，並賦值
 	root.append_attribute("name") = "test";
-
-	
+	//*************************************************
+	// Save Objects 
+	//*************************************************
 
 	int component_size = 0;
 	for (int i = 0; i < Objects.size(); i++)
@@ -149,9 +181,19 @@ void SceneManager::SaveFile()
 	}
 	root.append_attribute("Objects_Size") = Objects.size();
 
-	doc.save_file(_FilePAth, "\t", pugi::format_no_escapes, pugi::encoding_utf8);
-}
+	//*************************************************
+	// Save Camera
+	//*************************************************
+	if (_editorCamera.enabled)
+	{
+		_editorCamera.SaveFile(&root);
+	}
 
+
+
+	doc.save_file(_FilePAth.c_str(), "\t", pugi::format_no_escapes, pugi::encoding_utf8);
+	std::cout << "Save File Function" << std::endl;
+}
 void SceneManager::NewScene()
 {
 	_MainWorld->_PlayMode = false;
@@ -191,12 +233,11 @@ void SceneManager::AddToRenderPipeline_Instancing(Meshrender * _mrender)
 	_rs->_visableList.push_back(&_mrender->_visable);
 	vec_ObjectsToRender_Instancing.push_back(_rs);
 }
-
 void SceneManager::AddToRenderPipeline(Meshrender * _mrender)
 {
+	NeedInitedDraw = true;
 	vec_ObjectsToRender.push_back(_mrender);
 }
-
 void SceneManager::UpdateRenderPipeline(Meshrender * _mrender)
 {
 	NeedInitedDraw = true;
@@ -228,8 +269,20 @@ void SceneManager::InitDrawPipline()
 			vec_ObjectsToRender_Instancing[y]->DrawingtransformList.clear();
 		}
 	}
-
-	// Init Transform
+	//*********************************
+	//Resend comman information to shader
+	//*********************************
+	for (int i = 0; i < vec_ShaderProgram.size(); i++)
+	{
+		vec_ShaderProgram[i]->use();
+		
+		vec_ShaderProgram[i]->setVec3("viewPos", _editorCamera.transform.position);
+		vec_ShaderProgram[i]->setFloat("far_plane", far_plane);
+		vec_ShaderProgram[i]->setMat4("projection", _editorCamera.Projection);
+	}
+	//*********************************
+	//Instancing Init Transform
+	//*********************************
 	for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
 	{
 		vec_ObjectsToRender_Instancing[y]->DrawingAmount = 0;
@@ -299,27 +352,115 @@ void SceneManager::InitDrawPipline()
 void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 {
 	if (NeedInitedDraw) InitDrawPipline();
-
-	
 	Draw_Instancing(_drawShadow, _dp);
-
 	Draw_Normal(_drawShadow, _dp);
-
 }
+
+Shader* _shader = 0;
 void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 {
 	if (vec_ObjectsToRender.empty()) return;
+	_shader = vec_ShaderProgram[_drawShadow ? 2 : 4];
+	_shader->use();
+	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
+	///Shadow
+	_shader->setVec3("lightPos", lightPos);
+	if (_drawShadow)
+	{
+		//目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
+
+	///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+		std::vector<glm::mat4> shadowTransforms;
+		if (SceneManager::vec_DirectionlLight.size() > 0)  //目前只有Directional Light有效果
+		{
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		}
+		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		lightSpaceMatrix = shadowProj * lightView;    //這行應該跟Directional light 有關
+		// render scene from light's point of view
+		for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
+			_shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+	}
+	else
+	{
+		int Light_Length = 3;
+		bool Use_Light = false;
+
+		_shader->setFloat("material.shininess", 32.0f);
+		//Directional Light
+		if (Use_Light)
+		{
+			for (int i = 0; i < Light_Length; i++)
+			{
+				if (i + 1 > SceneManager::vec_DirectionlLight.size())
+				{
+					_shader->setVec3("dirLight[" + std::to_string(i) + "].direction", glm::vec3(0, 0, 0));
+					_shader->setVec3("dirLight[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+					_shader->setVec3("dirLight[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+					_shader->setVec3("dirLight[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+					continue;
+				}
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].direction", SceneManager::vec_DirectionlLight[i]->_actor->transform->rotation);
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].ambient", SceneManager::vec_DirectionlLight[i]->Ambient);
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
+				_shader->setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
+			}
+			//Point Light
+			for (int i = 0; i < Light_Length; i++)
+			{
+				if (i + 1 > SceneManager::vec_PointLight.size())
+				{
+					_shader->setVec3("pointLights[" + std::to_string(i) + "].position", glm::vec3(0, 0, 0));
+					_shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", glm::vec3(0, 0, 0));
+					_shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", glm::vec3(0, 0, 0));
+					_shader->setVec3("pointLights[" + std::to_string(i) + "].specular", glm::vec3(0, 0, 0));
+					_shader->setFloat("pointLights[" + std::to_string(i) + "].constant", 0);
+					_shader->setFloat("pointLights[" + std::to_string(i) + "].linear", 0);
+					_shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", 0);
+					continue;
+				}
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].position", SceneManager::vec_PointLight[i]->_actor->transform->position);
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", SceneManager::vec_PointLight[i]->Ambient);
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", SceneManager::vec_PointLight[i]->Diffuse);
+				_shader->setVec3("pointLights[" + std::to_string(i) + "].specular", SceneManager::vec_PointLight[i]->Specular);
+				_shader->setFloat("pointLights[" + std::to_string(i) + "].constant", SceneManager::vec_PointLight[i]->Constant);
+				_shader->setFloat("pointLights[" + std::to_string(i) + "].linear", SceneManager::vec_PointLight[i]->linear);
+				_shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", SceneManager::vec_PointLight[i]->quadratic);
+				// spotLight
+				/*_shader.setVec3("spotLight.position", Window::_editorCamera.transform.position);
+				_shader.setVec3("spotLight.direction", Window::_editorCamera.Front);
+				_shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+				_shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+				_shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+				_shader.setFloat("spotLight.constant", 1.0f);
+				_shader.setFloat("spotLight.linear", 0.09);
+				_shader.setFloat("spotLight.quadratic", 0.032);
+				_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+				_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
+			}
+		}
+		_shader->setBool("Use_Light", Use_Light);
+	}
+
+
 
 	for (int i = 0; i < vec_ObjectsToRender.size(); i++)
 	{
 		vec_ObjectsToRender[i]->Draw(vec_ShaderProgram[_drawShadow ? 2 : 4], _drawShadow);
 	}
 }
-
 void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 {
+	if (vec_ObjectsToRender_Instancing.empty()) return;
 	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
 	float far_plane = 25.0f;
+	bool Use_Light = false;
 	if (_drawShadow)
 	{
 		vec_ShaderProgram[2]->use();
@@ -353,7 +494,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			// 共通
 			vec_ShaderProgram[2]->setMat4("projection", _editorCamera.Projection);
 			vec_ShaderProgram[2]->setMat4("view", _editorCamera.GetViewMatrix());
-
+			
 			///Shadow
 			vec_ShaderProgram[2]->setFloat("far_plane", far_plane);
 			vec_ShaderProgram[2]->setVec3("viewPos", _editorCamera.transform.position);
@@ -395,8 +536,10 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			vec_ShaderProgram[Shader_index]->setMat4("projection", _editorCamera.Projection);
 			vec_ShaderProgram[Shader_index]->setMat4("view", _editorCamera.GetViewMatrix());
 			// Light Setting
+			vec_ShaderProgram[Shader_index]->setFloat("material.shininess", 32.0f);
+			if(Use_Light)
 			{
-				vec_ShaderProgram[Shader_index]->setFloat("material.shininess", 32.0f);
+				
 				//Directional Light
 				for (int i = 0; i < Light_Length; i++)
 				{
@@ -449,6 +592,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 			}
 			vec_ShaderProgram[Shader_index]->setVec3("Color", vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.x, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.y, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.z);
+			vec_ShaderProgram[Shader_index]->setBool("Use_Light", Use_Light);
 			///Shadow
 			vec_ShaderProgram[Shader_index]->setFloat("far_plane", far_plane);
 			vec_ShaderProgram[Shader_index]->setVec3("viewPos", _editorCamera.transform.position);
@@ -484,8 +628,8 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
 			{
 				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
-				//glActiveTexture(GL_TEXTURE1);
-				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);

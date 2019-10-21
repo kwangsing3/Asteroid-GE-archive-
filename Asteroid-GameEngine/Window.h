@@ -69,7 +69,7 @@ class Window
 public:
 	static GLFWwindow* MainGLFWwindow;
 	bool isFullscreen;
-
+	static int progect_I_am_focus;
 	static bool DeBug_Mode;
 	static std::vector<int> vec_ID;
 	static WindowUI *_Main_UI;
@@ -98,6 +98,8 @@ public:
 			this->_Main_UI->All_UIElement = _doc.child("GlobalSettings").child("ProjectSetting").child("All_UIElement").attribute("All_UIElement").as_bool();
 			this->_Main_UI->_mode = Game_Mode(_doc.child("GlobalSettings").child("ProjectSetting").child("Game_Mode").attribute("Game_Mode").as_int());
 			this->DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
+			this->progect_I_am_focus = _doc.child("GlobalSettings").child("ProjectSetting").child("Project").attribute("Project_Focus").as_int();
+
 			_XMLstream.close();
 		}	
 		GLFWmonitor* primary = glfwGetPrimaryMonitor();

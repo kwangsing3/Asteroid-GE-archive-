@@ -21,11 +21,11 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _sha);
-	_actor->meshrender = _mesh;
-	if(_sha== Shape::_Model)
+	_ac->meshrender = _mesh;
+	//if(_sha== Shape::_Model)
 		SceneManager::AddToRenderPipeline(_mesh);
-	else
-		SceneManager::AddToRenderPipeline_Instancing(_mesh);
+	//else
+		//SceneManager::AddToRenderPipeline_Instancing(_mesh);
 	
 	return _mesh;
 }
@@ -34,7 +34,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)
 {
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _path);
-	_actor->meshrender = _mesh;
+	_ac->meshrender = _mesh;
 	if (_mesh->_model->_shape == Shape::_Model)
 		SceneManager::AddToRenderPipeline(_mesh);
 	else

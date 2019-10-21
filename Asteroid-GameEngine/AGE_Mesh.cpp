@@ -7,15 +7,20 @@
 #include <shader_m.h>
 #include <SceneManager.h>
 
-
+unsigned int diffuseNr = 1;
+unsigned int specularNr = 1;
+unsigned int normalNr = 1;
+unsigned int heightNr = 1;
+std::string number;
+std::string name;
 void Mesh::Draw(Shader* shader)
 {
 	//shader->use();
 	// bind appropriate textures
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
-	unsigned int normalNr = 1;
-	unsigned int heightNr = 1;
+	 diffuseNr = 1;
+	 specularNr = 1;
+	 normalNr = 1;
+	 heightNr = 1;
 	//***************************************
 	// Bind Textures
 	//***************************************
@@ -23,8 +28,8 @@ void Mesh::Draw(Shader* shader)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
 		// retrieve texture number (the N in diffuse_textureN)
-		std::string number;
-		std::string name = this->_Textures[i].type;
+		
+		name = this->_Textures[i].type;
 		if (name == "texture_diffuse")
 			number = std::to_string(diffuseNr++);
 		else if (name == "texture_specular")
@@ -42,18 +47,15 @@ void Mesh::Draw(Shader* shader)
 	// Shader Uniforms
 	//***************************************
 
-
-
-
 	// draw mesh
 	glBindVertexArray(VAO);
 	//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, 1);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-
+	//glBindVertexArray(0);
+	//glActiveTexture(GL_TEXTURE0);
 
 	// always good practice to set everything back to defaults once configured.
-	glActiveTexture(GL_TEXTURE0);
+	
 }
 
 

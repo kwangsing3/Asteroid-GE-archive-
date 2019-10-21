@@ -120,10 +120,10 @@ void World::init_PhysicsProgress()
 	{
 		if (this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender == NULL) 
 			continue;
+		if(this->m_dynamicsWorld->getCollisionObjectArray()[i] == this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender->body)
+			continue;
 
-		_PhysicsProgress.push_back(new _PhysicsStrut(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, 
-			this->m_dynamicsWorld->getCollisionObjectArray()[i]== this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender->body?true:false
-			));
+		_PhysicsProgress.push_back(new _PhysicsStruct(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, false));
 	}
 }
 void World::depose_init_PhysicsProgress()      
@@ -131,7 +131,6 @@ void World::depose_init_PhysicsProgress()
 	if (_PhysicsProgress.size() < 1) return;
 	for (int i = 0; i < _PhysicsProgress.size(); i++)
 	{
-		
 		this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[i]->_actor;	
 	}
 	_PhysicsProgress.clear();
@@ -173,14 +172,12 @@ void World::UpdateFrame()
 		for (int i = 0; i < _PhysicsProgress.size(); i++)
 		{
 			if (_PhysicsProgress[i]->Static) continue;
-			_PhysicsProgress[i]->_actor->transform->MoveByPhysics(
-				&this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->getWorldTransform()
-			);
+			_PhysicsProgress[i]->_actor->transform->MoveByPhysics(&this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->getWorldTransform());
 		}
 	}
 	else
 	{
-		depose_init_PhysicsProgress();
+		if (_PhysicsProgress.size() < 1) depose_init_PhysicsProgress();
 	}
 	/*glCullFace(GL_FRONT);
 	///Shadw

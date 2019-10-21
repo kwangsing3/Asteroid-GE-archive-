@@ -82,11 +82,33 @@ void Camera::EnableFrameBuffer(bool _enable)
 	}
 	
 }
-
-
 unsigned int Camera::GetframeBuffer()
 {
 	return framebuffer;
+}
+void Camera::SaveFile(pugi::xml_node* _node)
+{
+	pugi::xml_node _curNode = _node->append_child("CameraSetting").append_child("Transform").append_child("Position");
+		_curNode.append_attribute("x") = this->transform.position.x;
+		_curNode.append_attribute("y") = this->transform.position.y;
+		_curNode.append_attribute("z") = this->transform.position.z;
+	_curNode = _node->child("CameraSetting");
+	_curNode.append_attribute("Zoom") = this->Zoom;
+	_curNode.append_attribute("Yaw") = this->Yaw;
+	_curNode.append_attribute("Pitch") = this->Pitch;
+}
+
+void Camera::OpenFile(pugi::xml_node* _node)
+{
+	pugi::xml_node _curNode = _node->child("CameraSetting").child("Transform").child("Position");
+	this->transform.position.x = _curNode.attribute("x").as_float();
+	this->transform.position.y = _curNode.attribute("y").as_float();
+	this->transform.position.z = _curNode.attribute("z").as_float();
+	_curNode = _node->child("CameraSetting");
+	this->Zoom = _curNode.attribute("Zoom").as_float();
+	this->Yaw = _curNode.attribute("Yaw").as_float();
+	this->Pitch = _curNode.attribute("Pitch").as_float();
+	this->updateCameraVectors();
 }
 
 

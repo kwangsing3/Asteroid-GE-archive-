@@ -2,7 +2,7 @@
 #define MESHRENDER_H
 #include <Component/Component.h>
 #include <AGE_Model.h>
-
+#include <glm/gtc/random.hpp>
 
 class btRigidBody;
 class btCollisionShape;
@@ -19,7 +19,7 @@ public:
 	//---------------------------------
 	btRigidBody* body;	
 	AGE_Model* _model;
-	glm::vec3 VertexColor= glm::vec3(1.0f);
+	glm::vec3 VertexColor= glm::vec3(glm::linearRand(0.1f,1.0f) , glm::linearRand(0.3f, 1.0f), glm::linearRand(0.6f, 1.0f)	);
 
 
 	Meshrender(Actor* _a, Shape _shape)
@@ -56,10 +56,7 @@ protected:
 	// Draw Pipeline Variable
 	float near_plane = 1.0f;
 	float far_plane = 25.0f;
-	glm::mat4 shadowProj, lightView;
-	glm::mat4 lightSpaceMatrix;
-	glm::vec3 lightPos;
-	int Light_Length = 3;
+	glm::mat4 _Model;
 	glm::vec3 EulerAngles;
 	btDefaultMotionState* myMotionState;
 };

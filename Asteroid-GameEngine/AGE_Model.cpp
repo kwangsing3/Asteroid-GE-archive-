@@ -18,12 +18,10 @@ void AGE_Model::loadModel(std::string const& path)
 	}
 	directory = path.substr(0, path.find_last_of('/'));
 	processNode(_aiScene->mRootNode, _aiScene);
+
 	//Make a new Model list
 	{
-		ModelLoadStruct _NewModel;
-		_NewModel.path = path;
-		_NewModel._meshes = this->_meshes;
-		SceneManager::ModelList.push_back(&_NewModel);
+		SceneManager::ModelList.push_back(new ModelLoadStruct(path, this->_meshes));
 	}
 
 }

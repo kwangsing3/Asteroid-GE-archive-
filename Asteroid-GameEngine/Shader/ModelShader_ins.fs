@@ -79,6 +79,7 @@ uniform samplerCube depthMap;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform float far_plane;
+uniform bool  Use_Light;
 //uniform bool shadows;
 //Shadow texture
 
@@ -130,7 +131,11 @@ void main()
     float shadow = ShadowCalculation(fs_in.FragPos);                      
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;   
 	
-	 FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+	 
+	if(Use_Light)
+		FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+	else
+		FragColor = vec4(Color*lighting, 1.0);
 	// FragColor = vec4(1,1,1,1.0);
 	// FragColor = vec4(mix(result,Color,0.6),1.0);
 }

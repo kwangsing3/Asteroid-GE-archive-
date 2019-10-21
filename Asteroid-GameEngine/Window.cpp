@@ -46,6 +46,7 @@ static float _maineditorX = _Width / 3, _maineditorY = _Height / 3;
 static float _LogoutX = _maineditorX * 2;
 static float _SceneX = 213, _SceneY = 360;
 static void ShowSimpleOverlay(bool* p_open);
+
 bool WindowUI::show_simple_overlay = true;
 static std::vector<SelectObject*> SceneObject_List;
 
@@ -53,6 +54,7 @@ float WindowUI::UI_Left_X;
 float WindowUI::UI_Left_Y;
 float WindowUI::UI_Right_X;
 float WindowUI::_FPS=0;
+int Window::progect_I_am_focus;
 void Clear_ListBool()
 {
 	for (int i = 0; i < SceneObject_List.size(); i++)
@@ -624,6 +626,14 @@ static void MainMenuBar()
 		{
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Example"))
+		{
+			for (int i = 0 ; i < 10; i++)
+			{
+				if (ImGui::MenuItem(std::to_string(i).c_str())) { SceneManager::OpenFile(i); }
+			}
+			ImGui::EndMenu();
+		}
 		ImGui::EndMainMenuBar();
 	}
 }
@@ -711,6 +721,7 @@ static void ShowSimpleOverlay(bool* p_open)
 
 			ImGui::Text(WindowUI::_mode ? "Game Mode: 3D" : "Game Mode: 2D");
 			ImGui::Text(Window::DeBug_Mode ? "Debug Mode: Active" : "Debug Mode: inValid");
+			ImGui::Text(SceneManager::_FilePAth.c_str());
 		}
 		ImGui::End();
 

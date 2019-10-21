@@ -272,12 +272,12 @@ private:
 
 };
 extern unsigned int _Width, _Height;
-struct _PhysicsStrut 
+struct _PhysicsStruct 
 {
 	int _index = -1;
 	Actor* _actor;
 	bool Static = true;
-	_PhysicsStrut(int _i, Actor* _a, bool _boo)
+	_PhysicsStruct(int _i, Actor* _a, bool _boo)
 	{
 		_index = _i;
 		_actor = _a;
@@ -316,7 +316,7 @@ public:
 	void depose_init_PhysicsProgress();
 	void CreateDepthMap();
 protected:
-	std::vector<_PhysicsStrut*> _PhysicsProgress;
+	std::vector<_PhysicsStruct*> _PhysicsProgress;
 };
 
 
