@@ -22,10 +22,10 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 	Actor* _ac = _actor == NULL ? ADD_Component::Add_Actor() : _actor;
 	Meshrender* _mesh = new Meshrender(_actor, _sha);
 	_ac->meshrender = _mesh;
-	//if(_sha== Shape::_Model)
+	if(_sha== Shape::_Model)
 		SceneManager::AddToRenderPipeline(_mesh);
-	//else
-		//SceneManager::AddToRenderPipeline_Instancing(_mesh);
+	else
+		SceneManager::AddToRenderPipeline_Instancing(_mesh);
 	
 	return _mesh;
 }

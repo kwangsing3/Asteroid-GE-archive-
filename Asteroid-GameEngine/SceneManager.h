@@ -95,9 +95,11 @@ private:
 		SceneManager::vec_ShaderProgram[4]->use();
 		SceneManager::vec_ShaderProgram[4]->setInt("diffuseTexture", 0);
 		SceneManager::vec_ShaderProgram[4]->setInt("depthMap", 1);
+		SceneManager::vec_ShaderProgram[4]->setInt("shadowMap", 1);
 		SceneManager::vec_ShaderProgram[5]->use();
 		SceneManager::vec_ShaderProgram[5]->setInt("diffuseTexture", 0);
 		SceneManager::vec_ShaderProgram[5]->setInt("depthMap", 1);
+		SceneManager::vec_ShaderProgram[5]->setInt("shadowMap", 1);
 	}
 	//static glm::vec3 lightPos;
 	static void InitDrawPipline();

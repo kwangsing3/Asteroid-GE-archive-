@@ -75,7 +75,11 @@ void SceneManager::OpenFile()
 	}
 	pugi::xml_node _root = _doc.child("Scene");
 
-	for (pugi::xml_node tool = _root.first_child(); tool; tool = tool.next_sibling())
+	if (_editorCamera.enabled)
+	{
+		_editorCamera.OpenFile(&_root);
+	}
+	for (pugi::xml_node tool = _root.first_child().next_sibling(); tool; tool = tool.next_sibling())
 	{
 
 		Actor* _Actor = ADD_Component::Add_Actor();
@@ -117,10 +121,7 @@ void SceneManager::OpenFile()
 		}
 		if (_check != _componentSize) { std::cout << _char << ": Component_size error" << std::endl; }
 	}
-	if (_editorCamera.enabled)
-	{
-		_editorCamera.OpenFile(&_root);
-	}
+
 
 	_XMLstream.close();
 }
@@ -137,10 +138,17 @@ void SceneManager::SaveFile()
 	pugi::xml_node root = doc.append_child("Scene");
 	//給節點增加屬性，並賦值
 	root.append_attribute("name") = "test";
+
+	//*************************************************
+	// Save Camera
+	//*************************************************
+	if (_editorCamera.enabled)
+	{
+		_editorCamera.SaveFile(&root);
+	}
 	//*************************************************
 	// Save Objects 
 	//*************************************************
-
 	int component_size = 0;
 	for (int i = 0; i < Objects.size(); i++)
 	{
@@ -181,13 +189,6 @@ void SceneManager::SaveFile()
 	}
 	root.append_attribute("Objects_Size") = Objects.size();
 
-	//*************************************************
-	// Save Camera
-	//*************************************************
-	if (_editorCamera.enabled)
-	{
-		_editorCamera.SaveFile(&root);
-	}
 
 
 
@@ -276,7 +277,6 @@ void SceneManager::InitDrawPipline()
 	{
 		vec_ShaderProgram[i]->use();
 		
-		vec_ShaderProgram[i]->setVec3("viewPos", _editorCamera.transform.position);
 		vec_ShaderProgram[i]->setFloat("far_plane", far_plane);
 		vec_ShaderProgram[i]->setMat4("projection", _editorCamera.Projection);
 	}
@@ -458,63 +458,63 @@ void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 {
 	if (vec_ObjectsToRender_Instancing.empty()) return;
-	lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->position : glm::vec3(0, 5, 0);
+	
 	float far_plane = 25.0f;
-	bool Use_Light = false;
+	bool Use_Light = true;
 	if (_drawShadow)
 	{
+		if (vec_ShaderProgram[2] == NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
 		vec_ShaderProgram[2]->use();
 		float near_plane = 1.0f;
 		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)   //模型種類的數量
 		{
 			// Draw Shadow
-			//if (!vec_ObjectsToRender[y]->_meshrender->_visable) continue;
-			if (vec_ShaderProgram[2] == NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
-
-
 			glm::mat4 shadowProj, lightView;
-			glm::mat4 lightSpaceMatrix;
-			shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
-			std::vector<glm::mat4> shadowTransforms;
-			if (SceneManager::vec_DirectionlLight.size() > 0)  //目前只有Directional Light有效果
+			glm::mat4 lightSpaceMatrix = glm::mat4(1.0f) ;
+			lightPos = glm::vec3(0.0f);
+			if (!vec_DirectionlLight.empty())
 			{
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+				far_plane = 7.5f;
+				shadowProj = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+				lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+				lightSpaceMatrix = shadowProj * lightView;
 			}
-			lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-			lightSpaceMatrix = shadowProj * lightView;    //這行應該跟Directional light 有關
-			// render scene from light's point of view
-			for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
-				vec_ShaderProgram[2]->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-			vec_ShaderProgram[2]->use();
-			// 共通
-			vec_ShaderProgram[2]->setMat4("projection", _editorCamera.Projection);
-			vec_ShaderProgram[2]->setMat4("view", _editorCamera.GetViewMatrix());
-			
+
+			if (!vec_PointLight.empty())                                                             要結合點光源以及方向光源的陰影的話需要分別渲染陰影貼圖
+			{
+
+				far_plane = 25.0f;
+				lightPos = vec_PointLight[0]->_actor->transform->position;  //目前只有第一個點光源有效
+				shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane);
+				std::vector<glm::mat4> shadowTransforms;
+				if (SceneManager::vec_PointLight.size() > 0)
+				{
+					shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+					shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
+					shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
+					shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
+					shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
+					shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+				}
+				// render scene from light's point of view
+				for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
+					vec_ShaderProgram[2]->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+			}
 			///Shadow
 			vec_ShaderProgram[2]->setFloat("far_plane", far_plane);
-			vec_ShaderProgram[2]->setVec3("viewPos", _editorCamera.transform.position);
 			vec_ShaderProgram[2]->setVec3("lightPos", lightPos);
-			// 共通
-			/// Draw Pipeline
+			vec_ShaderProgram[2]->setMat4("lightSpaceMatrix", lightSpaceMatrix);
 
+			/// Draw Pipeline
 			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
 			{
 				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
-
-
 				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
-				glBindVertexArray(0);
-				glActiveTexture(GL_TEXTURE0);
+				glBindVertexArray(0);	
 			}
-
-
 		}
+		return;
 	}
 	else
 	{
@@ -538,8 +538,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 			// Light Setting
 			vec_ShaderProgram[Shader_index]->setFloat("material.shininess", 32.0f);
 			if(Use_Light)
-			{
-				
+			{			
 				//Directional Light
 				for (int i = 0; i < Light_Length; i++)
 				{
