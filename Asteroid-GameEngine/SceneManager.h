@@ -32,7 +32,7 @@ struct ModelLoadStruct
 		_model = _mod;
 	}
 };
-enum class RenderShadowType { Normal, DiectionalLight, PointLight };
+enum class RenderShadowType { Normal, DirectionalLight, PointLight };
 
 
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作

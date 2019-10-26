@@ -44,6 +44,7 @@ public:
 		_DebugShader->setVec3("model", model);
 		_DebugShader->setMat4("view", _editorCamera.GetViewMatrix());
 		_DebugShader->setMat4("projection", _editorCamera.Projection);
+		_DebugShader->setVec3("Color", glm::vec3(1,1,1));
 		// Vertex data
 		GLfloat points[12];
 

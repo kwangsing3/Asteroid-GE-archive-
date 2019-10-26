@@ -96,7 +96,7 @@ int main()
 	// ------------------------------------
 	
 
-	/*unsigned int AxisVAO, AxisVBO;
+	unsigned int AxisVAO, AxisVBO;
 	//  座標的點數資料
 	float coordinate[] = {
 		// positions         // colors
@@ -159,11 +159,11 @@ int main()
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);*/
+	glBindVertexArray(0);
 
 	//---------------------------------------
 	//記得拿掉
-	//6_MainWorld->_SceneManager.OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
+	_MainWorld->_SceneManager.OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
 	
 
 	
@@ -195,7 +195,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		/*_MainWorld->_SceneManager.CheckReloadShader(); //檢查是否實時重載Shader;
+		_MainWorld->_SceneManager.CheckReloadShader(); //檢查是否實時重載Shader;
 		//Draw Croodinate  基本座標(白)
 		{
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->use();
@@ -212,7 +212,7 @@ int main()
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setVec3("Color",0.4f,0.4f,0.4f);
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
-		}*/
+		}
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

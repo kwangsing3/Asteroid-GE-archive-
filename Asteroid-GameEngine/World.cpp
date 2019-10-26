@@ -155,6 +155,7 @@ void World::CreateDepthMap()
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 
+	glGenFramebuffers(1, &depthMapFBO_DirLight);
 	// Directional Light Depth Texture
 	glGenTextures(1, &depthTexture_DirLight);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
@@ -170,6 +171,7 @@ void World::CreateDepthMap()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture_DirLight, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -206,7 +208,7 @@ void World::UpdateFrame()
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	_SceneManager.DrawScene(RenderShadowType::DiectionalLight);   
+	_SceneManager.DrawScene(RenderShadowType::DirectionalLight);   
 
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -217,17 +219,17 @@ void World::UpdateFrame()
 	glCullFace(GL_BACK);
 	// Draw Pipeline
 	glViewport(0, 0, _Width, _Height);
-	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 	
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 
-	this->m_dynamicsWorld->debugDrawWorld();
+	this->m_dynamicsWorld->debugDrawWorld();           /*  */
 
 	_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
+	//_SceneManager.DrawScene(false);
 
-	//this->dynamicsWorld->debugDrawWorld();
 }
 

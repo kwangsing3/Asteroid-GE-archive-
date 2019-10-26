@@ -362,24 +362,26 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 	switch (_RType)
 	{
 	case RenderShadowType::Normal:
-		_CurrentShader = vec_ShaderProgram[4];
+		_CurrentShader = vec_ShaderProgram[0];
 
 
 		break;
-	case RenderShadowType::DiectionalLight:
-		_CurrentShader = vec_ShaderProgram[3];
+	case RenderShadowType::DirectionalLight:
+		_CurrentShader = vec_ShaderProgram[0];
 
 
 
 
 		break;
 	case RenderShadowType::PointLight:
-		_CurrentShader = vec_ShaderProgram[2];
+		_CurrentShader = vec_ShaderProgram[0];
 
 
 
 		break;
 	default:
+		AGE_PRINTCONSLE("Passing unknown RenderType");
+		AGE_ASSERT("false");
 		break;
 	}
 
