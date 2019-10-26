@@ -120,7 +120,7 @@ void Meshrender::CreateMouseCollision()
 }
 void Meshrender::UpdateCollision()
 {
-	SceneManager::NeedInitedDraw = true;
+	
 	if (this->body == NULL) return;
 
 	if (!_MainWorld->_PlayMode)
@@ -144,7 +144,6 @@ void Meshrender::UpdateCollision()
 void Meshrender::SetVisable(bool _bool)
 {
 	this->_visable = _bool;
-	SceneManager::UpdateRenderPipeline(this);
 }
 void Meshrender::ReSetCollisionFlag()
 {

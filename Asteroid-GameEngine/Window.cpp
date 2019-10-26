@@ -181,7 +181,7 @@ void WindowUI::PasteEvent()
 	if (_MainWorld->_piv != NULL) _MainWorld->_piv->_lowwerActor.clear();
 	for (int i = 0; i < copy_SelectObject_List.size(); i++)
 	{
-		SelectObject* _ns = new SelectObject(ADD_Component::Copy_Actor(copy_SelectObject_List[i]->_actor));
+		SelectObject* _ns = new SelectObject(_MainWorld->_SceneManager._ADDManager->Copy_Actor(copy_SelectObject_List[i]->_actor));
 		_ns->Is_selected = true;
 		SceneObject_List.push_back(_ns);
 		cur_SelectObject_List.push_back(_ns);
@@ -251,7 +251,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 					_sel->_actor->meshrender->ReSetCollisionFlag();
 				}
 				static int _curco = 0;
-				if (ImGui::Button("Reload Shader"))  SceneManager::NeedReloadShader = true;
+				if (ImGui::Button("Reload Shader"))   _MainWorld->_SceneManager.NeedReloadShader = true;
 				
 				if (ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable))
 				{
@@ -299,14 +299,14 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				return;
 			}
 			//------------------------------------------------------------------------------------------------這裡根據物件太多可能會導致性能瓶頸  應該可以優化
-			if (SceneManager::Objects.size() > 0)
+			if (_MainWorld->_SceneManager.Objects.size() > 0)
 			{
-				if (SceneManager::Objects.size() != SceneObject_List.size())
+				if (_MainWorld->_SceneManager.Objects.size() != SceneObject_List.size())
 				{
 					SceneObject_List.clear();
-					for (int n = 0; n < SceneManager::Objects.size(); n++)
+					for (int n = 0; n < _MainWorld->_SceneManager.Objects.size(); n++)
 					{
-						SceneObject_List.push_back(new SelectObject(SceneManager::Objects[n]));
+						SceneObject_List.push_back(new SelectObject(_MainWorld->_SceneManager.Objects[n]));
 					}
 				}
 
@@ -314,7 +314,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				for (int n = 0; n < SceneObject_List.size(); n++)
 				{
 					char * buf1 = new char[64]();
-					std::string _newname = SceneManager::Objects[n]->transform->name + std::to_string(n);
+					std::string _newname = _MainWorld->_SceneManager.Objects[n]->transform->name + std::to_string(n);
 					const char* newchar = _newname.c_str();
 					if (ImGui::Selectable(newchar, SceneObject_List[n]->Is_selected))
 					{
@@ -357,38 +357,38 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 
 			if (ImGui::Button("新增一個空物件"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
 				_ac->transform->name = (char*) "New Actor";
 			}
 			if (ImGui::Button("Create a cube"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac,Shape::Cube);
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac,Shape::Cube);
 				_ac->transform->name = (char*) "New Cube";
 			}
 			if (ImGui::Button("Create a sphere"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac,Shape::Sphere);
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac,Shape::Sphere);
 				_ac->transform->name = (char*) "New Sphere";
 			}
 			if (ImGui::Button("Create a planet"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac, "ExampleModel/planet.obj");
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/planet.obj");
 				_ac->transform->name = (char*) "New Plantet";
 			}
 
 			if (ImGui::Button("Create a Directional light"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_DirectionalLight(_ac);
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_DirectionalLight(_ac);
 				_ac->transform->name = (char*) "New DirectionalLight";
 			}
 			if (ImGui::Button("Create a PointLight"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_PointLight(_ac);
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_PointLight(_ac);
 				_ac->transform->name = (char*) "New PointLight";
 			}
 			if (ImGui::Button("Create 100 Asteroids"))
@@ -403,8 +403,8 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				
 				for (unsigned int i = 0; i < amount; i++)
 				{
-					Actor* _ac = ADD_Component::Add_Actor();
-					ADD_Component::Add_Meshrender(_ac, "ExampleModel/rock.obj");
+					Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+					_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/rock.obj");
 					_ac->transform->name = (char*) "New Asteroid";
 					//glm::mat4 model = glm::mat4(1.0f);
 					// 1. translation: displace along circle with 'radius' in range [-offset, offset]
@@ -434,14 +434,14 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			
 			if (ImGui::Button("Create a doll"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac, "ExampleModel/model.dae");
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/model.dae");
 				_ac->transform->name = (char*) "New doll";
 			}
 			if (ImGui::Button("Create a bot"))
 			{
-				Actor* _ac = ADD_Component::Add_Actor();
-				ADD_Component::Add_Meshrender(_ac, "ExampleModel/left_shimmy.fbx");
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/left_shimmy.fbx");
 				_ac->transform->name = (char*) "New dragon";
 			}
 			_SceneX = ImGui::GetWindowWidth();
@@ -586,17 +586,17 @@ static void MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Add Component"))
 		{
-			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor, Shape::Cube); }
+			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) _MainWorld->_SceneManager._ADDManager->Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor, Shape::Cube); }
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_DirectionalLight(WindowUI::cur_SelectObject_List[0]->_actor); }
-			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) ADD_Component::Add_PointLight(WindowUI::cur_SelectObject_List[0]->_actor); }
+			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL)  _MainWorld->_SceneManager._ADDManager->Add_DirectionalLight(WindowUI::cur_SelectObject_List[0]->_actor); }
+			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL)  _MainWorld->_SceneManager._ADDManager->Add_PointLight(WindowUI::cur_SelectObject_List[0]->_actor); }
 			if (ImGui::MenuItem("Add TestComponent")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add BoxCollision")) 
 			{ 
 				if (WindowUI::cur_SelectObject_List[0] != NULL&&WindowUI::cur_SelectObject_List[0]->_actor != NULL)
-					ADD_Component::Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);
+					_MainWorld->_SceneManager._ADDManager->Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);
 					
 			}
 			if (ImGui::MenuItem("Add BoxCollision2D")) {}
@@ -630,7 +630,7 @@ static void MainMenuBar()
 		{
 			for (int i = 0 ; i < 10; i++)
 			{
-				if (ImGui::MenuItem(std::to_string(i).c_str())) { SceneManager::OpenFile(i); }
+				if (ImGui::MenuItem(std::to_string(i).c_str())) { _MainWorld->_SceneManager.OpenFile(i); }
 			}
 			ImGui::EndMenu();
 		}
@@ -640,10 +640,10 @@ static void MainMenuBar()
 static void Menu_File()
 {
 	ImGui::MenuItem("(dummy menu)", NULL, false, false);
-	if (ImGui::MenuItem("New")) { SceneManager::NewScene(); }
-	if (ImGui::MenuItem("Open", "Ctrl+O")) { SceneManager::OpenFile(); }
+	if (ImGui::MenuItem("New")) { _MainWorld->_SceneManager.NewScene(); }
+	if (ImGui::MenuItem("Open", "Ctrl+O")) { _MainWorld->_SceneManager.OpenFile(); }
 
-	if (ImGui::MenuItem("Save", "Ctrl+S")) { SceneManager::SaveFile(); }
+	if (ImGui::MenuItem("Save", "Ctrl+S")) { _MainWorld->_SceneManager.SaveFile(); }
 	if (ImGui::MenuItem("Save As..")) {}
 	ImGui::Separator();
 	if (ImGui::BeginMenu("Options"))
@@ -721,7 +721,7 @@ static void ShowSimpleOverlay(bool* p_open)
 
 			ImGui::Text(WindowUI::_mode ? "Game Mode: 3D" : "Game Mode: 2D");
 			ImGui::Text(Window::DeBug_Mode ? "Debug Mode: Active" : "Debug Mode: inValid");
-			ImGui::Text(SceneManager::_FilePAth.c_str());
+			ImGui::Text(_MainWorld->_SceneManager._FilePAth.c_str());
 		}
 		ImGui::End();
 

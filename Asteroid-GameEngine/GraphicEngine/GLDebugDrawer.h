@@ -15,7 +15,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SceneManager.h>
 #include <LinearMath/btIDebugDraw.h>
+#include <shader_m.h>
+#include <Units/Camera.h>
 
+extern Camera _editorCamera;
 // Helper class; draws the world as seen by Bullet.
 // This is very handy to see it Bullet's world matches yours
 // How to use this class :
@@ -28,13 +31,19 @@
 
 class GLDebugDrawer : public btIDebugDraw {
 public:
-
-	GLuint VBO, VAO;
+	GLuint VBO=0, VAO=0;
+	Shader* _DebugShader;
+	GLDebugDrawer()
+	{
+		_DebugShader = new Shader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs");
+	}
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
-		SceneManager::vec_ShaderProgram[0]->use();
+		_DebugShader->use();
 		glm::vec3 model(1.0f);
-		SceneManager::vec_ShaderProgram[0]->setVec3("model", model);
+		_DebugShader->setVec3("model", model);
+		_DebugShader->setMat4("view", _editorCamera.GetViewMatrix());
+		_DebugShader->setMat4("projection", _editorCamera.Projection);
 		// Vertex data
 		GLfloat points[12];
 
@@ -77,5 +86,5 @@ public:
 		m = p;
 	}
 	int getDebugMode(void) const { return 3; }
-	int m;
+	int m=0;
 };

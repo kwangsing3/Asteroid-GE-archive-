@@ -176,6 +176,7 @@
     <ClCompile Include="..\src\glad.c" />
     <ClCompile Include="ADD_Component.cpp" />
     <ClCompile Include="AGE_Model.cpp" />
+    <ClCompile Include="AGE_SkeletalMesh.cpp" />
     <ClCompile Include="Asteroid-GameEngine.cpp" />
     <ClCompile Include="Component\BoxCollision.cpp" />
     <ClCompile Include="Component\Component.cpp" />
@@ -194,7 +195,6 @@
     <ClCompile Include="Physics Engine\clew\clew.c" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SkeletalMesh.cpp" />
     <ClCompile Include="Units\Actor.cpp" />
     <ClCompile Include="Units\Camera.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -205,7 +205,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ADD_Component.h" />
+    <ClInclude Include="AGE_Assert.h" />
     <ClInclude Include="AGE_Model.h" />
+    <ClInclude Include="AGE_SkeletalMesh.h" />
     <ClInclude Include="Animation\SkeletalAnimation.h" />
     <ClInclude Include="assimp\ai_assert.h" />
     <ClInclude Include="assimp\anim.h" />
@@ -282,7 +284,6 @@
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="shader_m.h" />
-    <ClInclude Include="SkeletalMesh.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Units\Actor.h" />
     <ClInclude Include="Units\Camera.h" />

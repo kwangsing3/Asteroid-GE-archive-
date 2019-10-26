@@ -13,9 +13,6 @@
 #include <World.h>
 #include <Raycast.h>
 
-#include <SceneManager.h>   //要記得刪掉 Debug用
-
-#include <ADD_Component.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
@@ -57,8 +54,9 @@ int main()
 	Window *_mainWindow = new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
 	_mainWindow->DeBug_Mode = true;
 
-	SceneManager _sceneManager;
+	
 	_MainWorld = new World();
+
 	//UI 初始化-------------
 	{
 		IMGUI_CHECKVERSION();
@@ -92,11 +90,12 @@ int main()
 	glEnable(GL_MULTISAMPLE);
 	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glEnable(GL_CULL_FACE);               //先把反面剃除拿掉
+	glEnable(GL_CULL_FACE);              
 	//glEnable(GL_FRAMEBUFFER_SRGB); //gamma校正
 	// build and compile our shader zprogram
 	// ------------------------------------
 	
+
 	unsigned int AxisVAO, AxisVBO;
 	//  座標的點數資料
 	float coordinate[] = {
@@ -164,24 +163,9 @@ int main()
 
 	//---------------------------------------
 	//記得拿掉
-	SceneManager::OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
+	_MainWorld->_SceneManager.OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
 	
-	/*Meshrender* _M = ADD_Component::Add_Meshrender(ADD_Component::Add_Actor(), Shape::Cube);
-	_M->_actor->transform->name = "Floor";
-	ADD_Component::Add_BoxCollision(_M->_actor, 0);
 
-	for (int k = 0; k < 5; k++)
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			for (int j = 0; j < 5; j++)
-			{
-				Meshrender* _newM = ADD_Component::Add_Meshrender(ADD_Component::Add_Actor(), Shape::Cube);
-				_newM->_actor->transform->Translate(glm::vec3( k*2, i*2, j*2));
-				ADD_Component::Add_BoxCollision(_newM->_actor,1);
-			}
-		}
-	}*/
 	
 	
 	//記得拿掉
@@ -211,21 +195,21 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
-		_sceneManager.CheckReloadShader(); //檢查是否實時重載Shader;
+		_MainWorld->_SceneManager.CheckReloadShader(); //檢查是否實時重載Shader;
 		//Draw Croodinate  基本座標(白)
 		{
-			SceneManager::vec_ShaderProgram[0]->use();
-			SceneManager::vec_ShaderProgram[0]->setMat4("projection", _editorCamera.Projection);
+			_MainWorld->_SceneManager.vec_ShaderProgram[0]->use();
+			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setMat4("projection", _editorCamera.Projection);
 			glm::mat4 view = _editorCamera.GetViewMatrix();
-			SceneManager::vec_ShaderProgram[0]->setMat4("view", view);
+			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setMat4("view", view);
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(0, 0, 0));
-			if (WindowUI::_mode == Mode_2D)
-				model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-			else
+			//if (_MainWorld->_SceneManager._mode == Mode_2D)
+			//	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+			//else
 				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
-			SceneManager::vec_ShaderProgram[0]->setMat4("model", model);
-			SceneManager::vec_ShaderProgram[0]->setVec3("Color",0.4f,0.4f,0.4f);
+			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setMat4("model", model);
+			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setVec3("Color",0.4f,0.4f,0.4f);
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
 		}

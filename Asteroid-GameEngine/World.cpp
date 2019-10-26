@@ -13,7 +13,7 @@ void _Pivot::CreateMouseCollision()
 	_needdebug = true;
 	if (this->_visable)
 	{
-		if (colshape.size() < 3)
+		if (colshape.size() > 3)
 		{
 			colshape.clear();
 			btCollisionShape* _shap;
@@ -185,7 +185,7 @@ void World::UpdateFrame()
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	SceneManager::DrawScene(true);   //True 代表在渲染陰影
+	_SceneManager.DrawScene(true);   //True 代表在渲染陰影
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -193,11 +193,12 @@ void World::UpdateFrame()
 	glViewport(0, 0, _Width, _Height);
 	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 	
-
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    //這個綁陰影的動作很醜，還能夠優化*/
+
 	this->m_dynamicsWorld->debugDrawWorld();
-	SceneManager::DrawScene(false, depthCubemap);  //False 代表沒有在渲染陰影
+
+	_SceneManager.DrawScene(false, depthCubemap);  //False 代表沒有在渲染陰影
 
 	//this->dynamicsWorld->debugDrawWorld();
 }

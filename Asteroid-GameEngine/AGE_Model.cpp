@@ -20,9 +20,9 @@ void AGE_Model::loadModel(std::string const& path)
 	processNode(_aiScene->mRootNode, _aiScene);
 
 	//Make a new Model list
-	{
+	/*{
 		SceneManager::ModelList.push_back(new ModelLoadStruct(path, this->_meshes));
-	}
+	}*/
 
 }
 Mesh* AGE_Model::processMesh(aiMesh* mesh, const aiScene* scene)
@@ -197,6 +197,7 @@ void AGE_Model::processNode(aiNode* node, const aiScene* scene)
 		processNode(node->mChildren[i], scene);
 	}
 
+	HasBone = scene->HasAnimations();
 }
 unsigned int TextureFromFile(const char* path, const std::string& directory)
 {

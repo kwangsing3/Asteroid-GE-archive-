@@ -10,7 +10,7 @@
 #include <Units/Actor.h>
 #include <World.h>
 #include <Window.h>
-#include <ADD_Component.h>
+
 #include <AGE_Mesh.h>
 
 std::string _Examples_List[5] = 
@@ -31,9 +31,10 @@ float far_plane = 25.0f;
 glm::mat4 shadowProj, lightView;
 glm::mat4 lightSpaceMatrix;
 glm::vec3 lightPos;
+extern World* _MainWorld;
 
 
-std::vector<Actor*> SceneManager::Objects;
+/*std::vector<Actor*> SceneManager::Objects;
 std::vector<Shader*> SceneManager::vec_ShaderProgram;
 std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
 std::vector<PointLight*> SceneManager::vec_PointLight;
@@ -43,12 +44,10 @@ std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 std::vector<ModelLoadStruct*> SceneManager::ModelList;
 
 //glm::vec3 SceneManager::lightPos;
-
 bool SceneManager::NeedReloadShader = false;
 bool SceneManager::NeedInitedDraw = true;
-extern World* _MainWorld;
 
-std::string SceneManager::_FilePAth;
+std::string SceneManager::_FilePAth;*/
 void SceneManager::OpenFile(int _index) 
 {
 	if (_index > _Examples_List->size() - 1 || _index == -1) return;
@@ -82,7 +81,7 @@ void SceneManager::OpenFile()
 	for (pugi::xml_node tool = _root.first_child().next_sibling(); tool; tool = tool.next_sibling())
 	{
 
-		Actor* _Actor = ADD_Component::Add_Actor();
+		Actor* _Actor = _ADDManager->Add_Actor();
 
 		// name
 		std::string* _char = new std::string();
@@ -98,25 +97,25 @@ void SceneManager::OpenFile()
 
 		if (tool.attribute("_Dirlight").as_int())
 		{
-			ADD_Component::Add_DirectionalLight(_Actor)->OpenFile(&tool);
+			_ADDManager->Add_DirectionalLight(_Actor)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("_PointLight").as_int())                                 //光線類的OpenFile詳細數值 還沒有製作
 		{
-			ADD_Component::Add_PointLight(_Actor)->OpenFile(&tool);
+			_ADDManager->Add_PointLight(_Actor)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("meshrender").as_int())
 		{
 			if (tool.child("MeshRender").attribute("Shape").as_int() == 5)
-				ADD_Component::Add_Meshrender(_Actor, tool.child("MeshRender").attribute("_path").as_string())->OpenFile(&tool);
+				_ADDManager->Add_Meshrender(_Actor, tool.child("MeshRender").attribute("_path").as_string())->OpenFile(&tool);
 			else
-				ADD_Component::Add_Meshrender(_Actor, Shape::Cube)->OpenFile(&tool);
+				_ADDManager->Add_Meshrender(_Actor, Shape::Cube)->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
 		{
-			ADD_Component::Add_BoxCollision(_Actor)->OpenFile(&tool);    //調試用
+			_ADDManager->Add_BoxCollision(_Actor)->OpenFile(&tool);    //調試用
 			_check++;
 		}
 		if (_check != _componentSize) { std::cout << _char << ": Component_size error" << std::endl; }
@@ -356,6 +355,21 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 	Draw_Normal(_drawShadow, _dp);
 }
 
+void SceneManager::DrawScene(RenderShadowType _RType)
+{
+	switch (_RType)
+	{
+	case RenderShadowType::Normal:
+		break;
+	case RenderShadowType::DiectionalLight:
+		break;
+	case RenderShadowType::PointLight:
+		break;
+	default:
+		break;
+	}
+}
+
 Shader* _shader = 0;
 void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 {
@@ -480,7 +494,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 				lightSpaceMatrix = shadowProj * lightView;
 			}
 
-			if (!vec_PointLight.empty())                                                             要結合點光源以及方向光源的陰影的話需要分別渲染陰影貼圖
+			if (!vec_PointLight.empty())                                                             
 			{
 
 				far_plane = 25.0f;

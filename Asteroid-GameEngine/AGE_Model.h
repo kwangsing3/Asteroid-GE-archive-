@@ -5,20 +5,21 @@
 #include <assimp/Importer.hpp>
 
 #include <vector>
-#include <SceneManager.h>
+
 #include <AGE_Mesh.h>
-#include <SkeletalMesh.h>
-
-enum struct Shape{ Plane, Cube, Sphere, Capsule, Cylinder, _Model, DEBUG };
-
-class AGE_Model    //
+#include <AGE_SkeletalMesh.h>
+enum struct Shape { Plane, Cube, Sphere, Capsule, Cylinder, _Model, DEBUG };
+//**********************************
+// 這裡的Shape 在ADD_Component裡定義
+//**********************************
+class AGE_Model    
 {
 protected:
 	const aiScene* _aiScene;
 	Assimp::Importer importer;
 private:
 	std::string directory;
-	void CreateShape(Shape _sha)
+	/*void CreateShape(Shape _sha)
 	{
 		this->_shape = _sha;
 		std::string DefaultShapePath;
@@ -43,8 +44,8 @@ private:
 			return;
 			break;
 		}
-		this->_ModelPath = DefaultShapePath;
-		for (int i = 0; i < SceneManager::ModelList.size(); i++)
+		/*this->_ModelPath = DefaultShapePath;                 //要確認是否是載入過的模型交給ADD_Component 解決
+		for (int i = 0; i < SceneManager::ModelList.size(); i++)                                               
 		{
 			if (SceneManager::ModelList[i]->path == DefaultShapePath)
 			{
@@ -53,19 +54,19 @@ private:
 			}
 		}
 		loadModel(DefaultShapePath);
-	}
+	}*/
 	void CreateShape(std::string _path)
 	{
 		this->_shape = Shape::_Model;
 		this->_ModelPath = _path;
-		for (int i = 0; i < SceneManager::ModelList.size(); i++)
+		/*for (int i = 0; i < SceneManager::ModelList.size(); i++)
 		{
 			if (SceneManager::ModelList[i]->path == _path)
 			{
 				this->_meshes = SceneManager::ModelList[i]->_meshes;
 				return;
 			}
-		}
+		}*/
 		loadModel(_path);
 	}
 	void loadModel(std::string const& path);
@@ -80,9 +81,10 @@ public:
 	Shape _shape = Shape::DEBUG;
 	std::vector<Mesh*> _meshes;
 	std::vector<Texture> textures_loaded;
+	bool HasBone = false;
 	std::string _ModelPath;
 	AGE_Model() {};
-	AGE_Model(Shape _sha) { CreateShape(_sha); };
+/*	AGE_Model(Shape _sha) { CreateShape(_sha); };*/
 	AGE_Model(std::string _path) { CreateShape(_path); };
 
 };

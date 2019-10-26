@@ -83,8 +83,8 @@ public:
 		glBufferData(GL_ARRAY_BUFFER, sizeof(PIVOTVERTICES), PIVOTVERTICES, GL_STATIC_DRAW);
 		glBindVertexArray(0);
 
-		SceneManager::vec_ShaderProgram[0]->use();
-		SceneManager::vec_ShaderProgram[0]->setInt("material.diffuse", 0);
+		// vec_ShaderProgram[0]->use();
+		//SceneManager::vec_ShaderProgram[0]->setInt("material.diffuse", 0);
 		//Worldvectices_Debug = Spacevectices_Debug = Vectices_Debug;
 		
 
@@ -286,18 +286,20 @@ struct _PhysicsStruct
 };
 
 
-struct World : public CommonRigidBodyBase
+
+
+
+struct World : public CommonRigidBodyBase   //是一種Scene
 {
 	unsigned int depthMapFBO;
 	unsigned int depthCubemap;
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-	
+	GLDebugDrawer* _GLdebug;
 	World(): CommonRigidBodyBase()
 	{
 		_PlayMode = false;
 		initPhysics();
-		
-		
+
 		// ----------------------- Shadow -----------------------
 		CreateDepthMap();
 	}
@@ -305,6 +307,9 @@ public:
 	 bool InitPhysics = true;
 	 bool _PlayMode;
 	 _Pivot* _piv  = new _Pivot(new Actor());
+
+	 SceneManager _SceneManager;
+
 	virtual ~World()
 	{
 	

@@ -21,20 +21,26 @@ public:
 	AGE_Model* _model;
 	glm::vec3 VertexColor= glm::vec3(glm::linearRand(0.1f,1.0f) , glm::linearRand(0.3f, 1.0f), glm::linearRand(0.6f, 1.0f)	);
 
-
-	Meshrender(Actor* _a, Shape _shape)
+	Meshrender(Actor* _a)
+	{
+		this->_actor = _a;
+		this->enabled = true;	
+		
+	}
+	/*Meshrender(Actor* _a, Shape _shape)
 	{
 		this->_actor = _a;
 		this->enabled = true;
 		_model = new AGE_Model(_shape);
 		CreateMouseCollision();
-	}
+	}*/
 	Meshrender(Actor* _a, std::string _path)
 	{
 		this->_actor = _a;
 		this->enabled = true;
 		_model = new AGE_Model(_path);
 		CreateMouseCollision();
+
 	}
 	void SaveFile( pugi::xml_node* _node) override;
 	void OpenFile( pugi::xml_node* _node) override;
