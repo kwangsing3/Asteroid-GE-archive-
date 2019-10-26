@@ -5,7 +5,7 @@
 #include <GraphicEngine/GLDebugDrawer.h>
 #include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
 #include <Units/Camera.h>
-
+#include <AGE_Assert.h>
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -291,10 +291,13 @@ struct _PhysicsStruct
 
 struct World : public CommonRigidBodyBase   //是一種Scene
 {
-	unsigned int depthMapFBO;
-	unsigned int depthCubemap;
+	unsigned int depthMapFBO_PoLight;
+	unsigned int depthCubemap=0;
+	unsigned int depthMapFBO_DirLight = 0;
+	unsigned int depthTexture_DirLight = 0;
+
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-	GLDebugDrawer* _GLdebug;
+
 	World(): CommonRigidBodyBase()
 	{
 		_PlayMode = false;

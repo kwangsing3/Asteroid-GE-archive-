@@ -46,10 +46,10 @@ void Meshrender::Copy(Actor* _actor)
 	
 	
 }
-void Meshrender::Draw(Shader* _shader, bool _renderShadow)
+void Meshrender::Draw(Shader* _shader)
 {
 	if (!this->_visable)  return;
-	if (_shader==NULL) { std::cout << "Meshrender Shader Pass failed" << std::endl; return; }
+	if (_shader == NULL) { AGE_PRINTCONSLE("Meshrender Shader Pass failed"); AGE_ASSERT(false); }
 
 	//_shader->use();
 	//_shader.setVec3("viewPos", _editorCamera.transform.position);

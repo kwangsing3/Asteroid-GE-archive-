@@ -13,8 +13,7 @@ void _Pivot::CreateMouseCollision()
 	_needdebug = true;
 	if (this->_visable)
 	{
-		if (colshape.size() > 3)
-		{
+		
 			colshape.clear();
 			btCollisionShape* _shap;
 			_shap = new btCapsuleShapeX(0.2f, 0.55f*(1+ this->_actor->transform->scale.x));
@@ -26,7 +25,7 @@ void _Pivot::CreateMouseCollision()
 			_shap = new btCapsuleShapeZ(0.2f, 0.55f*(1 + this->_actor->transform->scale.x));
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
-		}
+		
 
 		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
 		btQuaternion quat;
@@ -35,6 +34,7 @@ void _Pivot::CreateMouseCollision()
 		startTransform[0].setOrigin(btVector3(this->_actor->transform->position.x + .5f, this->_actor->transform->position.y, this->_actor->transform->position.z));
 		startTransform[1].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y + .5f, this->_actor->transform->position.z));
 		startTransform[2].setOrigin(btVector3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z + .5f));
+
 		for (int i = 0; i < 3; i++)
 		{
 			btVector3 localInertia(0, 0, 0);
@@ -138,9 +138,8 @@ void World::depose_init_PhysicsProgress()
 }
 void World::CreateDepthMap()
 {
-	glGenFramebuffers(1, &depthMapFBO);
-	// create depth texture
-
+	// Point Light Depth Cubemap Texture
+	glGenFramebuffers(1, &depthMapFBO_PoLight);
 	glGenTextures(1, &depthCubemap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 	for (unsigned int i = 0; i < 6; ++i)
@@ -150,12 +149,34 @@ void World::CreateDepthMap()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	// attach depth texture as FBO's depth buffer                                            // Shadow buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	// attach depth texture as FBO's depth buffer                                            
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
+
+	// Directional Light Depth Texture
+	glGenTextures(1, &depthTexture_DirLight);
+	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	// attach depth texture as FBO's depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture_DirLight, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+
+
+
+
 }
 void World::UpdateFrame()
 {
@@ -182,10 +203,15 @@ void World::UpdateFrame()
 	glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	_SceneManager.DrawScene(true);   //True 代表在渲染陰影
+	_SceneManager.DrawScene(RenderShadowType::DiectionalLight);   
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	_SceneManager.DrawScene(RenderShadowType::PointLight);   
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
@@ -194,11 +220,13 @@ void World::UpdateFrame()
 	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 	
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    //這個綁陰影的動作很醜，還能夠優化*/
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 
 	this->m_dynamicsWorld->debugDrawWorld();
 
-	_SceneManager.DrawScene(false, depthCubemap);  //False 代表沒有在渲染陰影
+	_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
 
 	//this->dynamicsWorld->debugDrawWorld();
 }

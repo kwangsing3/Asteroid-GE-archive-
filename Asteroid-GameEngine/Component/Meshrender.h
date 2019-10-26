@@ -52,7 +52,7 @@ public:
 	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
 	void ReSetCollisionFlag();
-	void Draw(Shader* _shader, bool _renderShadow);
+	void Draw(Shader* _shader);
 private:
 
 	void CreateMouseCollision();

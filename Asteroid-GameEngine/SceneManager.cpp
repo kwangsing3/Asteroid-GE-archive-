@@ -355,19 +355,45 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 	Draw_Normal(_drawShadow, _dp);
 }
 
+
+Shader* _CurrentShader;
 void SceneManager::DrawScene(RenderShadowType _RType)
 {
 	switch (_RType)
 	{
 	case RenderShadowType::Normal:
+		_CurrentShader = vec_ShaderProgram[4];
+
+
 		break;
 	case RenderShadowType::DiectionalLight:
+		_CurrentShader = vec_ShaderProgram[3];
+
+
+
+
 		break;
 	case RenderShadowType::PointLight:
+		_CurrentShader = vec_ShaderProgram[2];
+
+
+
 		break;
 	default:
 		break;
 	}
+
+
+
+
+
+	for (int i = 0; i < vec_ObjectsToRender.size(); i++)
+	{
+		vec_ObjectsToRender[i]->Draw(_CurrentShader);
+	}
+
+
+
 }
 
 Shader* _shader = 0;
@@ -384,22 +410,7 @@ void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 		//目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
 
 	///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		shadowProj = glm::perspective(glm::radians(90.0f), (float)1024 / (float)1024, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
-		std::vector<glm::mat4> shadowTransforms;
-		if (SceneManager::vec_DirectionlLight.size() > 0)  //目前只有Directional Light有效果
-		{
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
-		}
-		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-		lightSpaceMatrix = shadowProj * lightView;    //這行應該跟Directional light 有關
-		// render scene from light's point of view
-		for (unsigned int i = 0; i < shadowTransforms.size(); ++i)
-			_shader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+		
 	}
 	else
 	{
@@ -464,10 +475,6 @@ void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 
 
 
-	for (int i = 0; i < vec_ObjectsToRender.size(); i++)
-	{
-		vec_ObjectsToRender[i]->Draw(vec_ShaderProgram[_drawShadow ? 2 : 4], _drawShadow);
-	}
 }
 void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
 {

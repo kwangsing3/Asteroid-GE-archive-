@@ -89,11 +89,11 @@ private:
 
 		/*0*/vec_ShaderProgram.push_back(new Shader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs"));
 		/*1*/vec_ShaderProgram.push_back(new Shader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs"));
-		/*2*/vec_ShaderProgram.push_back(new Shader("Shader/shadow_mapping_depth.vs", "Shader/shadow_mapping_depth.fs", "Shader/point_shadows_depth.gs"));
-		/*3*/vec_ShaderProgram.push_back(new Shader("Shader/shadow_mapping.vs", "Shader/shadow_mapping.fs"));
+		/*2*/vec_ShaderProgram.push_back(new Shader("Shader/shadow_depth_PoLight.vs", "Shader/shadow_depth_PoLight.fs", "Shader/point_shadows_depth.gs"));
+		/*3*/vec_ShaderProgram.push_back(new Shader("Shader/shadow_depth_DirLight.vs", "Shader/shadow_depth_DirLight.fs"));
 		/*4*/vec_ShaderProgram.push_back(new Shader("Shader/ModelShader.vs", "Shader/ModelShader.fs")); //目前的最主要Shader
 		/*5*/vec_ShaderProgram.push_back(new Shader("Shader/ModelShader_ins.vs", "Shader/ModelShader_ins.fs"));    //目前的最主要Shader instance
-		/*6*/vec_ShaderProgram.push_back(new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs"));    //目前的最主要Shader
+		/*6*/vec_ShaderProgram.push_back(new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs"));    
 
 		//  先暫時放這裡  影子相關
 		vec_ShaderProgram[4]->use();
