@@ -1,7 +1,7 @@
 ﻿#include <World.h>
 
 #include <Window.h>     //裡面有 #include <Camera.h>
-
+#include <GraphicEngine/imgui.h>
 
 
 
@@ -210,22 +210,23 @@ void World::UpdateFrame()
 
 	_SceneManager.DrawScene(RenderShadowType::DirectionalLight);   
 
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
+/*	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	_SceneManager.DrawScene(RenderShadowType::PointLight);   
+	_SceneManager.DrawScene(RenderShadowType::PointLight);   */
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
 	// Draw Pipeline
 	glViewport(0, 0, _Width, _Height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 	
+/*	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    */
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    
-	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 
+	ImGui::Image((void*)depthTexture_DirLight,ImVec2(300,300));
 	this->m_dynamicsWorld->debugDrawWorld();           /*  */
 
 	_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影

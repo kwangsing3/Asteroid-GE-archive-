@@ -26,7 +26,7 @@ void Mesh::Draw(Shader* shader)
 	//***************************************
 	for (unsigned int i = 0; i < this->_Textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+		glActiveTexture(GL_TEXTURE2 + i); // active proper texture unit before binding
 		// retrieve texture number (the N in diffuse_textureN)
 		
 		name = this->_Textures[i].type;

@@ -46,6 +46,7 @@ in VS_OUT {
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
+	vec4 FragPosLightSpace;
 } fs_in;
 vec3 gridSamplingDisk[20] = vec3[]
 (

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Scene name="test" Objects_Size="128">
-<CameraSetting Zoom="45" Yaw="-74.0999069" Pitch="-30.3000202">
+<Scene name="test" Objects_Size="129">
+<CameraSetting Zoom="45" Yaw="-87.1999359" Pitch="-4.40001774">
 <Transform>
-<Position x="-20.994976" y="35.4733734" z="77.3963013" />
+<Position x="-2.54391146" y="-2.63174105" z="57.6934509" />
 </Transform>
 </CameraSetting>
 <Objects name="Floor" meshrender="1" _BoxCollision="1" Component_size="2">
@@ -888,15 +888,15 @@
 <BoxCollision Mass="1" />
 </Objects>
 <Objects name="New DirectionalLight" _Dirlight="1" Component_size="1">
-<Position x="-3.25999999" y="-14.3599997" z="0" />
-<Rotation x="-54.4000015" y="-114.699997" z="0" />
+<Position x="9.31999969" y="13.3000002" z="12.7399998" />
+<Rotation x="20.8999996" y="28.2999992" z="21.5" />
 <Scale x="1" y="1" z="1" />
-<Ambient X="1" Y="1" Z="1" />
-<Diffuse X="0.400000006" Y="0.400000006" Z="0.400000006" />
-<Specular X="0.5" Y="0.5" Z="0.5" />
+<Ambient X="0.710784316" Y="0.710777223" Z="0.710777223" />
+<Diffuse X="0.84803921" Y="0.848030746" Z="0.848030746" />
+<Specular X="1" Y="0" Z="0" />
 </Objects>
 <Objects name="New PointLight" _PointLight="1" Component_size="1">
-<Position x="3.13000011" y="-13.29" z="-5.38000011" />
+<Position x="0" y="-31.0900002" z="0" />
 <Rotation x="0" y="0" z="0" />
 <Scale x="1" y="1" z="1" />
 <Ambient X="0.0500000007" Y="0.0500000007" Z="0.0500000007" />
@@ -905,5 +905,11 @@
 <Constant Constant="1" />
 <linear linear="0.0900000036" />
 <quadratic quadratic="0.0320000015" />
+</Objects>
+<Objects name="New doll" meshrender="1" Component_size="1">
+<Position x="0" y="-17.3099995" z="14.71" />
+<Rotation x="-97.4000015" y="-25" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.999989986" VertexColorY="1" VertexColorZ="1" />
 </Objects>
 </Scene>

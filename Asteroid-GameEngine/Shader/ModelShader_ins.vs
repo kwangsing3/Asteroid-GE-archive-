@@ -11,6 +11,7 @@ out VS_OUT {
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
+	vec4 FragPosLightSpace;
 } vs_out;
 
 uniform mat4 projection;
