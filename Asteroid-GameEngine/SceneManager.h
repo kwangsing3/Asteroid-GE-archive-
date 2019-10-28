@@ -72,7 +72,7 @@ public:
 	}
 	
 
-	void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
+	//void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
 	void DrawScene(RenderShadowType _RTypw);
 
 

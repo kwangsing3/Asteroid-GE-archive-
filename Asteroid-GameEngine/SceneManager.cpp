@@ -345,12 +345,7 @@ void SceneManager::InitDrawPipline()
 
 
 }
-void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
-{
-	if (NeedInitedDraw) InitDrawPipline();
-	Draw_Instancing(_drawShadow, _dp);
-	Draw_Normal(_drawShadow, _dp);
-}
+
 
 int Light_Length = 3;
 bool Use_Light = true;
@@ -457,15 +452,24 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 			vec_ObjectsToRender[i]->Draw(_CurrentShader);
 		}
 	}
-	if (!vec_ObjectsToRender_Instancing.empty())
+
+
+	if (!vec_ObjectsToRender_Instancing.empty())     
 	{
 		_CurrentShader = vec_ShaderProgram[5];
-		_CurrentShader->setMat4("projection", _editorCamera.Projection);
+		_CurrentShader->use();
+		//_CurrentShader->setMat4("projection", _editorCamera.Projection);
 		_CurrentShader->setBool("Use_Instance", true);
 		_CurrentShader->setMat4("view", _editorCamera.GetViewMatrix());
+		_CurrentShader->setFloat("material.shininess", 32.0f);
+		_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
+		_CurrentShader->setVec3("lightPos", lightPos);
 
 		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
 		{
+			if (!vec_ObjectsToRender_Instancing[y]->Drawing) continue;
+			_CurrentShader->setVec3("Color", vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.x, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.y, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.z);
+
 			{
 				unsigned int diffuseNr = 1;
 				unsigned int specularNr = 1;
@@ -490,30 +494,30 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 					// and finally bind the texture
 					glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded[i].id);
 				}
-
 			}
-
 			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
 			{
 				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
 				//glActiveTexture(GL_TEXTURE1);
 				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
-				
 			}
 		}
 	}
 	glBindVertexArray(0);
 	glActiveTexture(GL_TEXTURE0);
 }
-void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
+
+
+//已沒有再使用 為了方便製作 instance而刻意留著
+void Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 {
 
 
 }
-void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)                        //已沒有再使用 為了方便製作 instance而刻意留著
+void Draw_Instancing(bool _drawShadow, unsigned int _dp)                       
 {
-	if (vec_ObjectsToRender_Instancing.empty()) return;
+	/*if (vec_ObjectsToRender_Instancing.empty()) return;
 	
 	float far_plane = 25.0f;
 	bool Use_Light = true;
@@ -644,7 +648,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)          
 					_shader.setFloat("spotLight.linear", 0.09);
 					_shader.setFloat("spotLight.quadratic", 0.032);
 					_shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
+					_shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 			}
 			vec_ShaderProgram[Shader_index]->setVec3("Color", vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.x, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.y, vec_ObjectsToRender_Instancing[y]->_meshrender->VertexColor.z);
 			vec_ShaderProgram[Shader_index]->setBool("Use_Light", Use_Light);
@@ -690,7 +694,7 @@ void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)          
 				glActiveTexture(GL_TEXTURE0);
 			}
 		}
-	}
+	}*/
 }
 
 
