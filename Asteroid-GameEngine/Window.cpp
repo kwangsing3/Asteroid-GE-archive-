@@ -139,7 +139,6 @@ void WindowUI::SelectThisActor(Actor * _actor)
 		if (_MainWorld->_piv != NULL) _MainWorld->_piv->AttachObject(NULL);
 	}
 }
-
 void WindowUI::SelectThisObject(SelectObject* selectobject)
 {
 	if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held  沒有按壓才會進來
@@ -163,7 +162,6 @@ void WindowUI::SelectThisObject(SelectObject* selectobject)
 	selectobject->Is_selected = !selectobject->Is_selected;
 	cur_SelectObject_List.push_back(selectobject);
 }
-
 void WindowUI::CopyEvent()
 {
 	if (cur_SelectObject_List.empty()) 
@@ -196,7 +194,6 @@ void WindowUI::PasteEvent()
 	
 	//Select
 }
-
 void WindowUI::ListInspectorCur(SelectObject* _sel)
 {
 	if (_sel != NULL)
@@ -281,7 +278,6 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 
 
 }
-
 void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
 {
 
@@ -301,7 +297,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			//------------------------------------------------------------------------------------------------這裡根據物件太多可能會導致性能瓶頸  應該可以優化
 			if (_MainWorld->_SceneManager.Objects.size() > 0)
 			{
-				if (_MainWorld->_SceneManager.Objects.size() != SceneObject_List.size())
+				if (_MainWorld->_SceneManager.Objects.size() != SceneObject_List.size())  //刷新
 				{
 					SceneObject_List.clear();
 					for (int n = 0; n < _MainWorld->_SceneManager.Objects.size(); n++)
@@ -313,10 +309,9 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				//buf1 =(char*) "";
 				for (int n = 0; n < SceneObject_List.size(); n++)
 				{
-					char * buf1 = new char[64]();
+				
 					std::string _newname = _MainWorld->_SceneManager.Objects[n]->transform->name + std::to_string(n);
-					const char* newchar = _newname.c_str();
-					if (ImGui::Selectable(newchar, SceneObject_List[n]->Is_selected))
+					if (ImGui::Selectable(_newname.c_str(), SceneObject_List[n]->Is_selected))
 					{
 						WindowUI::SelectThisObject(SceneObject_List[n]);
 					}
@@ -605,13 +600,13 @@ static void MainMenuBar()
 
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("UI Element"))
+		if (ImGui::BeginMenu("DEBUG_setting"))
 		{
 			if (ImGui::MenuItem("All Element", "", &WindowUI::All_UIElement))
 			{
 
 			}
-			if (ImGui::MenuItem("Switch_GameMode"))
+			if (ImGui::MenuItem("Render shadow", "", &_MainWorld->_RenderShadow))
 			{
 				
 			}

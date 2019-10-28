@@ -115,6 +115,7 @@ public:
 		this->vec_VertexWithBones = vec_Vert;
 		this->vec_BonesData = _BonD;
 		this->_aiScene = _sce;
+		Has_Bone = !this->vec_BonesData.empty();
 		setupMesh();
 	}
 

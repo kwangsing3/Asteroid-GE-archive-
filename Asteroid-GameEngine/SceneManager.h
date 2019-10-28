@@ -46,7 +46,7 @@ public:
 	std::vector<PointLight*> vec_PointLight;
 	std::vector<Shader*> vec_ShaderProgram;
 	bool NeedReloadShader = true;
-	bool NeedInitedDraw;
+	bool NeedInitedDraw = true;
 	ADD_Component* _ADDManager;
 
 	std::vector<ModelLoadStruct*> ModelList;
@@ -106,6 +106,9 @@ private:
 		vec_ShaderProgram[5]->setInt("diffuseTexture", 2);
 		vec_ShaderProgram[5]->setInt("depthMap", 1);
 		vec_ShaderProgram[5]->setInt("shadowMap", 1);
+
+
+
 	}
 	//static glm::vec3 lightPos;
 	void InitDrawPipline();

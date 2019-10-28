@@ -28,9 +28,9 @@ std::string _Examples_List[5] =
 //*********************************
 float near_plane = 1.0f;
 float far_plane = 7.5f;
-glm::mat4 shadowProj, lightView;
-glm::mat4 lightSpaceMatrix;
-glm::vec3 lightPos;
+glm::mat4 shadowProj = glm::mat4(1.0f), lightView = glm::mat4(1.0f);
+glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+glm::vec3 lightPos = glm::vec3(1.0f);
 extern World* _MainWorld;
 
 
@@ -107,10 +107,7 @@ void SceneManager::OpenFile()
 		}
 		if (tool.attribute("meshrender").as_int())
 		{
-			if (tool.child("MeshRender").attribute("Shape").as_int() == 5)
-				_ADDManager->Add_Meshrender(_Actor, tool.child("MeshRender").attribute("_path").as_string())->OpenFile(&tool);
-			else
-				_ADDManager->Add_Meshrender(_Actor, Shape::Cube)->OpenFile(&tool);
+			_ADDManager->Add_Meshrender(_Actor, tool.child("MeshRender").attribute("_path").as_string())->OpenFile(&tool);
 			_check++;
 		}
 		if (tool.attribute("_BoxCollision").as_int())
@@ -319,7 +316,7 @@ void SceneManager::InitDrawPipline()
 			modelMatrices[i] = model;
 		}
 
-		unsigned int buffer;
+		unsigned int buffer = 0;
 		glGenBuffers(1, &buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(GL_ARRAY_BUFFER, vec_ObjectsToRender_Instancing[y]->DrawingAmount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
@@ -329,18 +326,18 @@ void SceneManager::InitDrawPipline()
 			unsigned int VAO = vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[i]->VAO;
 			glBindVertexArray(VAO);
 			// set attribute pointers for matrix (4 times vec4)
-			glEnableVertexAttribArray(3);
-			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
-			glEnableVertexAttribArray(4);
-			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
 			glEnableVertexAttribArray(5);
-			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
 			glEnableVertexAttribArray(6);
-			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
-			glVertexAttribDivisor(3, 1);
-			glVertexAttribDivisor(4, 1);
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+			glEnableVertexAttribArray(7);
+			glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+			glEnableVertexAttribArray(8);
+			glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
 			glVertexAttribDivisor(5, 1);
 			glVertexAttribDivisor(6, 1);
+			glVertexAttribDivisor(7, 1);
+			glVertexAttribDivisor(8, 1);
 			glBindVertexArray(0);
 		}
 
@@ -355,24 +352,21 @@ void SceneManager::DrawScene(bool _drawShadow, unsigned int _dp)
 	Draw_Normal(_drawShadow, _dp);
 }
 
-
+int Light_Length = 3;
+bool Use_Light = true;
 Shader* _CurrentShader;
 void SceneManager::DrawScene(RenderShadowType _RType)
 {
-	if (vec_ObjectsToRender.empty()) return;
-	
-	int Light_Length = 3;
-	bool Use_Light = true;
+	if (vec_ObjectsToRender.empty() && vec_ObjectsToRender_Instancing.empty()) return;
+	InitDrawPipline();
 	switch (_RType)
 	{
 	case RenderShadowType::Normal:
 		_CurrentShader = vec_ShaderProgram[4];
 		_CurrentShader->use();
-		
-
 		_CurrentShader->setFloat("material.shininess", 32.0f);
 		//Directional Light
-		if (Use_Light)
+		if (!vec_DirectionlLight.empty())
 		{
 			//DirectionalLight
 			for (int i = 0; i < Light_Length; i++)
@@ -390,6 +384,9 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 				_CurrentShader->setVec3("dirLight[" + std::to_string(i) + "].diffuse", SceneManager::vec_DirectionlLight[i]->Diffuse);
 				_CurrentShader->setVec3("dirLight[" + std::to_string(i) + "].specular", SceneManager::vec_DirectionlLight[i]->Specular);
 			}
+		}
+		if (!vec_PointLight.empty())
+		{
 			//Point Light
 			for (int i = 0; i < Light_Length; i++)
 			{
@@ -425,81 +422,96 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 			}
 		}
 		_CurrentShader->setBool("Use_Light", Use_Light);
-		_CurrentShader->setBool("Has_Bone", false);
 		break;
 	case RenderShadowType::DirectionalLight:
 		if (vec_DirectionlLight.empty()) return;
 		_CurrentShader = vec_ShaderProgram[3];
 		_CurrentShader->use();
-		lightPos = SceneManager::vec_DirectionlLight.size() > 0 ? SceneManager::vec_DirectionlLight[0]->_actor->transform->rotation : glm::vec3(0, 5, 0);
+		lightPos =  SceneManager::vec_DirectionlLight[0]->_actor->transform->rotation;
 		//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
 		shadowProj = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, 1000.0f);
 		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 		lightSpaceMatrix = shadowProj * lightView;
 		// render scene from light's point of view
-		_CurrentShader->setBool("Use_Instance", false);
-
 		
-
 		break;
 	case RenderShadowType::PointLight:
+		if (vec_PointLight.empty()) return;
 		_CurrentShader = vec_ShaderProgram[2];
 		_CurrentShader->use();
-
-
-
 		break;
 	default:
 		AGE_PRINTCONSLE("Passing unknown RenderType");
 		AGE_ASSERT("false");
 		break;
 	}
-
-
-
-
 	_CurrentShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
-	_CurrentShader->setMat4("projection", _editorCamera.Projection);
 	_CurrentShader->setVec3("lightPos", lightPos);
 	_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
 
-
-
-
-	for (int i = 0; i < vec_ObjectsToRender.size(); i++)
+	if (!vec_ObjectsToRender.empty())
 	{
-		vec_ObjectsToRender[i]->Draw(_CurrentShader);
+		_CurrentShader->setBool("Use_Instance", false);
+		for (int i = 0; i < vec_ObjectsToRender.size(); i++)
+		{
+			vec_ObjectsToRender[i]->Draw(_CurrentShader);
+		}
 	}
+	if (!vec_ObjectsToRender_Instancing.empty())
+	{
+		_CurrentShader = vec_ShaderProgram[5];
+		_CurrentShader->setMat4("projection", _editorCamera.Projection);
+		_CurrentShader->setBool("Use_Instance", true);
+		_CurrentShader->setMat4("view", _editorCamera.GetViewMatrix());
 
+		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
+		{
+			{
+				unsigned int diffuseNr = 1;
+				unsigned int specularNr = 1;
+				unsigned int normalNr = 1;
+				unsigned int heightNr = 1;
+				for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded.size(); i++)
+				{
+					glActiveTexture(GL_TEXTURE2 + i); // active proper texture unit before binding
+					// retrieve texture number (the N in diffuse_textureN)
+					std::string number;
+					std::string name = vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded[i].type;
+					if (name == "texture_diffuse")
+						number = std::to_string(diffuseNr++);
+					else if (name == "texture_specular")
+						number = std::to_string(specularNr++); // transfer unsigned int to stream
+					else if (name == "texture_normal")
+						number = std::to_string(normalNr++); // transfer unsigned int to stream
+					else if (name == "texture_height")
+						number = std::to_string(heightNr++); // transfer unsigned int to stream
+															 // now set the sampler to the correct texture unit
+					glUniform1i(glGetUniformLocation(vec_ShaderProgram[4]->ID, (name + number).c_str()), i);
+					// and finally bind the texture
+					glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded[i].id);
+				}
 
+			}
 
+			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
+			{
+				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
+				//glActiveTexture(GL_TEXTURE1);
+				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
+				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
+				
+			}
+		}
+	}
+	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
 }
-
-Shader* _shader = 0;
 void SceneManager::Draw_Normal(bool _drawShadow, unsigned int _dp = NULL)
 {
-	if (vec_ObjectsToRender.empty()) return;
-	_shader = vec_ShaderProgram[_drawShadow ? 2 : 4];
-	_shader->use();
-	
-	///Shadow
-	_shader->setVec3("lightPos", lightPos);
-	if (_drawShadow)
-	{
-		//目前光影只會對第一個Directional Ligiht做反應，照理來說應該有更好的解法，雖然有興趣，不過因為先完善完整功能更重要，所以先放著   最佳展示角度Y要-0.3f~0.3f
-
-	///lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-		
-	}
-	else
-	{
-	
-	}
-
 
 
 }
-void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)
+void SceneManager::Draw_Instancing(bool _drawShadow, unsigned int _dp)                        //已沒有再使用 為了方便製作 instance而刻意留著
 {
 	if (vec_ObjectsToRender_Instancing.empty()) return;
 	

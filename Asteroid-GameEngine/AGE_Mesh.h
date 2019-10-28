@@ -71,7 +71,7 @@ public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<Texture> _Textures;
-
+	bool Has_Bone = false;
 	unsigned int VAO = 0;
 	std::string _ModelPath;
 

@@ -62,7 +62,7 @@ protected:
 	// Draw Pipeline Variable
 	float near_plane = 1.0f;
 	float far_plane = 25.0f;
-	glm::mat4 _Model;
+	glm::mat4 _ModelMatrix4;
 	glm::vec3 EulerAngles;
 	btDefaultMotionState* myMotionState;
 };

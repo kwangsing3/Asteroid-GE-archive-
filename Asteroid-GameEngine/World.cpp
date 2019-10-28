@@ -128,7 +128,7 @@ void World::init_PhysicsProgress()
 }
 void World::depose_init_PhysicsProgress()      
 {
-	if (_PhysicsProgress.size() < 1) return;
+	if (_PhysicsProgress.empty()) return;
 	for (int i = 0; i < _PhysicsProgress.size(); i++)
 	{
 		this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->_ActorInBullet = _PhysicsProgress[i]->_actor;	
@@ -202,19 +202,28 @@ void World::UpdateFrame()
 	{
 		if (_PhysicsProgress.size() < 1) depose_init_PhysicsProgress();
 	}
+
 	glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
-	glClear(GL_DEPTH_BUFFER_BIT);
 
-	_SceneManager.DrawScene(RenderShadowType::DirectionalLight);   
+	if (_RenderShadow)
+	{
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-/*	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
-	glClear(GL_DEPTH_BUFFER_BIT);
+		_SceneManager.DrawScene(RenderShadowType::DirectionalLight);
+	}
 
-	_SceneManager.DrawScene(RenderShadowType::PointLight);   */
+	if (false)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
+		_SceneManager.DrawScene(RenderShadowType::PointLight);
+	}
+	   
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCullFace(GL_BACK);
 	// Draw Pipeline
@@ -226,7 +235,7 @@ void World::UpdateFrame()
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 
-	ImGui::Image((void*)depthTexture_DirLight,ImVec2(300,300));
+	
 	this->m_dynamicsWorld->debugDrawWorld();           /*  */
 
 	_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影

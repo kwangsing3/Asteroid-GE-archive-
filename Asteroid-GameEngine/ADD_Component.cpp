@@ -9,7 +9,7 @@
 
 #include <SceneManager.h>
 
-bool use_Instance = false;
+bool use_Instance = true;
 
 Actor * ADD_Component::Add_Actor()
 {
@@ -58,7 +58,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  /
 			_mesh->_model = _OwnedSceneManager->ModelList[i]->_model;
 			_ac->meshrender = _mesh;
 
-			if (!use_Instance/* && _mesh->_model->HasBone*/)
+			if (!use_Instance || _mesh->_model->HasBone)
 				_OwnedSceneManager->AddToRenderPipeline(_mesh);
 			else
 				_OwnedSceneManager->AddToRenderPipeline_Instancing(_mesh);
@@ -70,7 +70,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  /
 	_OwnedSceneManager->ModelList.push_back(new ModelLoadStruct(_path , _mesh->_model));
 	_ac->meshrender = _mesh;
 
-	if (!use_Instance/* && _mesh->_model->HasBone*/)
+	if (!use_Instance || _mesh->_model->HasBone)
 		_OwnedSceneManager->AddToRenderPipeline(_mesh);
 	else
 		_OwnedSceneManager->AddToRenderPipeline_Instancing(_mesh);

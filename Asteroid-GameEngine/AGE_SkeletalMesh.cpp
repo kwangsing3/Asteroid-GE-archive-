@@ -179,7 +179,7 @@ void SkeletalMesh::Draw(Shader* shader)
 	//***************************************
 	// Animation
 	//***************************************
-	shader->setBool("Has_Bone", this->vec_BonesData.size() > 0);
+	
 	aiMatrix4x4 Identity;
 	float TicksPerSecond = (float)(_aiScene->mAnimations[0]->mTicksPerSecond != 0 ? _aiScene->mAnimations[0]->mTicksPerSecond : 25.0f);
 	float TimeInTicks = glfwGetTime() * TicksPerSecond;

@@ -47,6 +47,8 @@ void Mesh::Draw(Shader* shader)
 	// Shader Uniforms
 	//***************************************
 
+
+	shader->setBool("Has_Bone", Has_Bone);
 	// draw mesh
 	glBindVertexArray(VAO);
 	//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, 1);
