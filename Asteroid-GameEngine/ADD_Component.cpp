@@ -57,7 +57,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  /
 			Meshrender* _mesh = new Meshrender(_ac);
 			_mesh->_model = _OwnedSceneManager->ModelList[i]->_model;
 			_ac->meshrender = _mesh;
-
+			
 			if (!use_Instance || _mesh->_model->HasBone)
 				_OwnedSceneManager->AddToRenderPipeline(_mesh);
 			else

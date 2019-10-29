@@ -104,16 +104,16 @@ void Meshrender::CreateMouseCollision()
 	 myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
-	body = new btRigidBody(rbInfo);
-	body->setCenterOfMassTransform(startTransform);
+	this->body = new btRigidBody(rbInfo);
+	this->body->setCenterOfMassTransform(startTransform);
 	
 	
 	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-	body->setCollisionFlags(Collision_flag);
+	this->body->setCollisionFlags(Collision_flag);
 
 	int _group = 1;
 	int _mask = 1;
-	body->_ActorInBullet = this->_actor;
+	this->body->_ActorInBullet = this->_actor;
 	_MainWorld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
 	
 	//World::dynamicsWorld->updateSingleAabb(body);

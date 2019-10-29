@@ -14,7 +14,7 @@ class Actor;
 class Meshrender :public Component
 {
 public:
-	bool _needdebug = false;
+	bool _needdebug = true;
 	bool _visable = true;
 	//---------------------------------
 	btRigidBody* body;	
@@ -25,7 +25,7 @@ public:
 	{
 		this->_actor = _a;
 		this->enabled = true;	
-		
+		CreateMouseCollision();
 	}
 	/*Meshrender(Actor* _a, Shape _shape)
 	{

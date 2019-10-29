@@ -13,7 +13,6 @@ void _Pivot::CreateMouseCollision()
 	_needdebug = true;
 	if (this->_visable)
 	{
-		
 			colshape.clear();
 			btCollisionShape* _shap;
 			_shap = new btCapsuleShapeX(0.2f, 0.55f*(1+ this->_actor->transform->scale.x));
@@ -26,7 +25,6 @@ void _Pivot::CreateMouseCollision()
 			colshape.push_back(_shap);
 			_MainWorld->m_collisionShapes.push_back(_shap);
 		
-
 		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
 		btQuaternion quat;
 		//quat.setEuler(-glm::radians(this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.x), glm::radians(this->_actor->transform->rotation.z));//or quat.setEulerZYX depending on the ordering you want
@@ -107,7 +105,11 @@ void World::initPhysics()
 {
 	createEmptyDynamicsWorld();
 
+
 	GLDebugDrawer* _deb = new GLDebugDrawer();
+	
+
+
 	this->m_dynamicsWorld->setDebugDrawer(_deb);
 	//_piv = new _Pivot(new Actor());
 }
@@ -200,9 +202,9 @@ void World::UpdateFrame()
 	}
 	else
 	{
-		if (_PhysicsProgress.size() < 1) depose_init_PhysicsProgress();
+		if (!_PhysicsProgress.empty()) depose_init_PhysicsProgress();
 	}
-
+	this->m_dynamicsWorld->debugDrawWorld();
 	glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -228,17 +230,20 @@ void World::UpdateFrame()
 	glCullFace(GL_BACK);
 	// Draw Pipeline
 	glViewport(0, 0, _Width, _Height);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+
 	
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+
 /*	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    */
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 	//ImGui::Image((void*)depthTexture_DirLight,ImVec2(300,300));
 	
-	this->m_dynamicsWorld->debugDrawWorld();           /*  */
+          /*  */
 
 	_SceneManager.DrawScene(RenderShadowType::Normal, depthTexture_DirLight);  //False 代表沒有在渲染陰影
+
 	//_SceneManager.DrawScene(false);
 
 }

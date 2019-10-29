@@ -195,10 +195,7 @@ void SceneManager::NewScene()
 {
 	_MainWorld->_PlayMode = false;
 	_MainWorld->depose_init_PhysicsProgress();
-	
 	_MainWorld->exitPhysics();
-	_MainWorld->initPhysics();
-
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender_Instancing.clear();
@@ -206,9 +203,9 @@ void SceneManager::NewScene()
 	Objects.clear();
 
 	delete _MainWorld->_piv;
-	_MainWorld->_piv =new _Pivot(new Actor());
-	
-	
+	_MainWorld->_piv =new _Pivot(new Actor());	
+
+	_MainWorld->initPhysics();
 }
 void SceneManager::AddToRenderPipeline_Instancing(Meshrender * _mrender)
 {

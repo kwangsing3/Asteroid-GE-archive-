@@ -39,12 +39,12 @@ public:
 	int _group = 1;
 	int _mask = 1;
 	unsigned int VBO, VAO;
-
 	_Pivot(Actor* _a)
 	{
 		SwitchDragMode(0);
 		_actor = _a;
 		_actor->transform->name = (char*) "Pivot";
+
 		this->CreatePivot();
 		CreateMouseCollision();     
 	}
@@ -145,7 +145,7 @@ public:
 				}
 			}
 		}
-			
+		//_thisWorld->_SceneManager.NeedInitedDraw = true;
 	}
 	void Rotate(glm::vec3 _rot)
 	{
@@ -168,6 +168,7 @@ public:
 				}
 			}
 		}	
+		//_thisWorld->_SceneManager.NeedInitedDraw = true;
 	}
 	void Scale(glm::vec3 _sca)
 	{
@@ -190,6 +191,7 @@ public:
 				}
 			}
 		}
+		//_thisWorld->_SceneManager.NeedInitedDraw = true;
 	}
 	void AttachObject(Actor* _ac)
 	{
@@ -243,7 +245,6 @@ public:
 		else
 			return;
 	}
-
 	void SwitchDragMode(int i)
 	{
 		_DragMode[0] = false; _DragMode[1] = false; _DragMode[2] = false;

@@ -196,6 +196,8 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 		_MainWorld->_SceneManager.CheckReloadShader(); //檢查是否實時重載Shader;
+
+
 		//Draw Croodinate  基本座標(白)
 		{
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->use();
@@ -222,7 +224,6 @@ int main()
 
 		_MainWorld->UpdateFrame();
 
-	
 		
 		glDisable(GL_DEPTH_TEST);
 		//UI----------------------------------------------------------------------------------------------------------------------
@@ -321,6 +322,7 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		if (_MainWorld->_piv->Drag[0])
 		{
+			_MainWorld->_SceneManager.NeedInitedDraw = true;
 			if(_MainWorld->_piv->_DragMode[0])
 				_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x + xoffset / 200, _MainWorld->_piv->_actor->transform->position.y, _MainWorld->_piv->_actor->transform->position.z));
 			else if (_MainWorld->_piv->_DragMode[1])
@@ -330,7 +332,7 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 		}
 		else if (_MainWorld->_piv->Drag[1])
 		{
-			
+			_MainWorld->_SceneManager.NeedInitedDraw = true;
 			if (_MainWorld->_piv->_DragMode[0])
 				_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x , _MainWorld->_piv->_actor->transform->position.y + yoffset / 200, _MainWorld->_piv->_actor->transform->position.z));
 			else if (_MainWorld->_piv->_DragMode[1])
@@ -341,7 +343,7 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 			
 		else if (_MainWorld->_piv->Drag[2])
 		{
-			
+			_MainWorld->_SceneManager.NeedInitedDraw = true;
 			if (_MainWorld->_piv->_DragMode[0])
 				_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x , _MainWorld->_piv->_actor->transform->position.y, _MainWorld->_piv->_actor->transform->position.z + xoffset / 200));
 			else if (_MainWorld->_piv->_DragMode[1])

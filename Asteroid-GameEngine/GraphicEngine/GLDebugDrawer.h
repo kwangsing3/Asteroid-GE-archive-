@@ -39,15 +39,14 @@ public:
 	}
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
-		_DebugShader->use();
+		/*_DebugShader->use();
 		glm::vec3 model(1.0f);
 		_DebugShader->setVec3("model", model);
 		_DebugShader->setMat4("view", _editorCamera.GetViewMatrix());
 		_DebugShader->setMat4("projection", _editorCamera.Projection);
-		_DebugShader->setVec3("Color", glm::vec3(1,1,1));
+		_DebugShader->setVec3("Color", glm::vec3(1,1,1));*/
 		// Vertex data
 		GLfloat points[12];
-
 		points[0] = from.x();
 		points[1] = from.y();
 		points[2] = from.z();
