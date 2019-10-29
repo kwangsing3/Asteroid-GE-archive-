@@ -309,7 +309,7 @@ struct World : public CommonRigidBodyBase   //是一種Scene
 public:
 	 bool InitPhysics = true;
 	 bool _PlayMode;
-	 bool _RenderShadow = false;
+	 bool _RenderShadow = true;
 	 _Pivot* _piv  = new _Pivot(new Actor());
 
 	 SceneManager _SceneManager;

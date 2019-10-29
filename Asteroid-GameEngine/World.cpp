@@ -234,11 +234,11 @@ void World::UpdateFrame()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    */
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
-
+	//ImGui::Image((void*)depthTexture_DirLight,ImVec2(300,300));
 	
 	this->m_dynamicsWorld->debugDrawWorld();           /*  */
 
-	_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
+	_SceneManager.DrawScene(RenderShadowType::Normal, depthTexture_DirLight);  //False 代表沒有在渲染陰影
 	//_SceneManager.DrawScene(false);
 
 }

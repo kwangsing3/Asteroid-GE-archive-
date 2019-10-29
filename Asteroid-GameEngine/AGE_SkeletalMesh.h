@@ -90,10 +90,10 @@ private:
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_Buffers);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vec_VertexWithBones[0]) * vec_VertexWithBones.size(), &vec_VertexWithBones[0], GL_STATIC_DRAW);
-		glEnableVertexAttribArray(5);
-		glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex_hasBone), (void*)offsetof(Vertex_hasBone, IDs));
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex_hasBone), (void*)offsetof(Vertex_hasBone, Weight));
+		glEnableVertexAttribArray(9);
+		glVertexAttribIPointer(9, 4, GL_INT, sizeof(Vertex_hasBone), (void*)offsetof(Vertex_hasBone, IDs));
+		glEnableVertexAttribArray(10);
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex_hasBone), (void*)offsetof(Vertex_hasBone, Weight));
 
 
 		glBindVertexArray(0);

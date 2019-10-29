@@ -602,18 +602,17 @@ static void MainMenuBar()
 		}
 		if (ImGui::BeginMenu("DEBUG_setting"))
 		{
-			if (ImGui::MenuItem("All Element", "", &WindowUI::All_UIElement))
-			{
-
-			}
-			if (ImGui::MenuItem("Render shadow", "", &_MainWorld->_RenderShadow))
-			{
-				
-			}
-			if (ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay)) {}
-
+			ImGui::MenuItem("All Element", "", &WindowUI::All_UIElement);
+			ImGui::MenuItem("Render shadow", "", &_MainWorld->_RenderShadow);
+			ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay);
 			ImGui::MenuItem("PlayMode", "", &_MainWorld->_PlayMode);
 			
+			const char* items[] = { "Basic","Color","Light","Shadow" };
+			static int item_current = 0;
+			if (ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items)))
+			{
+				_MainWorld->_SceneManager._DebugRenderType = static_cast<DebugRenderType>(item_current);
+			}
 
 			ImGui::EndMenu();
 		}

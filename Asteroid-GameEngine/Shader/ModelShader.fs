@@ -83,6 +83,7 @@ uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform float far_plane;
 uniform bool  Use_Light;
+uniform int DebugRenderType;
 //uniform bool shadows;
 //Shadow texture
 
@@ -95,23 +96,20 @@ void main()
     vec3 normal = normalize( fs_in.Normal);
     vec3 viewDir = normalize(viewPos -  fs_in.FragPos);
 
-	
-
-
 	// phase 1: directional lighting
-	vec3 result = vec3(0);
+	vec3 LightResult = vec3(0);
 	for(int i=0; i< DLight_Length;i++)
 	{
-	   result += CalcDirLight(dirLight[i], normal, viewDir);
+	   LightResult += CalcDirLight(dirLight[i], normal, viewDir);
 	}
     // phase 2: point lights
     for(int i = 0; i < PLight_Length ; i++)
 	{
 	   //result+=vec3(0,0,0);
-	   result += CalcPointLight(pointLights[i], normal,  fs_in.FragPos, viewDir);    
+	   LightResult += CalcPointLight(pointLights[i], normal,  fs_in.FragPos, viewDir);    
 	} 
     // phase 3: spot light
-    result += CalcSpotLight(spotLight, normal,  fs_in.FragPos, viewDir);    
+    LightResult += CalcSpotLight(spotLight, normal,  fs_in.FragPos, viewDir);    
 
 	  //vec3 normal = normalize(fs_in.Normal);
 
@@ -121,7 +119,7 @@ void main()
 	
 	vec3 lightColor = vec3(0.4);
     // ambient
-    vec3 ambient = 0.3 * color;
+    vec3 ambient = vec3(0.4);
     // diffuse
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float diff = max(dot(lightDir, normal), 0.0);
@@ -137,17 +135,19 @@ void main()
 	//    float shadow = ShadowCalculation(fs_in.FragPos);  
 	// Directionl calculate shadow
         float shadow = ShadowCalculation(fs_in.FragPosLightSpace);           
-    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;   
+    vec3 shadowResult = (ambient + (1.0 - shadow) * (diffuse + specular));   
 
-	if(Use_Light)
-		FragColor = vec4(mix(result,Color,0.9)*lighting, 1.0);
-		//FragColor = vec4(lighting, 1.0);
-	else
-		FragColor = vec4(Color*lighting, 1.0);
-	// FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
-	// FragColor = vec4(1,1,1,1.0);
+
+
+	if(DebugRenderType == 0)
+		FragColor = vec4(mix(LightResult,Color,0.9)*shadowResult * color, 1.0);
+	else if (DebugRenderType == 1)
+		FragColor = vec4(mix(Color,color,0.9), 1.0);
+	else if (DebugRenderType == 2)
+		FragColor = vec4(LightResult, 1.0);
+	else if (DebugRenderType == 3)
+		FragColor = vec4(shadowResult, 1.0);
 }
-
 
 
 

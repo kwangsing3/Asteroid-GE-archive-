@@ -33,6 +33,7 @@ struct ModelLoadStruct
 	}
 };
 enum class RenderShadowType { Normal, DirectionalLight, PointLight };
+enum class DebugRenderType { Baisc, Color, Light, Shadow };
 
 
 class SceneManager     //SceneManager分兩個部分，管理遊戲場景物件   以及場景檔案的相關操作
@@ -48,7 +49,7 @@ public:
 	bool NeedReloadShader = true;
 	bool NeedInitedDraw = true;
 	ADD_Component* _ADDManager;
-
+	DebugRenderType _DebugRenderType = DebugRenderType::Baisc;
 	std::vector<ModelLoadStruct*> ModelList;
 
 	//載入檔案
@@ -73,7 +74,7 @@ public:
 	
 
 	//void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
-	void DrawScene(RenderShadowType _RTypw);
+	void DrawScene(RenderShadowType _RType , unsigned int _dp = NULL);
 
 
 
@@ -112,8 +113,8 @@ private:
 	}
 	//static glm::vec3 lightPos;
 	void InitDrawPipline();
-	void Draw_Instancing(bool _drawShadow, unsigned int _dp);
-	void Draw_Normal(bool _drawShadow, unsigned int _dp);
+//	void Draw_Instancing(bool _drawShadow, unsigned int _dp);
+	//void Draw_Normal(bool _drawShadow, unsigned int _dp);
 };
 
 

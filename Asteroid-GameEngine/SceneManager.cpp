@@ -290,8 +290,7 @@ void SceneManager::InitDrawPipline()
 				vec_ObjectsToRender_Instancing[y]->DrawingtransformList.push_back(vec_ObjectsToRender_Instancing[y]->transformList[x]);
 			}
 		}
-	
-		if (vec_ObjectsToRender_Instancing[y]->DrawingAmount < 1)
+			if (vec_ObjectsToRender_Instancing[y]->DrawingAmount < 1)
 		{
 			vec_ObjectsToRender_Instancing[y]->Drawing = false;
 			continue;
@@ -315,7 +314,6 @@ void SceneManager::InitDrawPipline()
 			// 4. now add to list of matrices
 			modelMatrices[i] = model;
 		}
-
 		unsigned int buffer = 0;
 		glGenBuffers(1, &buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -340,9 +338,7 @@ void SceneManager::InitDrawPipline()
 			glVertexAttribDivisor(8, 1);
 			glBindVertexArray(0);
 		}
-
 	}
-
 
 }
 
@@ -350,7 +346,7 @@ void SceneManager::InitDrawPipline()
 int Light_Length = 3;
 bool Use_Light = true;
 Shader* _CurrentShader;
-void SceneManager::DrawScene(RenderShadowType _RType)
+void SceneManager::DrawScene(RenderShadowType _RType, unsigned int _dp)
 {
 	if (vec_ObjectsToRender.empty() && vec_ObjectsToRender_Instancing.empty()) return;
 	InitDrawPipline();
@@ -360,6 +356,7 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 		_CurrentShader = vec_ShaderProgram[4];
 		_CurrentShader->use();
 		_CurrentShader->setFloat("material.shininess", 32.0f);
+		_CurrentShader->setInt("DebugRenderType", (int)_DebugRenderType);
 		//Directional Light
 		if (!vec_DirectionlLight.empty())
 		{
@@ -417,6 +414,8 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 			}
 		}
 		_CurrentShader->setBool("Use_Light", Use_Light);
+		_CurrentShader->setVec3("lightPos", lightPos);
+		_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
 		break;
 	case RenderShadowType::DirectionalLight:
 		if (vec_DirectionlLight.empty()) return;
@@ -441,8 +440,7 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 		break;
 	}
 	_CurrentShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
-	_CurrentShader->setVec3("lightPos", lightPos);
-	_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
+
 
 	if (!vec_ObjectsToRender.empty())
 	{
@@ -453,18 +451,13 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 		}
 	}
 
-
+	if (_RType != RenderShadowType::Normal) return;                          //// 先不為Instance Draw 製作陰影，之後會為Instnace Draw來製作烘焙功能，所以這行以後再拿掉
 	if (!vec_ObjectsToRender_Instancing.empty())     
 	{
-		_CurrentShader = vec_ShaderProgram[5];
-		_CurrentShader->use();
-		//_CurrentShader->setMat4("projection", _editorCamera.Projection);
+		//_CurrentShader->setInt("diffuseTexture", _dp);
+		//_CurrentShader->setBool("Has_Bone", false);   
 		_CurrentShader->setBool("Use_Instance", true);
 		_CurrentShader->setMat4("view", _editorCamera.GetViewMatrix());
-		_CurrentShader->setFloat("material.shininess", 32.0f);
-		_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
-		_CurrentShader->setVec3("lightPos", lightPos);
-
 		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
 		{
 			if (!vec_ObjectsToRender_Instancing[y]->Drawing) continue;
@@ -494,12 +487,13 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 					// and finally bind the texture
 					glBindTexture(GL_TEXTURE_2D, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->textures_loaded[i].id);
 				}
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, _dp);    //這個綁陰影的動作很醜，還能夠優化
 			}
 			for (unsigned int xi = 0; xi < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); xi++)
 			{
 				glBindVertexArray(vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->VAO);
-				//glActiveTexture(GL_TEXTURE1);
-				//glBindTexture(GL_TEXTURE_CUBE_MAP, _dp);    //這個綁陰影的動作很醜，還能夠優化
+			
 				glDrawElementsInstanced(GL_TRIANGLES, vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[xi]->indices.size(), GL_UNSIGNED_INT, 0, vec_ObjectsToRender_Instancing[y]->DrawingAmount);
 			}
 		}

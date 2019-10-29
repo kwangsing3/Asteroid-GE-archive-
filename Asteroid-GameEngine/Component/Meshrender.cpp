@@ -65,11 +65,6 @@ void Meshrender::Draw(Shader* _shader)
 	_shader->setMat4("model", _ModelMatrix4);
 	// 共通
 
-
-	
-
-
-
 	/// Draw Pipeline
 	for (unsigned int i = 0; i < this->_model->_meshes.size(); i++)
 		this->_model->_meshes[i]->Draw(_shader);
