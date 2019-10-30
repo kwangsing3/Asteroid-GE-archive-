@@ -14,7 +14,7 @@ class Actor;
 class Meshrender :public Component
 {
 public:
-	bool _needdebug = true;
+	bool _needdebug = false;
 	bool _visable = true;
 	//---------------------------------
 	btRigidBody* body;	

@@ -107,7 +107,7 @@ void World::initPhysics()
 
 
 	GLDebugDrawer* _deb = new GLDebugDrawer();
-	
+	_deb->setDebugMode(GLDebugDrawer::DBG_FastWireframe);
 
 
 	this->m_dynamicsWorld->setDebugDrawer(_deb);
@@ -208,21 +208,17 @@ void World::UpdateFrame()
 	glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-
-	if (_RenderShadow)
+	if (_RenderShadow && !_SceneManager.vec_DirectionlLight.empty())
 	{
-		
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
 		glClear(GL_DEPTH_BUFFER_BIT);
-
 		_SceneManager.DrawScene(RenderShadowType::DirectionalLight);
 	}
 
-	if (false)
+	if (false && !_SceneManager.vec_PointLight.empty())
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
 		glClear(GL_DEPTH_BUFFER_BIT);
-
 		_SceneManager.DrawScene(RenderShadowType::PointLight);
 	}
 	   
@@ -230,19 +226,15 @@ void World::UpdateFrame()
 	glCullFace(GL_BACK);
 	// Draw Pipeline
 	glViewport(0, 0, _Width, _Height);
-
-	
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
-
 /*	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    */
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 	//ImGui::Image((void*)depthTexture_DirLight,ImVec2(300,300));
-	
-          /*  */
-
-	_SceneManager.DrawScene(RenderShadowType::Normal, depthTexture_DirLight);  //False 代表沒有在渲染陰影
+      /*  */
+	if (!_SceneManager.vec_ObjectsToRender.empty() || !_SceneManager.vec_ObjectsToRender_Instancing.empty())
+		_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
 
 	//_SceneManager.DrawScene(false);
 

@@ -74,7 +74,7 @@ public:
 	
 
 	//void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
-	void DrawScene(RenderShadowType _RType , unsigned int _dp = NULL);
+	void DrawScene(RenderShadowType _RType);
 
 
 
@@ -103,10 +103,8 @@ private:
 		vec_ShaderProgram[4]->setInt("diffuseTexture", 2);
 		vec_ShaderProgram[4]->setInt("depthMap", 1);
 		vec_ShaderProgram[4]->setInt("shadowMap", 1);
-		vec_ShaderProgram[5]->use();
-		vec_ShaderProgram[5]->setInt("diffuseTexture", 2);
-		vec_ShaderProgram[5]->setInt("depthMap", 1);
-		vec_ShaderProgram[5]->setInt("shadowMap", 1);
+		vec_ShaderProgram[4]->setInt("material.diffuse", 0);
+		vec_ShaderProgram[4]->setInt("material.specular", 1);
 
 
 

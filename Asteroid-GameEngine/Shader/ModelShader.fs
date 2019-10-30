@@ -95,7 +95,6 @@ void main()
 	vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
     vec3 normal = normalize( fs_in.Normal);
     vec3 viewDir = normalize(viewPos -  fs_in.FragPos);
-
 	// phase 1: directional lighting
 	vec3 LightResult = vec3(0);
 	for(int i=0; i< DLight_Length;i++)
@@ -111,11 +110,7 @@ void main()
     // phase 3: spot light
     LightResult += CalcSpotLight(spotLight, normal,  fs_in.FragPos, viewDir);    
 
-	  //vec3 normal = normalize(fs_in.Normal);
-
 	//shadow
-	
-    //vec3 normal = normalize(fs_in.Normal);
 	
 	vec3 lightColor = vec3(0.4);
     // ambient

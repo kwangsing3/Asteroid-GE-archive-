@@ -15,10 +15,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SceneManager.h>
 #include <LinearMath/btIDebugDraw.h>
-#include <shader_m.h>
-#include <Units/Camera.h>
 
-extern Camera _editorCamera;
 // Helper class; draws the world as seen by Bullet.
 // This is very handy to see it Bullet's world matches yours
 // How to use this class :
@@ -32,10 +29,10 @@ extern Camera _editorCamera;
 class GLDebugDrawer : public btIDebugDraw {
 public:
 	GLuint VBO=0, VAO=0;
-	Shader* _DebugShader;
+	
 	GLDebugDrawer()
 	{
-		_DebugShader = new Shader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs");
+		
 	}
 	virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
@@ -78,6 +75,70 @@ public:
 		glDrawArrays(GL_LINES, 0, 2);
 		glBindVertexArray(0);
 
+	}
+	virtual void drawBox(const btVector3& bbMin, const btVector3& bbMax, const btVector3& color)
+	{                                    //0,0,0      //1,1,1
+		GLfloat points[] =
+		{
+		bbMin[0], bbMin[1], bbMin[2],
+		bbMax[0], bbMin[1], bbMin[2],
+		bbMax[0], bbMax[1], bbMin[2],
+		bbMax[0], bbMax[1], bbMin[2],
+		bbMin[0], bbMax[1], bbMin[2],
+		bbMin[0], bbMin[1], bbMin[2],
+
+		bbMin[0], bbMin[1], bbMax[2],
+		bbMax[0], bbMin[1], bbMax[2],
+		bbMax[0], bbMax[1], bbMax[2],
+		bbMax[0], bbMax[1], bbMax[2],
+		bbMin[0], bbMax[1], bbMax[2],
+		bbMin[0], bbMin[1], bbMax[2],
+
+		bbMin[0], bbMax[1], bbMax[2],
+		bbMin[0], bbMax[1], bbMin[2],
+		bbMin[0], bbMin[1], bbMin[2],
+		bbMin[0], bbMin[1], bbMin[2],
+		bbMin[0], bbMin[1], bbMax[2],
+		bbMin[0], bbMax[1], bbMax[2],
+
+		bbMax[0], bbMax[1], bbMax[2],
+		bbMax[0], bbMax[1], bbMin[2],
+		bbMax[0], bbMin[1], bbMin[2],
+		bbMax[0], bbMin[1], bbMin[2],
+		bbMax[0], bbMin[1], bbMax[2],
+		bbMax[0], bbMax[1], bbMax[2],
+
+		bbMin[0], bbMin[1], bbMin[2],
+		bbMax[0], bbMin[1], bbMin[2],
+		bbMax[0], bbMin[1], bbMax[2],
+		bbMax[0], bbMin[1], bbMax[2],
+		bbMin[0], bbMin[1], bbMax[2],
+		bbMin[0], bbMin[1], bbMin[2],
+
+		bbMin[0], bbMax[1], bbMin[2],
+		bbMax[0], bbMax[1], bbMin[2],
+		bbMax[0], bbMax[1], bbMax[2],
+		bbMax[0], bbMax[1], bbMax[2],
+		bbMin[0], bbMax[1], bbMax[2],
+		bbMin[0], bbMax[1], bbMin[2],
+		};
+		glDeleteBuffers(1, &VBO);
+		glDeleteVertexArrays(1, &VAO);
+
+		glGenBuffers(1, &VBO);
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glBindVertexArray(0);
+
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_LINES, 0, 2);
+		glBindVertexArray(0);
 	}
 	virtual void drawContactPoint(const btVector3 &, const btVector3 &, btScalar, int, const btVector3 &) {}
 	virtual void reportErrorWarning(const char *) {}

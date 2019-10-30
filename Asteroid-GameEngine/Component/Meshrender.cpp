@@ -68,8 +68,7 @@ void Meshrender::Draw(Shader* _shader)
 	/// Draw Pipeline
 	for (unsigned int i = 0; i < this->_model->_meshes.size(); i++)
 		this->_model->_meshes[i]->Draw(_shader);
-	glBindVertexArray(0);
-	glActiveTexture(GL_TEXTURE0);
+
 }
 
 

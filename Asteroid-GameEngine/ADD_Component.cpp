@@ -9,7 +9,7 @@
 
 #include <SceneManager.h>
 
-bool use_Instance = true;
+bool use_Instance = false;
 
 Actor * ADD_Component::Add_Actor()
 {
