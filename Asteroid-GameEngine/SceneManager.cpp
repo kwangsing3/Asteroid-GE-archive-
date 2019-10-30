@@ -265,22 +265,83 @@ void SceneManager::InitDrawPipline()
 		}
 	}
 	//*********************************
-	//Resend comman information to shader
+	//Instancing Init Transform
 	//*********************************
-	for (int i = 0; i < vec_ShaderProgram.size(); i++)
+	for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
 	{
-		vec_ShaderProgram[i]->use();
-		
-		vec_ShaderProgram[i]->setFloat("far_plane", far_plane);
-		vec_ShaderProgram[i]->setMat4("projection", _editorCamera.Projection);
-		vec_ShaderProgram[i]->setInt("material.diffuse", 0);
-		vec_ShaderProgram[i]->setInt("material.specular", 1);
+		vec_ObjectsToRender_Instancing[y]->DrawingAmount = 0;
+		for (int x = 0; x < vec_ObjectsToRender_Instancing[y]->amount; x++)
+		{
+			if (*vec_ObjectsToRender_Instancing[y]->_visableList[x] == true)
+			{
+				vec_ObjectsToRender_Instancing[y]->DrawingAmount += 1;
+				vec_ObjectsToRender_Instancing[y]->DrawingtransformList.push_back(vec_ObjectsToRender_Instancing[y]->transformList[x]);
+			}
+		}
+			if (vec_ObjectsToRender_Instancing[y]->DrawingAmount < 1)
+		{
+			vec_ObjectsToRender_Instancing[y]->Drawing = false;
+			continue;
+		}
+		vec_ObjectsToRender_Instancing[y]->Drawing = true;
+		glm::mat4* modelMatrices;
+		modelMatrices = new glm::mat4[vec_ObjectsToRender_Instancing[y]->DrawingAmount];
+		for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->DrawingAmount; i++)
+		{
+			glm::mat4 model = glm::mat4(1.0f);
+			Transform* _trans = vec_ObjectsToRender_Instancing[y]->DrawingtransformList[i];
+			model = glm::translate(model, glm::vec3(_trans->position.x, _trans->position.y, _trans->position.z));
+			// 2. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+			glm::quat MyQuaternion;
+			glm::vec3 EulerAngles(glm::radians(_trans->rotation.x), glm::radians(-_trans->rotation.y), glm::radians(_trans->rotation.z));
+			MyQuaternion = glm::quat(EulerAngles);
+			glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
+			model = model * RotationMatrix;
+			// 3. scale: Scale between 0.05 and 0.25f
+			model = glm::scale(model, glm::vec3(_trans->scale));
+			// 4. now add to list of matrices
+			modelMatrices[i] = model;
+		}
+		unsigned int buffer = 0;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferData(GL_ARRAY_BUFFER, vec_ObjectsToRender_Instancing[y]->DrawingAmount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+		//Bind to Vertex Array
+		for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); i++)
+		{
+			unsigned int VAO = vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[i]->VAO;
+			glBindVertexArray(VAO);
+			// set attribute pointers for matrix (4 times vec4)
+			glEnableVertexAttribArray(5);
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+			glEnableVertexAttribArray(6);
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+			glEnableVertexAttribArray(7);
+			glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+			glEnableVertexAttribArray(8);
+			glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+			glVertexAttribDivisor(5, 1);
+			glVertexAttribDivisor(6, 1);
+			glVertexAttribDivisor(7, 1);
+			glVertexAttribDivisor(8, 1);
+			glBindVertexArray(0);
+		}
 	}
+
+}
+void SceneManager::SetUpShader()
+{
+	this->NeedInitedShader = false;
 	//*********************************
 	//Resend Light information to shader
 	//*********************************
 	_CurrentShader = vec_ShaderProgram[4];
 	_CurrentShader->use();
+
+	_CurrentShader->setFloat("far_plane", far_plane);
+	_CurrentShader->setMat4("projection", _editorCamera.Projection);
+	_CurrentShader->setInt("material.diffuse", 0);
+	_CurrentShader->setInt("material.specular", 1);
 	int Light_Length = 3;
 	if (!vec_DirectionlLight.empty())
 	{
@@ -347,70 +408,6 @@ void SceneManager::InitDrawPipline()
 	}
 	_CurrentShader->setFloat("material.shininess", 32.0f);
 	_CurrentShader->setBool("Use_Light", !(vec_DirectionlLight.empty() && vec_PointLight.empty()));
-	//*********************************
-	//Instancing Init Transform
-	//*********************************
-	for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
-	{
-		vec_ObjectsToRender_Instancing[y]->DrawingAmount = 0;
-		for (int x = 0; x < vec_ObjectsToRender_Instancing[y]->amount; x++)
-		{
-			if (*vec_ObjectsToRender_Instancing[y]->_visableList[x] == true)
-			{
-				vec_ObjectsToRender_Instancing[y]->DrawingAmount += 1;
-				vec_ObjectsToRender_Instancing[y]->DrawingtransformList.push_back(vec_ObjectsToRender_Instancing[y]->transformList[x]);
-			}
-		}
-			if (vec_ObjectsToRender_Instancing[y]->DrawingAmount < 1)
-		{
-			vec_ObjectsToRender_Instancing[y]->Drawing = false;
-			continue;
-		}
-		vec_ObjectsToRender_Instancing[y]->Drawing = true;
-		glm::mat4* modelMatrices;
-		modelMatrices = new glm::mat4[vec_ObjectsToRender_Instancing[y]->DrawingAmount];
-		for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->DrawingAmount; i++)
-		{
-			glm::mat4 model = glm::mat4(1.0f);
-			Transform* _trans = vec_ObjectsToRender_Instancing[y]->DrawingtransformList[i];
-			model = glm::translate(model, glm::vec3(_trans->position.x, _trans->position.y, _trans->position.z));
-			// 2. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-			glm::quat MyQuaternion;
-			glm::vec3 EulerAngles(glm::radians(_trans->rotation.x), glm::radians(-_trans->rotation.y), glm::radians(_trans->rotation.z));
-			MyQuaternion = glm::quat(EulerAngles);
-			glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
-			model = model * RotationMatrix;
-			// 3. scale: Scale between 0.05 and 0.25f
-			model = glm::scale(model, glm::vec3(_trans->scale));
-			// 4. now add to list of matrices
-			modelMatrices[i] = model;
-		}
-		unsigned int buffer = 0;
-		glGenBuffers(1, &buffer);
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		glBufferData(GL_ARRAY_BUFFER, vec_ObjectsToRender_Instancing[y]->DrawingAmount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
-		//Bind to Vertex Array
-		for (unsigned int i = 0; i < vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes.size(); i++)
-		{
-			unsigned int VAO = vec_ObjectsToRender_Instancing[y]->_meshrender->_model->_meshes[i]->VAO;
-			glBindVertexArray(VAO);
-			// set attribute pointers for matrix (4 times vec4)
-			glEnableVertexAttribArray(5);
-			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
-			glEnableVertexAttribArray(6);
-			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
-			glEnableVertexAttribArray(7);
-			glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
-			glEnableVertexAttribArray(8);
-			glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
-			glVertexAttribDivisor(5, 1);
-			glVertexAttribDivisor(6, 1);
-			glVertexAttribDivisor(7, 1);
-			glVertexAttribDivisor(8, 1);
-			glBindVertexArray(0);
-		}
-	}
-
 }
 
 
@@ -421,6 +418,8 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 {
 	//if (vec_ObjectsToRender.empty() && vec_ObjectsToRender_Instancing.empty()) return;
 	if (NeedInitedDraw)InitDrawPipline();
+	if (NeedInitedShader)SetUpShader();
+
 	switch (_RType)
 	{
 	case RenderShadowType::Normal:

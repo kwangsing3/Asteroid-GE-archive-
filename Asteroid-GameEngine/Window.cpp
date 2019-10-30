@@ -611,6 +611,7 @@ static void MainMenuBar()
 			if (ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items)))
 			{
 				_MainWorld->_SceneManager._DebugRenderType = static_cast<DebugRenderType>(item_current);
+				_MainWorld->_SceneManager.NeedInitedShader = true;
 			}
 
 			ImGui::EndMenu();

@@ -48,6 +48,7 @@ public:
 	std::vector<Shader*> vec_ShaderProgram;
 	bool NeedReloadShader = true;
 	bool NeedInitedDraw = true;
+	bool NeedInitedShader = true;
 	ADD_Component* _ADDManager;
 	DebugRenderType _DebugRenderType = DebugRenderType::Baisc;
 	std::vector<ModelLoadStruct*> ModelList;
@@ -111,6 +112,7 @@ private:
 	}
 	//static glm::vec3 lightPos;
 	void InitDrawPipline();
+	void SetUpShader();
 //	void Draw_Instancing(bool _drawShadow, unsigned int _dp);
 	//void Draw_Normal(bool _drawShadow, unsigned int _dp);
 };
