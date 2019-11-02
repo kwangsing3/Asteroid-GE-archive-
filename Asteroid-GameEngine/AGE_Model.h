@@ -1,6 +1,6 @@
 #ifndef AGE_MODEL_H
 #define AGE_MODEL_H
-
+#include <AGE_Assert.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 
@@ -59,14 +59,7 @@ private:
 	{
 		this->_shape = Shape::_Model;
 		this->_ModelPath = _path;
-		/*for (int i = 0; i < SceneManager::ModelList.size(); i++)
-		{
-			if (SceneManager::ModelList[i]->path == _path)
-			{
-				this->_meshes = SceneManager::ModelList[i]->_meshes;
-				return;
-			}
-		}*/
+		
 		loadModel(_path);
 	}
 	void loadModel(std::string const& path);
@@ -83,10 +76,10 @@ public:
 	std::vector<Texture> textures_loaded;
 	bool HasBone = false;
 	std::string _ModelPath;
-	AGE_Model() {};
+	AGE_Model() { AGE_PRINTCONSLE("Careful, this should been created with no thing put in")};
 /*	AGE_Model(Shape _sha) { CreateShape(_sha); };*/
 	AGE_Model(std::string _path) { CreateShape(_path); };
-
+	AGE_Model(std::vector<Mesh*> _mesh) { _meshes = _mesh; };
 };
 
 

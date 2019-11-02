@@ -19,13 +19,13 @@ public:
 	//---------------------------------
 	btRigidBody* body;	
 	AGE_Model* _model;
-	glm::vec3 VertexColor= glm::vec3(glm::linearRand(0.1f,1.0f) , glm::linearRand(0.3f, 1.0f), glm::linearRand(0.6f, 1.0f)	);
+	glm::vec3 VertexColor= glm::vec3(0.8f);
 
 	Meshrender(Actor* _a)
 	{
 		this->_actor = _a;
-		this->enabled = true;	
-		CreateMouseCollision();
+		this->enabled = true;
+
 	}
 	/*Meshrender(Actor* _a, Shape _shape)
 	{
@@ -38,6 +38,7 @@ public:
 	{
 		this->_actor = _a;
 		this->enabled = true;
+
 		_model = new AGE_Model(_path);
 		CreateMouseCollision();
 
@@ -53,9 +54,10 @@ public:
 	void SetVisable(bool _bool);
 	void ReSetCollisionFlag();
 	void Draw(Shader* _shader);
+	void CreateMouseCollision();
 private:
 
-	void CreateMouseCollision();
+	
 
 protected:
 	btCollisionShape* colShape;

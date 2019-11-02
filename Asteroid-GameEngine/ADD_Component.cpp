@@ -44,7 +44,7 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor,Shape _sha)
 	}
 	return Add_Meshrender(_actor , DefaultShapePath);
 }
-Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  // ADD Meshrender的時候檢查一下模型是否有先加載過
+Meshrender* ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  // ADD Meshrender的時候檢查一下模型是否有先加載過
 {
 	_OwnedSceneManager->NeedInitedDraw = true;
 	Actor* _ac = _actor == NULL ? Add_Actor() : _actor;
@@ -56,6 +56,7 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  /
 		{
 			Meshrender* _mesh = new Meshrender(_ac);
 			_mesh->_model = _OwnedSceneManager->ModelList[i]->_model;
+			_mesh->CreateMouseCollision();
 			_ac->meshrender = _mesh;
 			
 			if (!use_Instance || _mesh->_model->HasBone)
@@ -77,6 +78,35 @@ Meshrender * ADD_Component::Add_Meshrender(Actor * _actor, std::string _path)  /
 	
 	return _mesh;
 }
+Meshrender* ADD_Component::ADD_CustomMesh(float* vertexs, unsigned int _Length)   //或許以後可以加上其他分配方式，不過目前只能分配成線
+{
+	Actor* _ac = new Actor();
+	Meshrender* _meshrender = new Meshrender(_ac);
+	std::vector<Vertex> _newVer;
+	std::vector<unsigned int> _newUint;
+
+	for (int i = 0; i < _Length ; i=i+3)
+	{
+		Vertex _Nvertex;
+		_Nvertex.Position = glm::vec3(vertexs[i], vertexs[i+1], vertexs[i+2]);
+		_newVer.push_back(_Nvertex);
+	}
+
+	std::vector<Mesh*> _newMeshVec;
+	_newMeshVec.push_back(new Mesh(_newVer));
+	_meshrender->_model = new AGE_Model(_newMeshVec);
+	_ac->meshrender = _meshrender;
+	     // 不應該加入到 Draw Pipeline 中  畢竟會繪製兩次  有另外獨立到SceneManager 中繪製
+	return _meshrender;
+}
+
+
+
+
+
+
+
+
 
 DirectionalLight* ADD_Component::Add_DirectionalLight(Actor* _actor)
 {

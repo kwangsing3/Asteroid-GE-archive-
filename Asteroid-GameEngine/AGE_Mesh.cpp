@@ -52,7 +52,12 @@ void Mesh::Draw(Shader* shader)
 	// draw mesh
 	glBindVertexArray(VAO);
 	//glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, 1);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	if (!indices.empty())
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	else
+	{
+		glDrawArrays(GL_LINES, 0, vertices.size());
+	}
 	glBindVertexArray(0);
 	//glActiveTexture(GL_TEXTURE0);
 

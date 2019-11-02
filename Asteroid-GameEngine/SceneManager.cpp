@@ -335,11 +335,23 @@ void SceneManager::SetUpShader()
 	//*********************************
 	//Resend Light information to shader
 	//*********************************
+	for (int i = 0; i < vec_ShaderProgram.size(); i++)
+	{
+		vec_ShaderProgram[i]->use();
+		vec_ShaderProgram[i]->setMat4("projection", _editorCamera.Projection);
+	}
+
+
+
+
+
 	_CurrentShader = vec_ShaderProgram[4];
 	_CurrentShader->use();
 
 	_CurrentShader->setFloat("far_plane", far_plane);
-	_CurrentShader->setMat4("projection", _editorCamera.Projection);
+	_CurrentShader->setInt("diffuseTexture", 2);
+	_CurrentShader->setInt("depthMap", 1);
+	_CurrentShader->setInt("shadowMap", 1);
 	_CurrentShader->setInt("material.diffuse", 0);
 	_CurrentShader->setInt("material.specular", 1);
 	int Light_Length = 3;
@@ -495,6 +507,12 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 	}
 	glBindVertexArray(0);
 
+}
+
+void SceneManager::vec_SpecializedDraw()
+{
+	vec_ShaderProgram[0]->use();
+	_Croodinate->Draw(vec_ShaderProgram[0]);
 }
 
 

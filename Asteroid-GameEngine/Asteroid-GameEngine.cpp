@@ -96,7 +96,7 @@ int main()
 	// ------------------------------------
 	
 
-	unsigned int AxisVAO, AxisVBO;
+	/*unsigned int AxisVAO, AxisVBO;
 	//  座標的點數資料
 	float coordinate[] = {
 		// positions         // colors
@@ -159,7 +159,7 @@ int main()
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glBindVertexArray(0);*/
 
 	//---------------------------------------
 	//記得拿掉
@@ -199,22 +199,25 @@ int main()
 
 
 		//Draw Croodinate  基本座標(白)
-		{
+	/*	{
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->use();
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setMat4("projection", _editorCamera.Projection);
 			glm::mat4 view = _editorCamera.GetViewMatrix();
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setMat4("view", view);
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0, 0, 0));
+			
 			//if (_MainWorld->_SceneManager._mode == Mode_2D)
 			//	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
 			//else
+				model = glm::scale(model,glm::vec3(10,10,10));
 				model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1, 0, 0));
+				model = glm::translate(model, glm::vec3(0, 0, 0));
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setMat4("model", model);
 			_MainWorld->_SceneManager.vec_ShaderProgram[0]->setVec3("Color",0.4f,0.4f,0.4f);
 			glBindVertexArray(AxisVAO);
 			glDrawArrays(GL_LINES, 0, 44);
-		}
+			glBindVertexArray(0);
+		}*/
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

@@ -204,6 +204,7 @@ void World::UpdateFrame()
 	{
 		if (!_PhysicsProgress.empty()) depose_init_PhysicsProgress();
 	}
+	_SceneManager.vec_SpecializedDraw();  //只需要畫一次的非普通場景特殊繪製   (座標軸、Axis ... etc) 
 	this->m_dynamicsWorld->debugDrawWorld();
 	glCullFace(GL_FRONT);
 	///Shadw
@@ -226,6 +227,9 @@ void World::UpdateFrame()
 	glCullFace(GL_BACK);
 	// Draw Pipeline
 	glViewport(0, 0, _Width, _Height);
+
+	
+
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 /*	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);    */
@@ -236,7 +240,8 @@ void World::UpdateFrame()
 	if (!_SceneManager.vec_ObjectsToRender.empty() || !_SceneManager.vec_ObjectsToRender_Instancing.empty())
 		_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
 
-	//_SceneManager.DrawScene(false);
+
+
 
 }
 

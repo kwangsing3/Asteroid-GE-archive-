@@ -51,9 +51,6 @@ void Meshrender::Draw(Shader* _shader)
 	if (!this->_visable)  return;
 	if (_shader == NULL) { AGE_PRINTCONSLE("Meshrender Shader Pass failed"); AGE_ASSERT(false); }
 
-	//_shader->use();
-	//_shader.setVec3("viewPos", _editorCamera.transform.position);
-
 	// 共通
 	_shader->setMat4("view", _editorCamera.GetViewMatrix());
 	_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
@@ -77,7 +74,7 @@ void Meshrender::Draw(Shader* _shader)
 //btCollisionShape* colShape;
 void Meshrender::CreateMouseCollision()
 {
-	_MainWorld->InitPhysics = true;
+	
 	btVector3 localInertia(0, 0, 0);
 	//create a dynamic rigidbody
 	if (colShape == NULL)
@@ -114,7 +111,7 @@ void Meshrender::CreateMouseCollision()
 	int _mask = 1;
 	this->body->_ActorInBullet = this->_actor;
 	_MainWorld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
-	
+	_MainWorld->InitPhysics = true;
 	//World::dynamicsWorld->updateSingleAabb(body);
 }
 void Meshrender::UpdateCollision()

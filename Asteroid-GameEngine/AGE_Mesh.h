@@ -43,9 +43,13 @@ private:
 		// load data into vertex buffers
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+		if (!indices.empty())
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		}
+		
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 		// vertex Positions
 		glEnableVertexAttribArray(0);
@@ -87,7 +91,12 @@ public:
 		this->_Textures = _Text;
 		setupMesh();
 	}
+	Mesh(std::vector<Vertex> vert)
+	{
+		this->vertices = vert;
 
+		setupMesh();
+	}
 	virtual void Draw(Shader* shader);
 	
 

@@ -71,12 +71,14 @@ public:
 	{ 
 		CheckReloadShader(); 
 		_ADDManager = new ADD_Component(this);
+		
+		_Croodinate =_ADDManager->ADD_CustomMesh(coordinates,132);
 	}
 	
 
 	//void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
 	void DrawScene(RenderShadowType _RType);
-
+	void vec_SpecializedDraw();
 
 
 	//static void DrawScene();   //this is test draw scene, only has simple drawing.
@@ -99,22 +101,62 @@ private:
 
 		/*6*/vec_ShaderProgram.push_back(new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs"));    
 
-		//  先暫時放這裡  影子相關
-		vec_ShaderProgram[4]->use();
-		vec_ShaderProgram[4]->setInt("diffuseTexture", 2);
-		vec_ShaderProgram[4]->setInt("depthMap", 1);
-		vec_ShaderProgram[4]->setInt("shadowMap", 1);
-		vec_ShaderProgram[4]->setInt("material.diffuse", 0);
-		vec_ShaderProgram[4]->setInt("material.specular", 1);
 
-
-
+		SetUpShader();
 	}
 	//static glm::vec3 lightPos;
 	void InitDrawPipline();
 	void SetUpShader();
-//	void Draw_Instancing(bool _drawShadow, unsigned int _dp);
-	//void Draw_Normal(bool _drawShadow, unsigned int _dp);
+	float coordinates[132] = {
+		// positions        
+		   2.5f, 0.0f, 0.5f,
+		  -2.5f, 0.0f, 0.5f,
+		   2.5f, -0.0f, 0.0f,
+		  -2.5f, -0.0f, 0.0f,
+		   2.5f, 0.0f, -0.5f,
+		  -2.5f, -0.0f, -0.5f,
+		  2.5f, 0.0f, 1.0f,
+		  -2.5f, 0.0f, 1.0f,
+		   2.5f, -0.0f, -1.0f,
+		  -2.5f, -0.0f, -1.0f,
+		   2.5f, 0.0f, 1.5f,
+		  -2.5f, -0.0f, 1.5f,
+		   2.5f, 0.0f, -1.5f,
+		  -2.5f, 0.0f, -1.5f,
+		   2.5f, -0.0f, 2.0f,
+		  -2.5f, -0.0f, 2.0f,
+		   2.5f, 0.0f, -2.0f,
+		  -2.5f, -0.0f, -2.0f,
+		  2.5f, 0.0f,  2.5f,
+		  -2.5f, -0.0f, 2.5f,
+		  2.5f, 0.0f, -2.5f,
+		  -2.5f, -0.0f, -2.5f,
+
+		   0.5f, 0.0f, 2.5f,
+		   0.5f, 0.0f, -2.5f,
+		   0.0f, -0.0f, 2.5f,
+		   0.0f, -0.0f, -2.5f,
+		  -0.5f, 0.0f, 2.5f,
+		  -0.5f, -0.0f, -2.5f,
+		  1.0f, 0.0f, 2.5f,
+		  1.0f, 0.0f, -2.5f,
+		   -1.0f, -0.0f, 2.5f,
+		  -1.0f, -0.0f, -2.5f,
+		   1.5f, 0.0f, 2.5f,
+		   1.5f, -0.0f, -2.5f,
+		   -1.5f, 0.0f, 2.5f,
+		  -1.5f, 0.0f, -2.5f,
+		   2.0f, -0.0f, 2.5f,
+		  2.0f, -0.0f, -2.5f,
+		  -2.0f, 0.0f, 2.5f,
+		  -2.0f, -0.0f, -2.5f,
+		   2.5f, 0.0f, 2.5f,
+		  2.5f, -0.0f, -2.5f,
+		  -2.5f, 0.0f, 2.5f,
+		  -2.5f, 0.0f,  -2.5f,
+	};
+protected:
+	Meshrender* _Croodinate;
 };
 
 
