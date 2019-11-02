@@ -512,6 +512,7 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 void SceneManager::vec_SpecializedDraw()
 {
 	vec_ShaderProgram[0]->use();
+//	_Croodinate->_actor->transform->Scale(glm::vec3(4));
 	_Croodinate->Draw(vec_ShaderProgram[0]);
 }
 

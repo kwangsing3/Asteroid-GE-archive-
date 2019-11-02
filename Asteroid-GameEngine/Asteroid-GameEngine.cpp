@@ -163,7 +163,7 @@ int main()
 
 	//---------------------------------------
 	//記得拿掉
-	_MainWorld->_SceneManager.OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
+	//_MainWorld->_SceneManager.OpenFile(_mainWindow->progect_I_am_focus);//調試用函數
 	
 
 	
