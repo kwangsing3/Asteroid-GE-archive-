@@ -241,8 +241,10 @@ void SceneManager::UpdateRenderPipeline(Meshrender * _mrender)
 Meshrender* SceneManager::ADD_Croodinate()
 {
 	float coordinatesX[] = {
-		  1.0f, 0.0f, 0.0f,         0.4f,0.4f,0.4f,
-		  1.0f, 0.0f, 100.0f,       0.4f,0.4f,0.4f,
+		0.0f, 0.0f, 0.0f,         0.4f,0.4f,0.4f,
+		  0.0f, 0.0f, 100.0f,       0.4f,0.4f,0.4f,
+		  1.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
+		  1.0f, 0.0f, 100.0f,       0.3f,0.3f,0.3f,
 		 2.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
 		  2.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
 		  3.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
@@ -259,12 +261,14 @@ Meshrender* SceneManager::ADD_Croodinate()
 		8.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
 		9.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
 		 9.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
-		   10.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		 10.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		  // 10.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
+		// 10.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
 	};
 	float coordinatesZ[] = {
-		 0.0f, 0.0f, 1.0f,      0.4f,0.4f,0.4f,
-		100.0f, 0.0f, 1.0f,    0.4f,0.4f,0.4f,
+		0.0f, 0.0f, 0.0f,      0.4f,0.4f,0.4f,
+		100.0f, 0.0f, 0.0f,    0.4f,0.4f,0.4f,
+		 0.0f, 0.0f, 1.0f,      0.3f,0.3f,0.3f,
+		100.0f, 0.0f, 1.0f,    0.3f,0.3f,0.3f,
 		0.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
 		100.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 3.0f,      0.3f,0.3f,0.3f,
@@ -281,8 +285,8 @@ Meshrender* SceneManager::ADD_Croodinate()
 		 100.0f, 0.0f, 8.0f,      0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 9.0f,       0.3f,0.3f,0.3f,
 		100.0f, 0.0f, 9.0f,      0.3f,0.3f,0.3f,
-		 0.0f, 0.0f, 10.0f,       0.3f,0.3f,0.3f,
-		 100.0f, 0.0f, 10.0f,      0.3f,0.3f,0.3f,
+		 //0.0f, 0.0f, 10.0f,       0.3f,0.3f,0.3f,
+		 //100.0f, 0.0f, 10.0f,      0.3f,0.3f,0.3f,
 	};
 	   	Actor* _ac = new Actor();
 	Meshrender* _meshrender = new Meshrender(_ac);
@@ -294,7 +298,7 @@ Meshrender* SceneManager::ADD_Croodinate()
 		{
 			Vertex _Nvertex;
 			_Nvertex.Position = glm::vec3((coordinatesX[x]+i*10)-50, coordinatesX[x + 1], coordinatesX[x + 2] -50);
-			_Nvertex.Normal = glm::vec3(coordinatesX[x+3], coordinatesX[x + 4], coordinatesX[x + 5]);
+			_Nvertex.Normal = glm::vec3(i == 5 &&x==0 ? 0: coordinatesX[x+3], i == 5 &&(x == 0|| x == 6) ? 1 : coordinatesX[x + 4], i == 5 && x == 0 ? 0 : coordinatesX[x + 5]);
 			_newVer.push_back(_Nvertex);
 		}
 
@@ -302,7 +306,7 @@ Meshrender* SceneManager::ADD_Croodinate()
 		{
 			Vertex _Nvertex;
 			_Nvertex.Position = glm::vec3(coordinatesZ[z]-50, coordinatesZ[z + 1], (coordinatesZ[z + 2]+i*10)-50);
-			_Nvertex.Normal = glm::vec3(coordinatesZ[z+3], coordinatesZ[z + 4], coordinatesZ[z + 5]);
+			_Nvertex.Normal = glm::vec3(i == 5 && (z == 0 || z == 6) ? 1 : coordinatesZ[z+3], i == 5 && z == 0 ? 0 : coordinatesZ[z + 4], i == 5 && z == 0 ? 0 : coordinatesZ[z + 5]);
 			_newVer.push_back(_Nvertex);
 		}
 
@@ -575,7 +579,8 @@ void SceneManager::vec_SpecializedDraw()
 	
 	int _le = glm::length(_editorCamera.transform.position);
 
-	_Croodinate->_actor->transform->Scale(glm::vec3(_editorCamera.transform.position.y > 40? 10:2));
+	//_Croodinate->_actor->transform->Scale(glm::vec3(_editorCamera.transform.position.y > 40? 10:2));
+	_Croodinate->_actor->transform->Scale(glm::vec3(1));
 	_Croodinate->Draw(vec_ShaderProgram[0]);
 }
 

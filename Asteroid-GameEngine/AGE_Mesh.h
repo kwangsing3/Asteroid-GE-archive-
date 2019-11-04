@@ -33,7 +33,7 @@ class Mesh    //傳入已經分配好的數值來製作Mesh
 private:
 
 	unsigned int VBO=0, EBO=0;
-	void setupMesh()
+	void setupMesh()                     // 依照普通Mesh來分配節點      如果是簡單的Debug是透過 Normal分配的位置來決定顏色    所以簡單的Debug物件只有使用 aPos、Normal
 	{
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
