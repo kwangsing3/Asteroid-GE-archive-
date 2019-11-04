@@ -25,7 +25,7 @@ public:
 	Meshrender* Add_Meshrender(Actor* _actor, Shape _sha);
 	Meshrender* Add_Meshrender(Actor* _actor, std::string _path);
 	Meshrender* ADD_CustomMesh(float* vertexs, unsigned int _Length);
-	Meshrender* ADD_Croodinate(float* vertexs, unsigned int _Length);
+
 	DirectionalLight* Add_DirectionalLight(Actor* _actor = nullptr);
 	PointLight* Add_PointLight(Actor* _actor = nullptr);
 	BoxCollision* Add_BoxCollision(Actor* _actor = nullptr, float mass = 1);

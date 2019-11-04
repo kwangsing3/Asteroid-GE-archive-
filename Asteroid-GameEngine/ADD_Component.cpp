@@ -100,45 +100,6 @@ Meshrender* ADD_Component::ADD_CustomMesh(float* vertexs, unsigned int _Length) 
 	return _meshrender;
 }
 
-Meshrender* ADD_Component::ADD_Croodinate(float* vertexs, unsigned int _Length)
-{
-	Actor* _ac = new Actor();
-	Meshrender* _meshrender = new Meshrender(_ac);
-	std::vector<Vertex> _newVer;
-	std::vector<unsigned int> _newUint;
-
-	for (int i = 0; i < _Length; i = i + 3)
-	{
-		for (int z = 0; z < _Length; z = z + 1)
-		{
-			Vertex _Nvertex;
-			_Nvertex.Position = glm::vec3(vertexs[i]+z*10, vertexs[i + 1] + z * 10, vertexs[i + 2] + z * 10);
-			_newVer.push_back(_Nvertex);
-		}
-
-	}
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-	std::vector<Mesh*> _newMeshVec;
-	_newMeshVec.push_back(new Mesh(_newVer));
-	_meshrender->_model = new AGE_Model(_newMeshVec);
-	_ac->meshrender = _meshrender;
-	// 不應該加入到 Draw Pipeline 中  畢竟會繪製兩次  有另外獨立到SceneManager 中繪製
-	return _meshrender;
-}
-
 
 
 

@@ -716,6 +716,7 @@ static void ShowSimpleOverlay(bool* p_open)
 			ImGui::Text(WindowUI::_mode ? "Game Mode: 3D" : "Game Mode: 2D");
 			ImGui::Text(Window::DeBug_Mode ? "Debug Mode: Active" : "Debug Mode: inValid");
 			ImGui::Text(_MainWorld->_SceneManager._FilePAth.c_str());
+			ImGui::Text(std::to_string(glm::length(_editorCamera.transform.position)).c_str());
 		}
 		ImGui::End();
 

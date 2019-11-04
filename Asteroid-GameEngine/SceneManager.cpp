@@ -22,7 +22,7 @@ std::string _Examples_List[5] =
 	"EXampleProject/TestHinge Torque.AstGamEng",
 };
 
-
+#define ArraySize(a) sizeof(a)/sizeof(a[0])
 //*********************************
 //Render Request
 //*********************************
@@ -35,20 +35,7 @@ Shader* _CurrentShader;
 extern World* _MainWorld;
 
 
-/*std::vector<Actor*> SceneManager::Objects;
-std::vector<Shader*> SceneManager::vec_ShaderProgram;
-std::vector<DirectionalLight*> SceneManager::vec_DirectionlLight;
-std::vector<PointLight*> SceneManager::vec_PointLight;
-std::vector<Render_Struct*> SceneManager::vec_ObjectsToRender_Instancing;
-std::vector<Meshrender*> SceneManager::vec_ObjectsToRender;
 
-std::vector<ModelLoadStruct*> SceneManager::ModelList;
-
-//glm::vec3 SceneManager::lightPos;
-bool SceneManager::NeedReloadShader = false;
-bool SceneManager::NeedInitedDraw = true;
-
-std::string SceneManager::_FilePAth;*/
 void SceneManager::OpenFile(int _index) 
 {
 	if (_index > _Examples_List->size() - 1 || _index == -1) return;
@@ -251,6 +238,84 @@ void SceneManager::UpdateRenderPipeline(Meshrender * _mrender)
 		}
 	}
 }
+Meshrender* SceneManager::ADD_Croodinate()
+{
+	float coordinatesX[] = {
+		  1.0f, 0.0f, 0.0f,         0.4f,0.4f,0.4f,
+		  1.0f, 0.0f, 100.0f,       0.4f,0.4f,0.4f,
+		 2.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
+		  2.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		  3.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
+		   3.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+			4.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
+		  4.0f, 0.0f, 100.0f,         0.3f,0.3f,0.3f,
+		   5.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
+		  5.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		 6.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
+		  6.0f, 0.0f, 100.0f,       0.3f,0.3f,0.3f,
+			 7.0f, 0.0f, 0.0f,       0.3f,0.3f,0.3f,
+		 7.0f, 0.0f, 100.0f,         0.3f,0.3f,0.3f,
+		 8.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
+		8.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		9.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
+		 9.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		   10.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
+		 10.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+	};
+	float coordinatesZ[] = {
+		 0.0f, 0.0f, 1.0f,      0.4f,0.4f,0.4f,
+		100.0f, 0.0f, 1.0f,    0.4f,0.4f,0.4f,
+		0.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
+		100.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
+		 0.0f, 0.0f, 3.0f,      0.3f,0.3f,0.3f,
+		 100.0f, 0.0f, 3.0f,       0.3f,0.3f,0.3f,
+		 0.0f, 0.0f, 4.0f,       0.3f,0.3f,0.3f,
+		  100.0f, 0.0f, 4.0f,      0.3f,0.3f,0.3f,
+		  0.0f, 0.0f, 5.0f,       0.3f,0.3f,0.3f,
+		  100.0f, 0.0f, 5.0f,      0.3f,0.3f,0.3f,
+		  0.0f, 0.0f, 6.0f,     0.3f,0.3f,0.3f,
+		100.0f, 0.0f, 6.0f,      0.3f,0.3f,0.3f,
+		 0.0f, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
+		  100.0f, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
+		 0.0f, 0.0f, 8.0f,       0.3f,0.3f,0.3f,
+		 100.0f, 0.0f, 8.0f,      0.3f,0.3f,0.3f,
+		 0.0f, 0.0f, 9.0f,       0.3f,0.3f,0.3f,
+		100.0f, 0.0f, 9.0f,      0.3f,0.3f,0.3f,
+		 0.0f, 0.0f, 10.0f,       0.3f,0.3f,0.3f,
+		 100.0f, 0.0f, 10.0f,      0.3f,0.3f,0.3f,
+	};
+	   	Actor* _ac = new Actor();
+	Meshrender* _meshrender = new Meshrender(_ac);
+	std::vector<Vertex> _newVer;
+	std::vector<unsigned int> _newUint;
+	for (int i = 0; i < 10; i++)
+	{
+		for (int x = 0; x < ArraySize(coordinatesX); x = x + 6)
+		{
+			Vertex _Nvertex;
+			_Nvertex.Position = glm::vec3((coordinatesX[x]+i*10)-50, coordinatesX[x + 1], coordinatesX[x + 2] -50);
+			_Nvertex.Normal = glm::vec3(coordinatesX[x+3], coordinatesX[x + 4], coordinatesX[x + 5]);
+			_newVer.push_back(_Nvertex);
+		}
+
+		for (int z = 0; z < ArraySize(coordinatesZ); z = z + 6)
+		{
+			Vertex _Nvertex;
+			_Nvertex.Position = glm::vec3(coordinatesZ[z]-50, coordinatesZ[z + 1], (coordinatesZ[z + 2]+i*10)-50);
+			_Nvertex.Normal = glm::vec3(coordinatesZ[z+3], coordinatesZ[z + 4], coordinatesZ[z + 5]);
+			_newVer.push_back(_Nvertex);
+		}
+
+	}
+	
+
+	std::vector<Mesh*> _newMeshVec;
+	_newMeshVec.push_back(new Mesh(_newVer));
+	_meshrender->_model = new AGE_Model(_newMeshVec);
+	_ac->meshrender = _meshrender;
+	// 不應該加入到 Draw Pipeline 中  畢竟會繪製兩次  有另外獨立到SceneManager 中繪製
+	return _meshrender;
+}
 void SceneManager::InitDrawPipline()
 {
 	if (!NeedInitedDraw) return;
@@ -421,11 +486,7 @@ void SceneManager::SetUpShader()
 	_CurrentShader->setFloat("material.shininess", 32.0f);
 	_CurrentShader->setBool("Use_Light", !(vec_DirectionlLight.empty() && vec_PointLight.empty()));
 }
-
-
-
 bool Use_Light = true;
-
 void SceneManager::DrawScene(RenderShadowType _RType)
 {
 	//if (vec_ObjectsToRender.empty() && vec_ObjectsToRender_Instancing.empty()) return;
@@ -508,11 +569,13 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 	glBindVertexArray(0);
 
 }
-
 void SceneManager::vec_SpecializedDraw()
 {
 	vec_ShaderProgram[0]->use();
-//	_Croodinate->_actor->transform->Scale(glm::vec3(4));
+	
+	int _le = glm::length(_editorCamera.transform.position);
+
+	_Croodinate->_actor->transform->Scale(glm::vec3(_editorCamera.transform.position.y > 40? 10:2));
 	_Croodinate->Draw(vec_ShaderProgram[0]);
 }
 

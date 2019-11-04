@@ -72,7 +72,7 @@ public:
 		CheckReloadShader(); 
 		_ADDManager = new ADD_Component(this);
 		
-		_Croodinate =_ADDManager->ADD_Croodinate(coordinates,sizeof(coordinates)/sizeof(coordinates[0]));
+		_Croodinate = ADD_Croodinate();
 		
 	}
 	
@@ -87,6 +87,7 @@ public:
 	void AddToRenderPipeline(Meshrender* _mrender);
 	void UpdateRenderPipeline(Meshrender * _mrender);
 private:
+	Meshrender* ADD_Croodinate();
 	void CreateShader()
 	{
 		if (!vec_ShaderProgram.empty())
@@ -108,73 +109,7 @@ private:
 	//static glm::vec3 lightPos;
 	void InitDrawPipline();
 	void SetUpShader();
-	float coordinates[132] = {
-		// 內圈      
-		  0.0f, 0.0f, 10.0f,
-		  0.0f, 0.0f, 0.0f,
-		  1.0f, 0.0f, 10.0f,
-		   1.0f, 0.0f, 0.0f,
-		  2.0f, 0.0f, 10.0f,
-		  2.0f, 0.0f, 0.0f,
-		   3.0f, -0.0f, 10.0f,
-		   3.0f, -0.0f, 0.0f,
-		  4.0f, -0.0f, 10.0f,
-		   4.0f, -0.0f, 0.0f,
-		  5.0f, 0.0f, 10.0f,
-		  5.0f, 0.0f, 0.0f,
-		  6.0f, -0.0f, 10.0f,
-			6.0f, -0.0f, 0.0f,
-		 7.0f, 0.0f, 10.0f,
-		  7.0f, 0.0f, 0.0f,
-		8.0f, 0.0f, 10.0f,
-		8.0f, 0.0f, 0.0f,
-		 9.0f, -0.0f, 10.0f,
-		  9.0f, -0.0f, 0.0f,
-		 10.0f, -0.0f, 10.0f,
-		 10.0f, -0.0f, 0.0f,
-
-		 10.0f, 0.0f, 10.0f,
-		 0.0f, 0.0f, 10.0f,
-		 10.0f, 0.0f, 9.0f,
-		 0.0f, 0.0f, 9.0f,
-		 10.0f, 0.0f, 8.0f,
-		  0.0f, 0.0f, 8.0f,
-		   10.0f, -0.0f, 7.0f,
-		  0.0f, -0.0f, 7.0f,
-		  10.0f, -0.0f, 6.0f,
-		   0.0f, -0.0f, 6.0f,
-		  10.0f, 0.0f, 5.0f,
-		  0.0f, 0.0f, 5.0f,
-		  10.0f, -0.0f, 4.0f,
-			0.0f, -0.0f, 4.0f,
-		 10.0f, 0.0f, 3.0f,
-		  0.0f, 0.0f, 3.0f,
-		10.0f, 0.0f, 2.0f,
-		0.0f, 0.0f, 2.0f,
-		 10.0f, -0.0f, 1.0f,
-		  0.0f, -0.0f, 1.0f,
-		 10.0f, -0.0f, 0.0f,
-		0.0f, -0.0f, 0.0f,
-		  
-		   
-		 
-		  
-		
-		
-		
-		
-		 
-   
-
-
-
-
-
-
-
-
-
-	};
+	
 protected:
 	Meshrender* _Croodinate;
 };
