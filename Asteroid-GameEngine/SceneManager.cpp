@@ -30,11 +30,11 @@ float near_plane = 1.0f;
 float far_plane = 7.5f;
 glm::mat4 shadowProj = glm::mat4(1.0f), lightView = glm::mat4(1.0f);
 glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
-glm::vec3 lightPos = glm::vec3(1.0f);
+glm::vec3 lightPos = _editorCamera.transform.position;
 Shader* _CurrentShader;
 extern World* _MainWorld;
 
-
+int _coordinate_Base = 3 , _coordinate_Scale = (int)pow(10, _coordinate_Base);    //如果需要改變伸縮的幅度就改前面的_coordinate_Base
 
 void SceneManager::OpenFile(int _index) 
 {
@@ -242,49 +242,49 @@ Meshrender* SceneManager::ADD_Croodinate()
 {
 	float coordinatesX[] = {
 		0.0f, 0.0f, 0.0f,         0.4f,0.4f,0.4f,
-		  0.0f, 0.0f, 100.0f,       0.4f,0.4f,0.4f,
+		  0.0f, 0.0f, 10.0f* _coordinate_Scale,       0.4f,0.4f,0.4f,
 		  1.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		  1.0f, 0.0f, 100.0f,       0.3f,0.3f,0.3f,
+		  1.0f, 0.0f, 10.0f*_coordinate_Scale,       0.3f,0.3f,0.3f,
 		 2.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		  2.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		  2.0f, 0.0f, 10.0f*_coordinate_Scale,        0.3f,0.3f,0.3f,
 		  3.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		   3.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		   3.0f, 0.0f, 10.0f*_coordinate_Scale,        0.3f,0.3f,0.3f,
 			4.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		  4.0f, 0.0f, 100.0f,         0.3f,0.3f,0.3f,
+		  4.0f, 0.0f, 10.0f * _coordinate_Scale,         0.3f,0.3f,0.3f,
 		   5.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		  5.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		  5.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
 		 6.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		  6.0f, 0.0f, 100.0f,       0.3f,0.3f,0.3f,
+		  6.0f, 0.0f, 10.0f * _coordinate_Scale,       0.3f,0.3f,0.3f,
 			 7.0f, 0.0f, 0.0f,       0.3f,0.3f,0.3f,
-		 7.0f, 0.0f, 100.0f,         0.3f,0.3f,0.3f,
+		 7.0f, 0.0f, 10.0f * _coordinate_Scale,         0.3f,0.3f,0.3f,
 		 8.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		8.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		8.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
 		9.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		 9.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
+		 9.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
 		  // 10.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
 		// 10.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
 	};
 	float coordinatesZ[] = {
 		0.0f, 0.0f, 0.0f,      0.4f,0.4f,0.4f,
-		100.0f, 0.0f, 0.0f,    0.4f,0.4f,0.4f,
+		10.0f * _coordinate_Scale, 0.0f, 0.0f,    0.4f,0.4f,0.4f,
 		 0.0f, 0.0f, 1.0f,      0.3f,0.3f,0.3f,
-		100.0f, 0.0f, 1.0f,    0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 1.0f,    0.3f,0.3f,0.3f,
 		0.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
-		100.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 3.0f,      0.3f,0.3f,0.3f,
-		 100.0f, 0.0f, 3.0f,       0.3f,0.3f,0.3f,
+		 10.0f * _coordinate_Scale, 0.0f, 3.0f,       0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 4.0f,       0.3f,0.3f,0.3f,
-		  100.0f, 0.0f, 4.0f,      0.3f,0.3f,0.3f,
+		  10.0f * _coordinate_Scale, 0.0f, 4.0f,      0.3f,0.3f,0.3f,
 		  0.0f, 0.0f, 5.0f,       0.3f,0.3f,0.3f,
-		  100.0f, 0.0f, 5.0f,      0.3f,0.3f,0.3f,
+		  10.0f * _coordinate_Scale, 0.0f, 5.0f,      0.3f,0.3f,0.3f,
 		  0.0f, 0.0f, 6.0f,     0.3f,0.3f,0.3f,
-		100.0f, 0.0f, 6.0f,      0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 6.0f,      0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
-		  100.0f, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
+		  10.0f * _coordinate_Scale, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 8.0f,       0.3f,0.3f,0.3f,
-		 100.0f, 0.0f, 8.0f,      0.3f,0.3f,0.3f,
+		 10.0f * _coordinate_Scale, 0.0f, 8.0f,      0.3f,0.3f,0.3f,
 		 0.0f, 0.0f, 9.0f,       0.3f,0.3f,0.3f,
-		100.0f, 0.0f, 9.0f,      0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 9.0f,      0.3f,0.3f,0.3f,
 		 //0.0f, 0.0f, 10.0f,       0.3f,0.3f,0.3f,
 		 //100.0f, 0.0f, 10.0f,      0.3f,0.3f,0.3f,
 	};
@@ -292,21 +292,21 @@ Meshrender* SceneManager::ADD_Croodinate()
 	Meshrender* _meshrender = new Meshrender(_ac);
 	std::vector<Vertex> _newVer;
 	std::vector<unsigned int> _newUint;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < _coordinate_Scale; i++)
 	{
 		for (int x = 0; x < ArraySize(coordinatesX); x = x + 6)
 		{
 			Vertex _Nvertex;
-			_Nvertex.Position = glm::vec3((coordinatesX[x]+i*10)-50, coordinatesX[x + 1], coordinatesX[x + 2] -50);
-			_Nvertex.Normal = glm::vec3(i == 5 &&x==0 ? 0: coordinatesX[x+3], i == 5 &&(x == 0|| x == 6) ? 1 : coordinatesX[x + 4], i == 5 && x == 0 ? 0 : coordinatesX[x + 5]);
+			_Nvertex.Position = glm::vec3((coordinatesX[x]+i*10)-5* _coordinate_Scale, coordinatesX[x + 1], coordinatesX[x + 2] -5 * _coordinate_Scale);
+			_Nvertex.Normal = glm::vec3(i == _coordinate_Scale/2 &&x==0 ? 0: coordinatesX[x+3], i == _coordinate_Scale / 2 &&(x == 0|| x == 6) ? 1 : coordinatesX[x + 4], i == _coordinate_Scale / 2 && x == 0 ? 0 : coordinatesX[x + 5]);
 			_newVer.push_back(_Nvertex);
 		}
 
 		for (int z = 0; z < ArraySize(coordinatesZ); z = z + 6)
 		{
 			Vertex _Nvertex;
-			_Nvertex.Position = glm::vec3(coordinatesZ[z]-50, coordinatesZ[z + 1], (coordinatesZ[z + 2]+i*10)-50);
-			_Nvertex.Normal = glm::vec3(i == 5 && (z == 0 || z == 6) ? 1 : coordinatesZ[z+3], i == 5 && z == 0 ? 0 : coordinatesZ[z + 4], i == 5 && z == 0 ? 0 : coordinatesZ[z + 5]);
+			_Nvertex.Position = glm::vec3(coordinatesZ[z]-5 * _coordinate_Scale, coordinatesZ[z + 1], (coordinatesZ[z + 2]+i*10)-5 * _coordinate_Scale);
+			_Nvertex.Normal = glm::vec3(i == _coordinate_Scale / 2 && (z == 0 || z == 6) ? 1 : coordinatesZ[z+3], i == _coordinate_Scale / 2 && z == 0 ? 0 : coordinatesZ[z + 4], i == _coordinate_Scale / 2 && z == 0 ? 0 : coordinatesZ[z + 5]);
 			_newVer.push_back(_Nvertex);
 		}
 
@@ -503,6 +503,8 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 		_CurrentShader = vec_ShaderProgram[4];
 		_CurrentShader->use();
 		_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
+		lightPos = vec_DirectionlLight.empty()? _editorCamera.transform.position : this->vec_DirectionlLight[0]->_actor->transform->rotation;
+		_CurrentShader->setVec3("lightPos", _editorCamera.transform.position);
 		break;
 	case RenderShadowType::DirectionalLight:
 		_CurrentShader = vec_ShaderProgram[3];
@@ -519,6 +521,10 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 		break;
 	}
 	
+
+
+
+
 	if (!vec_ObjectsToRender.empty())
 	{
 		_CurrentShader->setBool("Use_Instance", false);
