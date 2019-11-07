@@ -9,9 +9,7 @@
 #include <AGE_Mesh.h>
 #include <AGE_SkeletalMesh.h>
 enum struct Shape { Plane, Cube, Sphere, Capsule, Cylinder, _Model, DEBUG };
-//**********************************
-// 這裡的Shape 在ADD_Component裡定義
-//**********************************
+
 class AGE_Model    
 {
 protected:
@@ -76,7 +74,7 @@ public:
 	std::vector<Texture> textures_loaded;
 	bool HasBone = false;
 	std::string _ModelPath;
-	AGE_Model() { AGE_PRINTCONSLE("Careful, this should been created with no thing put in")};
+	AGE_Model() { /*AGE_PRINTCONSLE("Careful, this should been created with no thing put in")*/};
 /*	AGE_Model(Shape _sha) { CreateShape(_sha); };*/
 	AGE_Model(std::string _path) { CreateShape(_path); };
 	AGE_Model(std::vector<Mesh*> _mesh) { _meshes = _mesh; };

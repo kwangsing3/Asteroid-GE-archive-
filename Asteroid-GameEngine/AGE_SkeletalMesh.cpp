@@ -179,13 +179,18 @@ void SkeletalMesh::Draw(Shader* shader)
 	//***************************************
 	// Animation
 	//***************************************
+	if (_aiScene->HasAnimations())
+	{
+		aiMatrix4x4 Identity;
+		float TicksPerSecond = (float)(_aiScene->mAnimations[0]->mTicksPerSecond != 0 ? _aiScene->mAnimations[0]->mTicksPerSecond : 25.0f);
+		float TimeInTicks = glfwGetTime() * TicksPerSecond;
+		float AnimationTime = fmod(TimeInTicks, (float)_aiScene->mAnimations[0]->mDuration);
+		ReadNodeHeirarchy(AnimationTime, _aiScene->mRootNode, glm::mat4(1.0f), _aiScene);
+	}
 	
-	aiMatrix4x4 Identity;
-	float TicksPerSecond = (float)(_aiScene->mAnimations[0]->mTicksPerSecond != 0 ? _aiScene->mAnimations[0]->mTicksPerSecond : 25.0f);
-	float TimeInTicks = glfwGetTime() * TicksPerSecond;
-	float AnimationTime = fmod(TimeInTicks, (float)_aiScene->mAnimations[0]->mDuration);
 
-	ReadNodeHeirarchy(AnimationTime, _aiScene->mRootNode, glm::mat4(1.0f), _aiScene);
+
+	
 	for (unsigned int i = 0; i < vec_BonesData.size(); i++)
 	{
 		shader->setMat4("boneTransform[" + std::to_string(i) + "]", vec_BonesData[i]->FinalTransform );

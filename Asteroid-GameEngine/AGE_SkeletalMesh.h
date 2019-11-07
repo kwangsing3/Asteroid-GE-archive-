@@ -12,6 +12,17 @@ struct Vertex_hasBone
 		memset(IDs, 0, sizeof(IDs));
 		memset(Weight, 0, sizeof(Weight));
 	};
+	/*Vertex_hasBone(unsigned int _index, float _flo)
+	{
+		for (unsigned int i = 0; i < sizeof(IDs) / sizeof(IDs[0]); i++)
+		{
+			if (Weight[i] == 0.0f) {
+				IDs[i] = _index;
+				Weight[i] = _flo;
+				return;
+			}
+		}
+	}*/
 	void AddBoneData(unsigned int _index, float _flo)
 	{
 		for (unsigned int i = 0; i < sizeof(IDs) / sizeof(IDs[0]); i++)

@@ -63,7 +63,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   * Enum used to distinguish data types
   */
  // -------------------------------------------------------------------------------
-typedef enum class aiMetadataType {
+typedef enum aiMetadataType {
     AI_BOOL       = 0,
     AI_INT32      = 1,
     AI_UINT64     = 2,
@@ -100,13 +100,13 @@ struct aiMetadataEntry {
   */
  // -------------------------------------------------------------------------------
 
-inline aiMetadataType GetAiType( bool )       { return aiMetadataType::AI_BOOL; }
-inline aiMetadataType GetAiType( int32_t )    { return aiMetadataType::AI_INT32; }
-inline aiMetadataType GetAiType( uint64_t )   { return aiMetadataType::AI_UINT64; }
-inline aiMetadataType GetAiType( float )      { return aiMetadataType::AI_FLOAT; }
-inline aiMetadataType GetAiType( double )     { return aiMetadataType::AI_DOUBLE; }
-inline aiMetadataType GetAiType( const aiString & )   { return aiMetadataType::AI_AISTRING; }
-inline aiMetadataType GetAiType( const aiVector3D & ) { return aiMetadataType::AI_AIVECTOR3D; }
+inline aiMetadataType GetAiType( bool )       { return AI_BOOL; }
+inline aiMetadataType GetAiType( int32_t )    { return AI_INT32; }
+inline aiMetadataType GetAiType( uint64_t )   { return AI_UINT64; }
+inline aiMetadataType GetAiType( float )      { return AI_FLOAT; }
+inline aiMetadataType GetAiType( double )     { return AI_DOUBLE; }
+inline aiMetadataType GetAiType( const aiString & )   { return AI_AISTRING; }
+inline aiMetadataType GetAiType( const aiVector3D & ) { return AI_AIVECTOR3D; }
 
 #endif // __cplusplus
 
@@ -152,48 +152,48 @@ struct aiMetadata {
         for ( size_t i = 0; i < static_cast<size_t>(mNumProperties); ++i ) {
             mValues[ i ].mType = rhs.mValues[ i ].mType;
             switch ( rhs.mValues[ i ].mType ) {
-            case aiMetadataType::AI_BOOL:
+            case AI_BOOL:
                 mValues[ i ].mData = new bool;
                 ::memcpy( mValues[ i ].mData, rhs.mValues[ i ].mData, sizeof(bool) );
                 break;
-            case aiMetadataType::AI_INT32: {
+            case AI_INT32: {
                 int32_t v;
                 ::memcpy( &v, rhs.mValues[ i ].mData, sizeof( int32_t ) );
                 mValues[ i ].mData = new int32_t( v );
                 }
                 break;
-            case aiMetadataType::AI_UINT64: {
+            case AI_UINT64: {
                     uint64_t v;
                     ::memcpy( &v, rhs.mValues[ i ].mData, sizeof( uint64_t ) );
                     mValues[ i ].mData = new  uint64_t( v );
                 }
                 break;
-            case aiMetadataType::AI_FLOAT: {
+            case AI_FLOAT: {
                     float v;
                     ::memcpy( &v, rhs.mValues[ i ].mData, sizeof( float ) );
                     mValues[ i ].mData = new float( v );
                 }
                 break;
-            case aiMetadataType::AI_DOUBLE: {
+            case AI_DOUBLE: {
                     double v;
                     ::memcpy( &v, rhs.mValues[ i ].mData, sizeof( double ) );
                     mValues[ i ].mData = new double( v );
                 }
                 break;
-            case aiMetadataType::AI_AISTRING: {
+            case AI_AISTRING: {
                     aiString v;
                     rhs.Get<aiString>( mKeys[ i ], v );
                     mValues[ i ].mData = new aiString( v );
                 }
                 break;
-            case aiMetadataType::AI_AIVECTOR3D: {
+            case AI_AIVECTOR3D: {
                     aiVector3D v;
                     rhs.Get<aiVector3D>( mKeys[ i ], v );
                     mValues[ i ].mData = new aiVector3D( v );
                 }
                 break;
 #ifndef SWIG
-            case aiMetadataType::FORCE_32BIT:
+            case FORCE_32BIT:
 #endif
             default:
                 break;
@@ -213,29 +213,29 @@ struct aiMetadata {
             for (unsigned i=0; i<mNumProperties; ++i) {
                 void* data = mValues[i].mData;
                 switch (mValues[i].mType) {
-                case aiMetadataType::AI_BOOL:
+                case AI_BOOL:
                     delete static_cast< bool* >( data );
                     break;
-                case aiMetadataType::AI_INT32:
+                case AI_INT32:
                     delete static_cast< int32_t* >( data );
                     break;
-                case aiMetadataType::AI_UINT64:
+                case AI_UINT64:
                     delete static_cast< uint64_t* >( data );
                     break;
-                case aiMetadataType::AI_FLOAT:
+                case AI_FLOAT:
                     delete static_cast< float* >( data );
                     break;
-                case aiMetadataType::AI_DOUBLE:
+                case AI_DOUBLE:
                     delete static_cast< double* >( data );
                     break;
-                case aiMetadataType::AI_AISTRING:
+                case AI_AISTRING:
                     delete static_cast< aiString* >( data );
                     break;
-                case aiMetadataType::AI_AIVECTOR3D:
+                case AI_AIVECTOR3D:
                     delete static_cast< aiVector3D* >( data );
                     break;
 #ifndef SWIG
-                case aiMetadataType::FORCE_32BIT:
+                case FORCE_32BIT:
 #endif
                 default:
                     break;

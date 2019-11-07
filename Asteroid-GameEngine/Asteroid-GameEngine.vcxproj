@@ -116,6 +116,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)src\glm;$(SolutionDir)src;$(SolutionDir)src\glfw-3.3\include;$(SolutionDir)Asteroid-GameEngine;$(SolutionDir)src\bullet3\include;$(SolutionDir)src\Assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\glad.c" />
     <ClCompile Include="ADD_Component.cpp" />
+    <ClCompile Include="AGE_FileBrowser.cpp" />
     <ClCompile Include="AGE_Model.cpp" />
     <ClCompile Include="AGE_SkeletalMesh.cpp" />
     <ClCompile Include="Asteroid-GameEngine.cpp" />
@@ -206,6 +208,7 @@
   <ItemGroup>
     <ClInclude Include="ADD_Component.h" />
     <ClInclude Include="AGE_Assert.h" />
+    <ClInclude Include="AGE_FileBrowser.h" />
     <ClInclude Include="AGE_Model.h" />
     <ClInclude Include="AGE_SkeletalMesh.h" />
     <ClInclude Include="Animation\SkeletalAnimation.h" />

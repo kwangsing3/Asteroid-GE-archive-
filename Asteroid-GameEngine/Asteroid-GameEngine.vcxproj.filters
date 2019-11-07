@@ -93,6 +93,9 @@
     <ClCompile Include="AGE_SkeletalMesh.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="AGE_FileBrowser.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\r50j9AV.gif">
@@ -353,6 +356,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="AGE_Assert.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="AGE_FileBrowser.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

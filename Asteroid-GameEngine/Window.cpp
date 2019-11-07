@@ -1,6 +1,6 @@
 #include <Window.h>
 
-#include "GraphicEngine/imgui.h"
+#include <GraphicEngine/imgui.h>
 
 #include <Units/Actor.h>
 #include <ADD_Component.h>
@@ -8,6 +8,7 @@
 #include <World.h>
 #include <SceneManager.h>
 #include <Units/Camera.h>
+#include <AGE_FileBrowser.h>
 
 //#include <AGE_Model.h>
 
@@ -277,7 +278,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 
 
 }
-void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned int *height, unsigned int textureColorbuffer)
+void WindowUI::ShowMyImGUIDemoWindow(bool* p_open, unsigned int* width, unsigned int* height, unsigned int textureColorbuffer)
 {
 
 	//Main Background--------------------------------------------------------------------------------------
@@ -308,7 +309,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				//buf1 =(char*) "";
 				for (int n = 0; n < SceneObject_List.size(); n++)
 				{
-				
+
 					std::string _newname = _MainWorld->_SceneManager.Objects[n]->transform->name + std::to_string(n);
 					if (ImGui::Selectable(_newname.c_str(), SceneObject_List[n]->Is_selected))
 					{
@@ -326,7 +327,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			Please read the FAQ!     避免ID衝突
 			*/
 
-			UI_Left_X = ImGui::GetWindowWidth()+ ImGui::GetWindowPos().x;
+			UI_Left_X = ImGui::GetWindowWidth() + ImGui::GetWindowPos().x;
 			UI_Left_Y = ImGui::GetWindowPos().y;
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = ImGui::GetWindowHeight();
@@ -349,57 +350,57 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			ImGui::Text("fsdfsdad我是中文dfd");
 			ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
 
-			if (ImGui::Button("新增一個空物件"))
+			if (ImGui::Button("Create a empty object"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_ac->transform->name = (char*) "New Actor";
+				_ac->transform->name = (char*)"New Actor";
 			}
 			if (ImGui::Button("Create a cube"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac,Shape::Cube);
-				_ac->transform->name = (char*) "New Cube";
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, Shape::Cube);
+				_ac->transform->name = (char*)"New Cube";
 			}
 			if (ImGui::Button("Create a sphere"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac,Shape::Sphere);
-				_ac->transform->name = (char*) "New Sphere";
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, Shape::Sphere);
+				_ac->transform->name = (char*)"New Sphere";
 			}
 			if (ImGui::Button("Create a planet"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
 				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/planet.obj");
-				_ac->transform->name = (char*) "New Plantet";
+				_ac->transform->name = (char*)"New Plantet";
 			}
 
 			if (ImGui::Button("Create a Directional light"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
 				_MainWorld->_SceneManager._ADDManager->Add_DirectionalLight(_ac);
-				_ac->transform->name = (char*) "New DirectionalLight";
+				_ac->transform->name = (char*)"New DirectionalLight";
 			}
 			if (ImGui::Button("Create a PointLight"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
 				_MainWorld->_SceneManager._ADDManager->Add_PointLight(_ac);
-				_ac->transform->name = (char*) "New PointLight";
+				_ac->transform->name = (char*)"New PointLight";
 			}
 			if (ImGui::Button("Create 100 Asteroids"))
 			{
 
-			
+
 				unsigned int amount = 100;
-				
+
 				srand(glfwGetTime()); // initialize random seed	
 				float radius = 50.0;
 				float offset = 2.5f;
-				
+
 				for (unsigned int i = 0; i < amount; i++)
 				{
 					Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
 					_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/rock.obj");
-					_ac->transform->name = (char*) "New Asteroid";
+					_ac->transform->name = (char*)"New Asteroid";
 					//glm::mat4 model = glm::mat4(1.0f);
 					// 1. translation: displace along circle with 'radius' in range [-offset, offset]
 					float angle = (float)i / (float)amount * 360.0f;
@@ -417,27 +418,39 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 					// 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
 					float rotAngle = (rand() % 360);
 					//model = glm::rotate(model, rotAngle, );
-					_ac->transform->Rotate(glm::vec3(0.4f*rotAngle, 0.6f*rotAngle, 0.8f*rotAngle));
+					_ac->transform->Rotate(glm::vec3(0.4f * rotAngle, 0.6f * rotAngle, 0.8f * rotAngle));
 					// 4. now add to list of matrices
-					
 
-					
+
+
 				}
 
 			}
-			
 			if (ImGui::Button("Create a doll"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
 				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/model.dae");
-				_ac->transform->name = (char*) "New doll";
+				_ac->transform->name = (char*)"New doll";
 			}
-			if (ImGui::Button("Create a bot"))
+			if (ImGui::Button("Create a Lighting"))
 			{
 				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/left_shimmy.fbx");
-				_ac->transform->name = (char*) "New dragon";
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/FFXIII-Lighting/lightning_obj.obj");
+				_ac->transform->name = (char*)"New Lighting";
 			}
+			if (ImGui::Button("Create a 2B"))
+			{
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/nierautomata-2b/source/nier-3dprint.fbx");
+				_ac->transform->name = (char*)"New 2B";
+			}
+			if (ImGui::Button("Create a phoenix"))
+			{
+				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/phoenix-bird/source/fly.fbx");
+				_ac->transform->name = (char*)"New phoenix";
+			}
+
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = *height - ImGui::GetWindowHeight();
 			ImGui::End();
@@ -473,7 +486,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 				ImGui::End();
 				return;
 			}
-			WindowUI::ListInspectorCur(cur_SelectObject_List.size()>0? cur_SelectObject_List[0]:NULL);
+			WindowUI::ListInspectorCur(cur_SelectObject_List.size() > 0 ? cur_SelectObject_List[0] : NULL);
 
 			UI_Right_X = ImGui::GetWindowPos().x;
 			//------------------------------------------------------------------------------------------------
@@ -527,7 +540,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 			//Window::viewport_pos = ImGui::GetWindowPos();
 			//Window::viewport_size = ImGui::GetWindowSize();
 			ImGui::GetWindowDrawList()->AddImage(
-				(void *)(intptr_t)textureColorbuffer,
+				(void*)(intptr_t)textureColorbuffer,
 				ImVec2(ImGui::GetCursorScreenPos()),
 				ImVec2(ImGui::GetCursorScreenPos().x + _Width,
 					ImGui::GetCursorScreenPos().y + _Height), ImVec2(0, 1), ImVec2(1, 0));
@@ -536,10 +549,22 @@ void WindowUI::ShowMyImGUIDemoWindow(bool *p_open, unsigned int *width, unsigned
 		ImGui::End();
 	}
 	//調試用
-	if (Window::DeBug_Mode)
-	{
 
+	{
+		if (!ImGui::Begin("FileBrowser", p_open))	// Early out if the window is collapsed, as an optimization.
+		{
+			ImGui::End();
+			return;
+		}
+		AGE_FileBrowser::ImGUIListTheBrowser();
+
+		ImGui::End();
 	}
+
+
+
+
+
 
 
 	ShowSimpleOverlay(&WindowUI::show_simple_overlay);

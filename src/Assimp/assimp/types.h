@@ -358,11 +358,11 @@ struct aiString
         if (!len) {
             return;
         }
-        if ((size_t)length + len >= MAXLEN) {
+        if (length + len >= MAXLEN) {
             return;
         }
 
-        memcpy(&data[length],app, (size_t)len+1);
+        memcpy(&data[length],app,len+1);
         length += len;
     }
 
