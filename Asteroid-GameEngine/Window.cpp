@@ -556,6 +556,7 @@ void WindowUI::ShowMyImGUIDemoWindow(bool* p_open, unsigned int* width, unsigned
 			ImGui::End();
 			return;
 		}
+		
 		AGE_FileBrowser::ImGUIListTheBrowser();
 
 		ImGui::End();

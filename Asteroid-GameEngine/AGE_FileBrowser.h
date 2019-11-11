@@ -2,9 +2,13 @@
 #define AGE_FILEBROWSER
 
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <filesystem>
 #include <GraphicEngine/imgui.h>
+
 
 using namespace std::filesystem;
 
@@ -12,11 +16,12 @@ static class AGE_FileBrowser
 {
 private:
 	static path* pathToDisplay;
-
+	static unsigned int TextureFromFiles(const char* path, const std::string& directory);
+	static unsigned int DirectoryPicdata;
 protected:
 
 	
-	void Inited();
+	static void Inited();
 public:
 
 	enum class _FileType { None, Directory, Scene, Image, Audio, Model, unKnown };
@@ -32,8 +37,8 @@ public:
 	AGE_FileBrowser(std::string _path)
 	{
 		pathToDisplay = new path(_path);
-		_CurrentDirectory = _path;
-
+		_CurrentDirectory = _path;	
+		
 		Inited();
 	}
 	static void ImGUIListTheBrowser();   // For ImGui to call it every frame;

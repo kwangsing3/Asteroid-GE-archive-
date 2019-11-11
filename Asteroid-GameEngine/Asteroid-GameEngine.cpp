@@ -27,7 +27,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 unsigned int _Width = 0;
 unsigned int _Height = 0;
 World* _MainWorld;
-AGE_FileBrowser _Filebrowser("ExampleProject");
+AGE_FileBrowser* _Filebrowser; 
 
 float lastX = 500.0f;
 float lastY = 300.0f;
@@ -101,73 +101,8 @@ int main()
 	// build and compile our shader zprogram
 	// ------------------------------------
 
-	
+	_Filebrowser = new AGE_FileBrowser("./");
 
-
-	/*unsigned int AxisVAO, AxisVBO;
-	//  座標的點數資料
-	float coordinate[] = {
-		// positions         // colors
-		   2.5f, 0.0f, 0.5f,  0.7f,0.7f,0.7f,  // bottom right
-		  -2.5f, 0.0f, 0.5f,  0.7f,0.7f,0.7f,  // bottom left
-		   2.5f, -0.0f, 0.0f, 0.7f,0.7f,0.7f,  // top  
-		  -2.5f, -0.0f, 0.0f,  0.7f,0.7f,0.7f,  // bottom right
-		   2.5f, 0.0f, -0.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  -2.5f, -0.0f, -0.5f, 0.7f,0.7f,0.7f,   // top  
-		  2.5f, 0.0f, 1.0f,  0.7f,0.7f,0.7f,  // bottom right
-		  -2.5f, 0.0f, 1.0f,  0.7f,0.7f,0.7f,  // bottom left
-		   2.5f, -0.0f, -1.0f, 0.7f,0.7f,0.7f,  // top  
-		  -2.5f, -0.0f, -1.0f,  0.7f,0.7f,0.7f,  // bottom right
-		   2.5f, 0.0f, 1.5f,  0.7f,0.7f,0.7f, // bottom left
-		  -2.5f, -0.0f, 1.5f,  0.7f,0.7f,0.7f,   // top  
-		   2.5f, 0.0f, -1.5f,  0.7f,0.7f,0.7f,  // bottom right
-		  -2.5f, 0.0f, -1.5f,  0.7f,0.7f,0.7f,  // bottom left
-		   2.5f, -0.0f, 2.0f,  0.7f,0.7f,0.7f,  // top  
-		  -2.5f, -0.0f, 2.0f,  0.7f,0.7f,0.7f,  // bottom right
-		   2.5f, 0.0f, -2.0f,  0.7f,0.7f,0.7f,  // bottom left
-		  -2.5f, -0.0f, -2.0f,  0.7f,0.7f,0.7f,   // top  
-		  2.5f, 0.0f,  2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  -2.5f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,   // top  
-		  2.5f, 0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  -2.5f, -0.0f, -2.5f, 0.7f,0.7f,0.7f,   // top  
-
-		   0.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom right
-		   0.5f, 0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		   0.0f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,  // top  
-		   0.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom right
-		  -0.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  -0.5f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top  
-		  1.0f, 0.0f, 2.5f,    0.7f,0.7f,0.7f,  // bottom right
-		  1.0f, 0.0f, -2.5f,    0.7f,0.7f,0.7f,  // bottom left
-		   -1.0f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,  // top  
-		  -1.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom right
-		   1.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		   1.5f, -0.0f, -2.5f, 0.7f,0.7f,0.7f,   // top  
-		   -1.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom right
-		  -1.5f, 0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		   2.0f, -0.0f, 2.5f,  0.7f,0.7f,0.7f,  // top  
-		  2.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,  // bottom right
-		  -2.0f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  -2.0f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top  
-		   2.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  2.5f, -0.0f, -2.5f,  0.7f,0.7f,0.7f,   // top 
-		  -2.5f, 0.0f, 2.5f,  0.7f,0.7f,0.7f,  // bottom left
-		  -2.5f, 0.0f,  -2.5f,  0.7f,0.7f,0.7f   // top 
-	};
-
-	glGenVertexArrays(1, &AxisVAO);
-	glGenBuffers(1, &AxisVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, AxisVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinate), coordinate, GL_STATIC_DRAW);
-	glBindVertexArray(AxisVAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);*/
 
 	//---------------------------------------
 	//記得拿掉
