@@ -1,26 +1,35 @@
-
+ï»¿
 #include <AGE_FileBrowser.h>
 #include <string>
 #include <AGE_Assert.h>
-
+#include <comdef.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stb_image.h>
 
 path* AGE_FileBrowser::pathToDisplay;
-std::vector<AGE_FileBrowser::AGE_FileStruct> AGE_FileBrowser::vec_FileBrowser;
-std::string AGE_FileBrowser::_CurrentDirectory;
+std::vector<AGE_FileBrowser::AGE_FileStruct> AGE_FileBrowser::vec_List_in_Directory;
+std::vector<AGE_FileBrowser::AGE_FileStruct> AGE_FileBrowser::vec_List_in_Detail;
+std::wstring AGE_FileBrowser::_CurrentDirectory;
 unsigned int AGE_FileBrowser::DirectoryPicdata;
-
+unsigned int AGE_FileBrowser::DocPicdata;
 
 
 AGE_FileBrowser::_FileType DefineFileType(const directory_entry& _entry)
 {
 	AGE_ASSERT(_entry.exists());  // if file isn't exists or got a wrong or ghost file. 
-	std::string _extension =  _entry.path().extension().string();
+
+
 	
-	// ©Î³\¥i¥H¥Î­µ·½®w¨Ó©w¸q»¡¬O¤£¬O­µ¼ÖÀÉ  ¦A¨Ó°µ¨ä¥L¤ÀÃþ
+	std::string _extension;
+	for (char x : _entry.path().extension().wstring())
+		_extension += x;
+
+
+	//std::string _extension ( _entry.path().extension().wstring().begin(), _entry.path().extension().wstring().end());
+	
+	// Â©ÃŽÂ³\Â¥iÂ¥HÂ¥ÃŽÂ­ÂµÂ·Â½Â®wÂ¨Ã“Â©wÂ¸qÂ»Â¡Â¬OÂ¤Â£Â¬OÂ­ÂµÂ¼Ã–Ã€Ã‰  Â¦AÂ¨Ã“Â°ÂµÂ¨Ã¤Â¥LÂ¤Ã€ÃƒÃ¾
 	if (_extension == ".AstGamEng")
 	{
 		return AGE_FileBrowser::_FileType::Scene;
@@ -62,7 +71,6 @@ inline const char* ToString(AGE_FileBrowser::_FileType v)
 		break;
 	}
 }
-
 unsigned int AGE_FileBrowser::TextureFromFiles(const char* path, const std::string& directory)
 {
 	std::string filename = std::string(path);
@@ -102,28 +110,94 @@ unsigned int AGE_FileBrowser::TextureFromFiles(const char* path, const std::stri
 
 	return textureID;
 }
-
-
 void AGE_FileBrowser::Inited()
 {
-	// Load current Directory
-	for (const auto& entry : directory_iterator(*pathToDisplay))
-	{
-		AGE_FileStruct _newFile;
-
-		_newFile.FileName = entry.path().filename().string();
-		_newFile._filetype = entry.is_directory()? _FileType::Directory : DefineFileType(entry);
-		_newFile._path = entry.path().string();
-		AGE_FileBrowser::vec_FileBrowser.push_back(_newFile);
-	}
 	//Load Image
-	
-	DirectoryPicdata = TextureFromFiles("icon-file.png","D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
+	DirectoryPicdata = TextureFromFiles("icon-dir.png","D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
+	DocPicdata = TextureFromFiles("icon-doc.png", "D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
 
+	Refresh();
+	
 
 	return;
 }
 
+
+
+
+
+void AGE_FileBrowser::Refresh()
+{
+	if (pathToDisplay != NULL) delete(pathToDisplay);
+	pathToDisplay = new path(_CurrentDirectory);
+	if (!pathToDisplay->is_absolute())  AGE_PRINTCONSLE("Got ghost directory path");
+
+
+	if (!AGE_FileBrowser::vec_List_in_Detail.empty()) AGE_FileBrowser::vec_List_in_Detail.clear();
+	if (!AGE_FileBrowser::vec_List_in_Directory.empty()) AGE_FileBrowser::vec_List_in_Directory.clear();
+	// Load  Directory first
+	for (const auto& entry : directory_iterator(*pathToDisplay))
+	{
+		if (!entry.is_directory()) continue;
+		AGE_FileStruct _newFile;
+
+		_newFile.FileName = entry.path().filename().wstring();
+		_newFile._filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
+		_newFile._path = entry.path().wstring();
+		AGE_FileBrowser::vec_List_in_Directory.push_back(_newFile);
+		AGE_FileBrowser::vec_List_in_Detail.push_back(_newFile);
+	}
+	for (const auto& entry : directory_iterator(*pathToDisplay))
+	{
+		if (!entry.exists())  AGE_PRINTCONSLE("unknown situation");
+		if (entry.is_directory()) continue;
+		AGE_FileStruct _newFile;
+		_newFile.FileName = entry.path().filename().wstring();
+		_newFile._filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
+		_newFile._path = entry.path().wstring();
+		AGE_FileBrowser::vec_List_in_Detail.push_back(_newFile);
+	}
+
+
+	return;
+}
+void AGE_FileBrowser::Refresh_Detail(std::wstring _NewPath)    //ç¾åœ¨çš„æƒ…æ³æ˜¯åªè¦æ˜¯Trueä»–å°±æœƒä¸€ç›´è®€å–
+{
+	_CurrentDirectory = _NewPath;
+
+	if (!AGE_FileBrowser::vec_List_in_Detail.empty()) AGE_FileBrowser::vec_List_in_Detail.clear();
+	if (pathToDisplay != NULL) delete(pathToDisplay);
+	pathToDisplay = new path(_CurrentDirectory);
+	if (!pathToDisplay->is_absolute())  AGE_PRINTCONSLE("Got ghost directory path");
+
+
+	for (const auto& entry : directory_iterator(*pathToDisplay))
+	{
+		if (!entry.is_directory()) continue;
+		AGE_FileStruct _newFile;
+
+		_newFile.FileName = entry.path().filename().wstring();
+		_newFile._filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
+		_newFile._path = entry.path().wstring();
+		AGE_FileBrowser::vec_List_in_Detail.push_back(_newFile);
+	}
+	for (const auto& entry : directory_iterator(*pathToDisplay))
+	{
+		if (!entry.exists())  AGE_PRINTCONSLE("unknown situation");
+		if (entry.is_directory()) continue;
+
+		
+			AGE_FileStruct _newFile;
+			_newFile.FileName = entry.path().filename().wstring();
+			_newFile._filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
+			_newFile._path = entry.path().wstring();
+			AGE_FileBrowser::vec_List_in_Detail.push_back(_newFile);
+	
+	}
+
+
+
+}
 void AGE_FileBrowser::ImGUIListTheBrowser()
 {
 	//DirectoryPicdata = TextureFromFile("icon-file.png", "D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
@@ -141,7 +215,12 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 			ImGui::BeginChild("ChildTop2", ImVec2(0, 30), true, window_flags);
 			if (ImGui::Button("Left")) {}  ImGui::SameLine();
 			if (ImGui::Button("Right")) {}  ImGui::SameLine();
-			ImGui::Text(_CurrentDirectory.c_str());
+
+			std::string _extension;
+			for (char x : _CurrentDirectory)
+				_extension += x;
+
+			ImGui::Text(_extension.c_str());
 			
 			ImGui::EndChild();
 
@@ -150,22 +229,25 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				ImGuiWindowFlags window_flags2 =0;
 				//ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 				ImGui::BeginChild("ChildLeft", ImVec2(ImGui::GetWindowWidth() *30/100, ImGui::GetWindowHeight()- 180), false, window_flags2);
-				for (int i = 0; i < vec_FileBrowser.size(); i++)
+				for (int i = 0; i < vec_List_in_Directory.size(); i++)
 				{
 					//ImGui::PushID(i);
 					//int frame_padding = -1 + i;     // -1 = uses default padding
-					if (vec_FileBrowser[i]._filetype == _FileType::Directory)
+					if (vec_List_in_Directory[i]._filetype == _FileType::Directory)
 					{
-						if (ImGui::TreeNode(vec_FileBrowser[i].FileName.c_str()))
+						
+					
+						if (ImGui::TreeNode(_bstr_t(vec_List_in_Directory[i].FileName.c_str())))
 						{
-							for (const auto& entry : directory_iterator(vec_FileBrowser[i]._path))
+							Refresh_Detail(vec_List_in_Directory[i]._path);
+							/*for (const auto& entry : directory_iterator(vec_FileBrowser[i]._path))
 							{
 								static bool selection = false;
 								
 								
 								if (ImGui::Selectable(entry.path().filename().string().c_str(), selection))
 								{
-
+									
 								}
 								if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 								{
@@ -185,27 +267,15 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 									ImGui::EndDragDropTarget();
 								}
 
-							}
-
-
+							}*/
 							ImGui::TreePop();
 						}
 					}
-					/*else
-					{
-						
-
-						if (ImGui::Selectable(vec_FileBrowser[i].FileName.c_str(), selection))
-						{
-
-						}
-					}*/
-
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 					{
-						ImGui::SetDragDropPayload("DND_DEMO_CELL", &vec_FileBrowser[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
+						ImGui::SetDragDropPayload("DND_DEMO_CELL", &vec_List_in_Directory[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
 																							// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
-						ImGui::Text("Swap %s", vec_FileBrowser[i].FileName.c_str());
+						ImGui::Text("Swap %s", vec_List_in_Directory[i].FileName.c_str());
 						ImGui::EndDragDropSource();
 					}
 					if (ImGui::BeginDragDropTarget())
@@ -214,7 +284,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 						{
 							IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
 							AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
-							AGE_PRINTCONSLE(payload_n.FileName);
+							AGE_PRINTCONSLE(_bstr_t(vec_List_in_Detail[i].FileName.c_str()));
 						}
 						ImGui::EndDragDropTarget();
 					}
@@ -241,35 +311,49 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				ImGuiStyle& style = ImGui::GetStyle();
 				ImVec2 button_sz(64, 64);
 				float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
-				for (int i = 0; i < vec_FileBrowser.size(); i++)
+
+				for (int i = 0; i < vec_List_in_Detail.size(); i++)
 				{
 				//	ImGui::PushID(i);
 					 // -1 = uses default padding
+					ImGui::BeginGroup();
 
-					ImGui::ImageButton((void*)DirectoryPicdata, button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+					ImGui::ImageButton((void*)(vec_List_in_Detail[i]._filetype==_FileType::Directory? DirectoryPicdata:DocPicdata) , button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+					
+					
 					float last_button_x2 = ImGui::GetItemRectMax().x;
 					float next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x; // Expected position if next button was on same line
-					if (i + 1 < vec_FileBrowser.size() && next_button_x2 < window_visible_x2)
-						ImGui::SameLine();
+				
 					
 		
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
 					{
-						ImGui::SetDragDropPayload("DND_DEMO_CELL", &vec_FileBrowser[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
+						ImGui::SetDragDropPayload("pic", &vec_List_in_Detail[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
 																							// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
-						ImGui::Text("Swap %s", vec_FileBrowser[i].FileName.c_str());
+						ImGui::Text("Swap %s", vec_List_in_Detail[i].FileName.c_str());
 						ImGui::EndDragDropSource();
 					}
 					if (ImGui::BeginDragDropTarget())
 					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("pic"))
 						{
 							IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
 							AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
-							AGE_PRINTCONSLE(payload_n.FileName);
+							AGE_PRINTCONSLE(_bstr_t(vec_List_in_Detail[i].FileName.c_str()));
 						}
 						ImGui::EndDragDropTarget();
 					}
+
+					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 64);
+					ImGui::Text(_bstr_t(vec_List_in_Detail[i].FileName.c_str()), 64);
+					ImGui::PopTextWrapPos();
+
+
+					
+					
+					ImGui::EndGroup();
+					if (i + 1 < vec_List_in_Detail.size() && next_button_x2 < window_visible_x2)
+						ImGui::SameLine();
 				//	ImGui::PopID();
 					//ImGui::SameLine();
 				}
@@ -289,16 +373,3 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 
 
 
-void AGE_FileBrowser::Refresh()
-{
-	if (pathToDisplay != NULL) delete(pathToDisplay);
-	pathToDisplay = new path(_CurrentDirectory);
-	if (!pathToDisplay->is_absolute())
-	{
-		AGE_PRINTCONSLE("Got ghost directory path");
-	}
-
-
-
-	return;
-}
