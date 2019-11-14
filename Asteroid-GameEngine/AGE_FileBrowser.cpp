@@ -127,7 +127,7 @@ void AGE_FileBrowser::Inited()
 	Dir_currentSelect = new AGE_FileStruct();
 
 	
-
+	
 	//_newFile.beenRefresh = true;
 	Dir_currentSelect->_FileName_wstring = pathToDisplay->filename().wstring();
 	Dir_currentSelect->_index = currentIndex;
@@ -287,13 +287,29 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 			selection_mask = (1 << node_clicked);           // Click to single-select
 		}
 	}
-
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+	{
+		ImGui::SetDragDropPayload("TreenodeDragDrop", _fst, sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
+																			// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
+		ImGui::Text("Swap %s", _fst->_FileName_string.c_str());
+		ImGui::EndDragDropSource();
+	}
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TreenodeDragDrop"))
+		{
+			IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
+			AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
+			AGE_PRINTCONSLE(_fst->_FileName_string.c_str());
+		}
+		ImGui::EndDragDropTarget();
+	}
 	ImGui::PopStyleVar();
 	
 
 
 
-
+	
 
 
 
@@ -417,11 +433,32 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					}
 					if (ImGui::BeginDragDropTarget())
 					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("pic"))
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("pic"))    // 指被拖起來的那個物件
 						{
 							IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
 							AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
 							AGE_PRINTCONSLE(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str());
+
+
+							
+
+							try
+							{
+								path entry(payload_n._path);
+
+								std::string src = entry.string();
+								path dest(WstringToString(Dir_currentSelect->_filesBelow[i]->_path)+"\\"+ entry.filename().string());
+								
+								std::filesystem::copy_file(entry, dest, std::filesystem::copy_options::overwrite_existing);
+								
+
+
+							}
+							catch (const std::filesystem::filesystem_error& e)
+							{
+								AGE_PRINTCONSLE(e.what());
+							}
+							
 						}
 						ImGui::EndDragDropTarget();
 					}
