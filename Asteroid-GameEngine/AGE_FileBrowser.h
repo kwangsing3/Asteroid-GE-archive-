@@ -72,7 +72,7 @@ protected:
 	static std::wstring _CurrentDirectory_wstring;
 	static std::string _CurrentDirectory_string;
 	static AGE_FileStruct* Dir_currentSelect, *Dir_ProjectBase;
-
+	static AGE_FileStruct* PreparedForCopy;
 
 
 };

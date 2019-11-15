@@ -5,7 +5,7 @@
 #include <GraphicEngine/GLDebugDrawer.h>
 #include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
 #include <Units/Camera.h>
-#include <AGE_Assert.h>
+#include <Core/AGE_Assert.h>
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>

@@ -207,7 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ADD_Component.h" />
-    <ClInclude Include="AGE_Assert.h" />
+    <ClInclude Include="Core\AGE_Assert.h" />
     <ClInclude Include="AGE_FileBrowser.h" />
     <ClInclude Include="AGE_Model.h" />
     <ClInclude Include="AGE_SkeletalMesh.h" />
@@ -259,6 +259,7 @@
     <ClInclude Include="Component\Meshrender.h" />
     <ClInclude Include="Component\PointLight.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="Core\AGE_FileSystem.h" />
     <ClInclude Include="GraphicEngine\GLDebugDrawer.h" />
     <ClInclude Include="GraphicEngine\imconfig.h" />
     <ClInclude Include="GraphicEngine\imgui.h" />

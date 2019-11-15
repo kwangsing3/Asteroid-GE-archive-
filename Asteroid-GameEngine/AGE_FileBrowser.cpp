@@ -1,8 +1,8 @@
 ﻿
 #include <AGE_FileBrowser.h>
 #include <string>
-#include <AGE_Assert.h>
-
+#include <Core/AGE_Assert.h>
+#include <Core/AGE_FileSystem.h>
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -17,6 +17,7 @@ std::string AGE_FileBrowser::_CurrentDirectory_string;
 unsigned int AGE_FileBrowser::DirectoryPicdata;
 unsigned int AGE_FileBrowser::DocPicdata;
 AGE_FileBrowser::AGE_FileStruct* AGE_FileBrowser::Dir_currentSelect, *AGE_FileBrowser::Dir_ProjectBase;
+AGE_FileBrowser::AGE_FileStruct* AGE_FileBrowser::PreparedForCopy = NULL;
 
 int currentIndex = 0;
 
@@ -35,7 +36,7 @@ AGE_FileBrowser::_FileType AGE_FileBrowser::DefineFileType(const directory_entry
 	{
 		return AGE_FileBrowser::_FileType::Image;
 	}
-	else if (_extension == ".mp3" || ".mp4" || ".avi")
+	else if (_extension == ".mp3" || ".mp4" )
 	{
 		return AGE_FileBrowser::_FileType::Audio;
 	}
@@ -242,12 +243,19 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 	}
 	// Items 0..2 are Tree Node
 	bool node_open = (_fst->_filetype == _FileType::Directory)? ImGui::TreeNodeEx( _fst->_FileName_string.c_str(), node_flags) : ImGui::Selectable(_fst->_FileName_string.c_str());
-	if (ImGui::IsItemClicked())
+	if (ImGui::BeginPopupContextItem(_fst->_FileName_string.c_str()))
 	{
-		
-		node_clicked = _fst->_index;
+		ImGui::MenuItem("Copy", "Ctrl+C");
+		ImGui::MenuItem("Paste", "Ctrl+V");
+		ImGui::MenuItem("Delete", "delete");
+		ImGui::MenuItem("Cancel");
+		ImGui::MenuItem("Information");
+		ImGui::EndPopup();
 	}
-		
+	if (ImGui::IsItemClicked())
+		node_clicked = _fst->_index;
+	
+	
 	if (node_open)
 	{
 		if (_fst->_filetype == _FileType::Directory && !_fst->beenRefresh)
@@ -309,40 +317,6 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 
 
 
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-	{
-		ImGui::SetDragDropPayload("DND_DEMO_CELL", _fst, sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
-																			// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
-		ImGui::Text("Swap %s", _fst->_FileName_string.c_str());
-		ImGui::EndDragDropSource();
-	}
-	if (ImGui::BeginDragDropTarget())
-	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL"))
-		{
-			IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
-			AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
-			AGE_PRINTCONSLE(payload_n._FileName_string.c_str());
-		}
-		ImGui::EndDragDropTarget();
-	}*/
-
 }
 
 
@@ -366,10 +340,11 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 			if (ImGui::Button("Save All")) {}   
 			ImGui::EndChild();
 			ImGui::BeginChild("ChildTop2", ImVec2(0, 30), true, window_flags);
-			if (ImGui::Button("Left")) {}  ImGui::SameLine();
-			if (ImGui::Button("Right")) {}  ImGui::SameLine();
-
-
+			float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+			if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {}	ImGui::SameLine(0.0f, spacing);
+			if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {}	ImGui::SameLine(0.0f, spacing);
+			
+		
 
 			ImGui::Text(WstringToString(_ProjectDirectory_wstring).append(_CurrentDirectory_string).c_str());
 			
@@ -397,8 +372,8 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 
 			ImGui::SameLine();
 			//ImGui::Columns(3);
-			// Child 2: rounded border
 
+			// Child 2: rounded border
 			{
 				ImGuiWindowFlags window_flags3 = 0 | 0;
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
@@ -406,25 +381,35 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				//static int line = 10;
 				//ImGui::InputInt("##Line", &line, 0, 0, ImGuiInputTextFlags_EnterReturnsTrue);
 
+
+
+
+
+
+
 				ImGuiStyle& style = ImGui::GetStyle();
 				ImVec2 button_sz(64, 64);
 				float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
 
+				static bool popevent = false;
+
 				for (int i = 0; i < Dir_currentSelect->_filesBelow.size(); i++)
 				{
-				//	ImGui::PushID(i);
+					ImGui::PushID(i);
 					 // -1 = uses default padding
 					ImGui::BeginGroup();
-
-					ImGui::ImageButton((void*)(Dir_currentSelect->_filesBelow[i]->_filetype==_FileType::Directory? DirectoryPicdata:DocPicdata) , button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 					
-					
+					if (ImGui::ImageButton((void*)(Dir_currentSelect->_filesBelow[i]->_filetype == _FileType::Directory ? DirectoryPicdata : DocPicdata), button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f)))
+					{
+						AGE_PRINTCONSLE("Belongs to: "+Dir_currentSelect->_filesBelow[i]->_FileName_string);
+					}
+					/*if (ImGui::Button(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str(), button_sz))
+					{
+						AGE_PRINTCONSLE("Belongs to: " + Dir_currentSelect->_filesBelow[i]->_FileName_string);
+					}*/
 					float last_button_x2 = ImGui::GetItemRectMax().x;
 					float next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x; // Expected position if next button was on same line
-				
-					
-		
-					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 					{
 						ImGui::SetDragDropPayload("pic", Dir_currentSelect->_filesBelow[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
 																							// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
@@ -438,46 +423,104 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 							IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
 							AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
 							AGE_PRINTCONSLE(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str());
-
-
-							
-
-							try
-							{
-								path entry(payload_n._path);
-
-								std::string src = entry.string();
-								path dest(WstringToString(Dir_currentSelect->_filesBelow[i]->_path)+"\\"+ entry.filename().string());
-								
-								std::filesystem::copy_file(entry, dest, std::filesystem::copy_options::overwrite_existing);
-								
-
-
-							}
-							catch (const std::filesystem::filesystem_error& e)
-							{
-								AGE_PRINTCONSLE(e.what());
-							}
-							
+							AGE_LIB::FileSystem::Move(payload_n._path, Dir_currentSelect->_filesBelow[i]->_path);
 						}
 						ImGui::EndDragDropTarget();
 					}
+					
 
+					if (ImGui::BeginPopupContextItem("icon menu"))
+					{
+						popevent = true;
+						if (ImGui::MenuItem("Copy", "Ctrl+C")) { PreparedForCopy = Dir_currentSelect->_filesBelow[i]; };
+						if (PreparedForCopy != NULL)
+						{
+							if (ImGui::MenuItem("Paste", "Ctrl+V"))
+							{
+								AGE_LIB::FileSystem::Copy(PreparedForCopy->_path);
+								PreparedForCopy = NULL;
+							}
+						}
+						else
+						{
+							if (ImGui::MenuItem("Paste", "Ctrl+V",false,false))
+							{
+								AGE_ASSERT(0);
+							}
+						}
+						if(ImGui::Selectable("Delete")) 
+						{ 
+							ImGui::OpenPopup("Delete?");
+
+							if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+							{
+
+								static bool dont_ask_me_next_time = false;
+								ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+								ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
+								ImGui::PopStyleVar();
+
+								if (ImGui::Button("OK", ImVec2(120, 0))) 
+								{ 
+									AGE_LIB::FileSystem::Remove(Dir_currentSelect->_filesBelow[i]->_path);
+									ImGui::CloseCurrentPopup();
+								}
+								ImGui::SetItemDefaultFocus();
+								ImGui::SameLine();
+								if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+								ImGui::EndPopup();
+							}
+
+						};
+						ImGui::Selectable("Cancel");
+
+						ImGui::EndPopup();
+					}
+					
 					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 64);
 					ImGui::Text(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str(), 64);
 					ImGui::PopTextWrapPos();
-
-
-					
 					
 					ImGui::EndGroup();
 					if (i + 1 < Dir_currentSelect->_filesBelow.size() && next_button_x2 < window_visible_x2)
 						ImGui::SameLine();
-				//	ImGui::PopID();
+					ImGui::PopID();
 					//ImGui::SameLine();
 				}
+				
 				ImGui::EndChild();
+				
 				ImGui::PopStyleVar();
+				
+
+				if (!popevent && ImGui::BeginPopupContextItem("empty menu") )
+				{
+				
+					if (ImGui::BeginMenu("Add", "add")) { ImGui::EndMenu(); }
+					/*if (ImGui::MenuItem("Copy", "Ctrl+C")) { PreparedForCopy = Dir_currentSelect->_filesBelow[i]; };*/
+					if (PreparedForCopy != NULL)
+					{
+						if (ImGui::MenuItem("Paste", "Ctrl+V"))
+						{
+							AGE_LIB::FileSystem::Copy(PreparedForCopy->_path);
+							PreparedForCopy = NULL;
+						}
+					}
+					else
+					{
+						if (ImGui::MenuItem("Paste", "Ctrl+V", false, false))
+						{
+							AGE_ASSERT(0);
+						}
+					}
+					
+					ImGui::MenuItem("Refresh", "F5");
+					ImGui::MenuItem("Cancel");
+					ImGui::EndPopup();
+
+				}
+				popevent = false;
+				
 			}
 			ImGui::EndTabItem();
 		}

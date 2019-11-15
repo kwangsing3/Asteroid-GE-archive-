@@ -1,6 +1,6 @@
 #ifndef AGE_MODEL_H
 #define AGE_MODEL_H
-#include <AGE_Assert.h>
+#include <Core/AGE_Assert.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 
