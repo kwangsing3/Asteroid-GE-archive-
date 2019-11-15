@@ -327,6 +327,10 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 
 void AGE_FileBrowser::ImGUIListTheBrowser()
 {
+	static bool popevent_rightclick = false;
+	static bool popevent_delete = false;
+
+
 	//DirectoryPicdata = TextureFromFile("icon-file.png", "D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
 	if (ImGui::BeginTabBar("FileBorwser", tab_bar_flags))
@@ -391,7 +395,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				ImVec2 button_sz(64, 64);
 				float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
 
-				static bool popevent = false;
+
 
 				for (int i = 0; i < Dir_currentSelect->_filesBelow.size(); i++)
 				{
@@ -431,7 +435,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 
 					if (ImGui::BeginPopupContextItem("icon menu"))
 					{
-						popevent = true;
+						popevent_rightclick = true;
 						if (ImGui::MenuItem("Copy", "Ctrl+C")) { PreparedForCopy = Dir_currentSelect->_filesBelow[i]; };
 						if (PreparedForCopy != NULL)
 						{
@@ -448,34 +452,37 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 								AGE_ASSERT(0);
 							}
 						}
-						if(ImGui::Selectable("Delete")) 
-						{ 
-							ImGui::OpenPopup("Delete?");
-
-							if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-							{
-
-								static bool dont_ask_me_next_time = false;
-								ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-								ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
-								ImGui::PopStyleVar();
-
-								if (ImGui::Button("OK", ImVec2(120, 0))) 
-								{ 
-									AGE_LIB::FileSystem::Remove(Dir_currentSelect->_filesBelow[i]->_path);
-									ImGui::CloseCurrentPopup();
-								}
-								ImGui::SetItemDefaultFocus();
-								ImGui::SameLine();
-								if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-								ImGui::EndPopup();
-							}
-
-						};
+						if (ImGui::Selectable("Delete")) popevent_delete = true;
+							
 						ImGui::Selectable("Cancel");
-
 						ImGui::EndPopup();
 					}
+
+					if (popevent_delete)
+					{
+						ImGui::OpenPopup("###Delete?");
+					}
+					if (ImGui::BeginPopupModal("###Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+					{
+						popevent_delete = false;
+						ImGui::Text("It can't be redo");
+						static bool dont_ask_me_next_time = false;
+						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+						ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
+						ImGui::PopStyleVar();
+
+						if (ImGui::Button("OK", ImVec2(120, 0)))
+						{
+							AGE_LIB::FileSystem::Remove(Dir_currentSelect->_filesBelow[i]->_path);
+							ImGui::CloseCurrentPopup();
+							popevent_delete = false;
+						}
+						ImGui::SetItemDefaultFocus();
+						ImGui::SameLine();
+						if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup();  popevent_delete = false; }
+						ImGui::EndPopup();
+					}
+				
 					
 					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 64);
 					ImGui::Text(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str(), 64);
@@ -486,14 +493,19 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 						ImGui::SameLine();
 					ImGui::PopID();
 					//ImGui::SameLine();
+
+
+				
 				}
 				
 				ImGui::EndChild();
-				
+
 				ImGui::PopStyleVar();
+
+
 				
 
-				if (!popevent && ImGui::BeginPopupContextItem("empty menu") )
+				if (!popevent_rightclick && ImGui::BeginPopupContextItem("empty menu") )
 				{
 				
 					if (ImGui::BeginMenu("Add", "add")) { ImGui::EndMenu(); }
@@ -519,13 +531,22 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					ImGui::EndPopup();
 
 				}
-				popevent = false;
-				
+				popevent_rightclick = false;
+
+
+			
+
+
 			}
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
 	}
+
+
+
+
+
 
 
 	
