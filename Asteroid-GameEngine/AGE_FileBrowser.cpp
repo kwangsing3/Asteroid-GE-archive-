@@ -114,49 +114,25 @@ void AGE_FileBrowser::Inited()
 	DirectoryPicdata = TextureFromFiles("icon-dir.png","D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
 	DocPicdata = TextureFromFiles("icon-doc.png", "D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
 
-
 	if (pathToDisplay != NULL) delete(pathToDisplay);
 	pathToDisplay = new path(_CurrentDirectory_wstring);
-	if (!pathToDisplay->is_absolute()) 
+	if (AGE_LIB::FileSystem::exists(*pathToDisplay))
 		AGE_PRINTCONSLE("Got ghost directory path");
 
 	if (!AGE_FileBrowser::vec_List_in_Detail.empty()) AGE_FileBrowser::vec_List_in_Detail.clear();
 	if (!AGE_FileBrowser::vec_List_in_Directory.empty()) AGE_FileBrowser::vec_List_in_Directory.clear();
 	// Load  Directory first
 
-
 	Dir_currentSelect = new AGE_FileStruct();
 
-	
-	
 	//_newFile.beenRefresh = true;
 	Dir_currentSelect->_FileName_wstring = pathToDisplay->filename().wstring();
 	Dir_currentSelect->_index = currentIndex;
 	Dir_currentSelect->_FileName_string = WstringToString(Dir_currentSelect->_FileName_wstring);
-	Dir_currentSelect->_filetype = _FileType::None;
-	Dir_currentSelect->_path = pathToDisplay->wstring();
+	Dir_currentSelect->_filetype = _FileType::Directory;
+	Dir_currentSelect->_path = AGE_LIB::FileSystem::absolute(*pathToDisplay);
 	Dir_currentSelect->_filesBelow = Refresh_below(_ProjectDirectory_wstring);
-
 	Dir_ProjectBase = Dir_currentSelect;
-	
-
-		
-	
-	/*for (const auto& entry : directory_iterator(*pathToDisplay))
-	{
-		AGE_ASSERT(entry.exists());
-		if (entry.is_directory()) continue;
-		AGE_FileStruct _newFile;
-		_newFile._FileName_wstring = entry.path().filename().wstring();
-
-		std::string _filename;
-		for (char x : _newFile._FileName_wstring)
-			_filename += x;
-		_newFile._FileName_string = _filename;
-		_newFile._filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
-		_newFile._path = entry.path().wstring();
-		AGE_FileBrowser::vec_List_in_Detail.push_back(_newFile);
-	}*/
 	
 
 	return;
@@ -190,7 +166,7 @@ std::vector<AGE_FileBrowser::AGE_FileStruct*> AGE_FileBrowser::Refresh_below(std
 
 		_newFile->_FileName_string = WstringToString(_newFile->_FileName_wstring);
 		_newFile->_filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
-		_newFile->_path = entry.path().wstring();
+		_newFile->_path = AGE_LIB::FileSystem::absolute(entry.path());
 		_result.push_back(_newFile);
 	}
 
@@ -202,23 +178,9 @@ void AGE_FileBrowser::Refresh(AGE_FileStruct* _filestruct) // Only Directory can
 {
 	_filestruct->beenRefresh = true;
 	AGE_ASSERT(_filestruct->_filetype == _FileType::Directory); // if it trigger means something really wrong
-	path _pa(_filestruct->_path);
-
-	for (const auto& entry : directory_iterator(_pa))
-	{
-		if (!entry.exists())  AGE_PRINTCONSLE("unknown situation");
-		
-		AGE_FileStruct _newFile;
-		_newFile._FileName_wstring = entry.path().filename().wstring();
-
-		std::string _filename;
-		for (char x : _newFile._FileName_wstring)
-			_filename += x;
-		_newFile._FileName_string = _filename;
-		_newFile._filetype = entry.is_directory() ? _FileType::Directory : DefineFileType(entry);
-		_newFile._path = entry.path().wstring();
-		_filestruct->_filesBelow = Refresh_below(_filestruct->_path);
-	}
+	
+	if (!_filestruct->_filesBelow.empty())_filestruct->_filesBelow.clear();
+	_filestruct->_filesBelow = Refresh_below(_filestruct->_path);
 }
 
 
@@ -253,7 +215,14 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 		ImGui::EndPopup();
 	}
 	if (ImGui::IsItemClicked())
+	{
+		_CurrentDirectory_wstring = _fst->_FileName_wstring;
+		_CurrentDirectory_string = _fst->_FileName_string;
 		node_clicked = _fst->_index;
+
+		if(_fst->_filetype==_FileType::Directory)Dir_currentSelect = _fst;
+	}
+		
 	
 	
 	if (node_open)
@@ -272,7 +241,7 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 				static bool _enable = false;
 				if (ImGui::Selectable(_element->_FileName_string.c_str()), _enable)
 				{
-
+					
 				}
 			}
 		}
@@ -289,9 +258,7 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 		}	
 		else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
 		{
-			_CurrentDirectory_wstring = _fst->_FileName_wstring;
-			_CurrentDirectory_string = _fst->_FileName_string;
-			Dir_currentSelect = _fst;
+			
 			selection_mask = (1 << node_clicked);           // Click to single-select
 		}
 	}
@@ -320,7 +287,7 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 }
 
 
-
+//#define FILESYSTEMDONOTHING
 
 
 
@@ -330,8 +297,6 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 	static bool popevent_rightclick = false;
 	static bool popevent_delete = false;
 
-
-	//DirectoryPicdata = TextureFromFile("icon-file.png", "D:/Desktop/Asteroid-GameEngine/Asteroid-GameEngine/Texture");
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
 	if (ImGui::BeginTabBar("FileBorwser", tab_bar_flags))
 	{
@@ -345,12 +310,15 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 			ImGui::EndChild();
 			ImGui::BeginChild("ChildTop2", ImVec2(0, 30), true, window_flags);
 			float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
-			if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {}	ImGui::SameLine(0.0f, spacing);
-			if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {}	ImGui::SameLine(0.0f, spacing);
+			if (ImGui::ArrowButton("##left", ImGuiDir_Left)) 
+			{
+				path _cache(Dir_currentSelect->_path);
+				Dir_currentSelect->_path = _cache.parent_path().wstring();
+				Dir_currentSelect->beenRefresh = false;
+			}	ImGui::SameLine(0.0f, spacing);
+			if (ImGui::ArrowButton("##right", ImGuiDir_Right)) { }	ImGui::SameLine(0.0f, spacing);
 			
-		
-
-			ImGui::Text(WstringToString(_ProjectDirectory_wstring).append(_CurrentDirectory_string).c_str());
+			ImGui::Text(WstringToString(Dir_currentSelect->_path).c_str());
 			
 			ImGui::EndChild();
 
@@ -361,21 +329,13 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				ImGui::BeginChild("ChildLeft", ImVec2(ImGui::GetWindowWidth() *30/100, ImGui::GetWindowHeight()- 180), false, window_flags2);
 				for (int i = 0; i < Dir_ProjectBase->_filesBelow.size(); i++)
 				{
-
-					IfitIsaDirectory(Dir_ProjectBase->_filesBelow[i]);
-								
-				//	ImGui::PopID();
-					//ImGui::SameLine();
-					
+					IfitIsaDirectory(Dir_ProjectBase->_filesBelow[i]);							
 				}
 				
 				ImGui::EndChild();
-
-				//ImGui::PopStyleVar();
 			}
 
 			ImGui::SameLine();
-			//ImGui::Columns(3);
 
 			// Child 2: rounded border
 			{
@@ -385,17 +345,12 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				//static int line = 10;
 				//ImGui::InputInt("##Line", &line, 0, 0, ImGuiInputTextFlags_EnterReturnsTrue);
 
-
-
-
-
-
+				if (!Dir_currentSelect->beenRefresh) 
+					Refresh(Dir_currentSelect);
 
 				ImGuiStyle& style = ImGui::GetStyle();
 				ImVec2 button_sz(64, 64);
 				float window_visible_x2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
-
-
 
 				for (int i = 0; i < Dir_currentSelect->_filesBelow.size(); i++)
 				{
@@ -462,7 +417,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					{
 						ImGui::OpenPopup("###Delete?");
 					}
-					if (ImGui::BeginPopupModal("###Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+					if (ImGui::BeginPopupModal("###Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize))         
 					{
 						popevent_delete = false;
 						ImGui::Text("It can't be redo");
@@ -476,6 +431,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 							AGE_LIB::FileSystem::Remove(Dir_currentSelect->_filesBelow[i]->_path);
 							ImGui::CloseCurrentPopup();
 							popevent_delete = false;
+							Refresh(Dir_currentSelect);
 						}
 						ImGui::SetItemDefaultFocus();
 						ImGui::SameLine();
@@ -485,7 +441,8 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				
 					
 					ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 64);
-					ImGui::Text(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str(), 64);
+					if(i < Dir_currentSelect->_filesBelow.size())
+						ImGui::Text(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str(), 64);
 					ImGui::PopTextWrapPos();
 					
 					ImGui::EndGroup();
@@ -508,14 +465,20 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				if (!popevent_rightclick && ImGui::BeginPopupContextItem("empty menu") )
 				{
 				
-					if (ImGui::BeginMenu("Add", "add")) { ImGui::EndMenu(); }
+					if (ImGui::BeginMenu("Add", "add")) 
+					{
+
+						ImGui::EndMenu(); 
+					}
 					/*if (ImGui::MenuItem("Copy", "Ctrl+C")) { PreparedForCopy = Dir_currentSelect->_filesBelow[i]; };*/
 					if (PreparedForCopy != NULL)
 					{
 						if (ImGui::MenuItem("Paste", "Ctrl+V"))
 						{
+							
 							AGE_LIB::FileSystem::Copy(PreparedForCopy->_path);
 							PreparedForCopy = NULL;
+							Refresh(Dir_currentSelect);
 						}
 					}
 					else
@@ -526,7 +489,10 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 						}
 					}
 					
-					ImGui::MenuItem("Refresh", "F5");
+					if (ImGui::MenuItem("Refresh", "F5")) 
+					{
+						Refresh(Dir_currentSelect);
+					}
 					ImGui::MenuItem("Cancel");
 					ImGui::EndPopup();
 

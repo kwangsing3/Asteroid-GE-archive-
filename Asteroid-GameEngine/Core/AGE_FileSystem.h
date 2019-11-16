@@ -9,14 +9,23 @@ namespace AGE_LIB
 {
 	namespace FileSystem 
 	{
-
-
-		static void Move(std::filesystem::path  _from, std::filesystem::path _to) 
-		{
+		static void Move(std::filesystem::path  _from, std::filesystem::path _to);
+		static void Move(std::string _fromPath, std::string _toPath);
+		static void Move(std::wstring _fromPath, std::wstring _toPath);
+		static void Copy(path _input);
+		static void Copy(std::string _input);
+		static void Rename(std::filesystem::path&  _from, std::string _name);
+		static void Remove(std::filesystem::path  _input);
+		static bool exists(std::filesystem::path  _input);
+		static std::wstring absolute(std::filesystem::path  _input);
 #ifndef FILESYSTEMDONOTHING
+
+		static void Move(std::filesystem::path  _from, std::filesystem::path _to)
+		{
 			path entry(_from);
 			path dest(_to.string() + "\\" + entry.filename().string());
-
+			
+			if (!std::filesystem::is_directory(dest)) return;
 			try
 			{
 				std::filesystem::copy_file(entry, dest, std::filesystem::copy_options::overwrite_existing);
@@ -26,7 +35,6 @@ namespace AGE_LIB
 			{
 				AGE_PRINTCONSLE(e.what());
 			}
-#endif // FILESYSTEMDONOTHING
 		}
 		static void Move(std::string _fromPath, std::string _toPath)
 		{
@@ -40,7 +48,7 @@ namespace AGE_LIB
 		}
 		static void Copy(path _input)
 		{
-#ifndef FILESYSTEMDONOTHING
+
 			path _in(_input);
 			if (_in.empty())
 			{
@@ -52,28 +60,20 @@ namespace AGE_LIB
 				unsigned int i = 1;
 				while (i++)
 				{
-					path _test(_input.parent_path().string()+"/"+ _input.stem().string() +"_"+ std::to_string(i).append(_input.extension().string()) );
-					
-
+					path _test(_input.parent_path().string() + "/" + _input.stem().string() + "_" + std::to_string(i).append(_input.extension().string()));
 					if (!std::filesystem::exists(_test))
 					{
-
 						std::filesystem::copy(_input, _test);
 						break;
 					}
-						
-					
 					AGE_ASSERT(!(i - 1 > INTMAX_MAX));
 				}
-
-				
 			}
 			catch (const std::filesystem::filesystem_error & e)
 			{
 				AGE_PRINTCONSLE(e.what());
 			}
-
-#endif // FILESYSTEMDONOTHING		
+	
 		}
 
 		static void Copy(std::string _input)
@@ -81,19 +81,41 @@ namespace AGE_LIB
 			path _new(_input);
 			Copy(_new);
 		}
-		
-		static void Rename(std::filesystem::path  _from, std::string _name)
+
+		static void Rename(std::filesystem::path&  _from, std::string _name)
 		{
-#ifndef FILESYSTEMDONOTHING
-			std::filesystem::rename(_from,_name);
-#endif // FILESYSTEMDONOTHING	
+			std::filesystem::rename(_from, _name);
 		}
 		static void Remove(std::filesystem::path  _input)
 		{
-#ifndef FILESYSTEMDONOTHING
 			std::filesystem::remove(_input);
-#endif // FILESYSTEMDONOTHING	
 		}
+#endif // FILESYSTEMDONOTHING	
+
+		static bool exists(std::filesystem::path  _input)
+		{
+			return std::filesystem::exists(_input);
+		}
+
+		/*std::string  absolute(std::filesystem::path  _input)
+		{
+			return std::filesystem::absolute(_input).string();
+		}*/
+		static std::wstring absolute(std::filesystem::path  _input)
+		{
+			return std::filesystem::absolute(_input).wstring();
+		}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
