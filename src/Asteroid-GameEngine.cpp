@@ -1,4 +1,4 @@
-﻿// CMakeProject1.cpp: 定義應用程式的進入點。
+// CMakeProject1.cpp: 定義應用程式的進入點。
 //
 
 #include <glad/glad.h>
@@ -18,7 +18,7 @@ void processInput(GLFWwindow* window);
 // settings
 unsigned int SCR_WIDTH = 1920;
 unsigned int SCR_HEIGHT = 1080;
-const char* glsl_version = "#version 460";
+//const char* glsl_version = "#version 460";
 bool isFullscreen = false;
 AGE_FileBrowser* _Filebrowser;
 
@@ -28,12 +28,20 @@ int main()
 
 	if (!glfwInit()){ AGE_PRINTCONSLE("GLFW Init failed");}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+#if __APPLE__
+        // GL 3.2 + GLSL 150
+        const char* glsl_version = "#version 150";
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+#else
+        // GL 3.0 + GLSL 130
+        const char* glsl_version = "#version 130";
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
 	GLFWmonitor* primary = glfwGetPrimaryMonitor();
@@ -50,8 +58,9 @@ int main()
 		return -1;
 	}
 
-	glfwMaximizeWindow(_Editorwindow);
+	//glfwMaximizeWindow(_Editorwindow);
 	glfwMakeContextCurrent(_Editorwindow);
+    //glfwSwapInterval(1);
 	glfwSetFramebufferSizeCallback(_Editorwindow, framebuffer_size_callback);
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -77,6 +86,7 @@ int main()
 			//ImGui::StyleColorsClassic();
 		ImGui::StyleColorsCustom();
 
+        
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(_Editorwindow, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
@@ -115,7 +125,7 @@ int main()
 
 	_Filebrowser = new AGE_FileBrowser("./");
 
-
+    bool showwindow = true;
 	// Loop prograss
 	while (!glfwWindowShouldClose(_Editorwindow))
 	{
@@ -144,8 +154,9 @@ int main()
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-
-
+        
+        
+        //ImGui::ShowDemoWindow(&showwindow);
 		AGE_FileBrowser::ImGUIListTheBrowser();
 
 

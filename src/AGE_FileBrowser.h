@@ -6,16 +6,15 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <vector>
 #include <filesystem>
 #include <imgui.h>
 
 
 using namespace std::filesystem;
 
-static class AGE_FileBrowser
+class AGE_FileBrowser
 {
-
-
 
 public:
 
