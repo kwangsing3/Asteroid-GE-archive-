@@ -3,16 +3,25 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
 #include <AGE_Assert.h>
 #include <glm/glm.hpp>
 #include <shader_m.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_Custom.h>
+
+#include <AGE_FileBrowser.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+unsigned int SCR_WIDTH = 1920;
+unsigned int SCR_HEIGHT = 1080;
+const char* glsl_version = "#version 460";
+bool isFullscreen = false;
+AGE_FileBrowser* _Filebrowser;
+
 
 int main()
 {
@@ -26,14 +35,22 @@ int main()
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
-	
-	GLFWwindow* _Editorwindow = glfwCreateWindow(640, 480, "Asteroid-GameEngine", NULL, NULL);
+
+	GLFWmonitor* primary = glfwGetPrimaryMonitor();
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+	SCR_WIDTH = mode->width;
+	SCR_HEIGHT = mode->height;
+
+	GLFWwindow* _Editorwindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Asteroid-GameEngine", isFullscreen ? monitor : NULL, NULL);
 	if (_Editorwindow == NULL)
 	{
 		AGE_PRINTCONSLE("Create _EditorWindow was failed");
 		glfwTerminate();
 		return -1;
 	}
+
+	glfwMaximizeWindow(_Editorwindow);
 	glfwMakeContextCurrent(_Editorwindow);
 	glfwSetFramebufferSizeCallback(_Editorwindow, framebuffer_size_callback);
 	// glad: load all OpenGL function pointers
@@ -43,6 +60,33 @@ int main()
 		AGE_PRINTCONSLE("Failed to initialize GLAD");
 		return -1;
 	}
+
+	//UI 初始化-------------
+	{
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); //(void)io;
+		ImFontConfig font_config; font_config.OversampleH = 1; font_config.OversampleV = 1; font_config.PixelSnapH = 1;
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		//	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/msyh.ttc", 15.0f, &font_config, io.Fonts->GetGlyphRangesChineseFull());
+		//	io.Fonts->Build();
+
+
+			// Setup Dear ImGui style
+			//ImGui::StyleColorsDark();
+			//ImGui::StyleColorsClassic();
+		ImGui::StyleColorsCustom();
+
+		// Setup Platform/Renderer bindings
+		ImGui_ImplGlfw_InitForOpenGL(_Editorwindow, true);
+		ImGui_ImplOpenGL3_Init(glsl_version);
+	}
+
+
+
+
+
+
 	Shader ourShader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs");
 
 	float vertices[] = {
@@ -69,7 +113,7 @@ int main()
 	glEnableVertexAttribArray(1);
 
 
-
+	_Filebrowser = new AGE_FileBrowser("./");
 
 
 	// Loop prograss
@@ -82,17 +126,37 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// render the triangle
+
+		//-------
+		//Draw side
+		//
+
+				// render the triangle
 		ourShader.use();
-		ourShader.setVec3("Color",glm::vec3(sin(glfwGetTime()) * 0.2f, sin(glfwGetTime()) / 2.0f + 0.5f, cos(glfwGetTime())*2.0f));
+		ourShader.setVec3("Color", glm::vec3(sin(glfwGetTime()) * 0.2f, sin(glfwGetTime()) / 2.0f + 0.5f, cos(glfwGetTime()) * 2.0f));
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		//-------
+		//UI side
+		//-------
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+
+		AGE_FileBrowser::ImGUIListTheBrowser();
+
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 
 		glfwSwapBuffers(_Editorwindow);
 		glfwPollEvents();
 	}
 
-	
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 		// ------------------------------------------------------------------------
