@@ -57,7 +57,7 @@ namespace AGE_LIB
 			}
 			try
 			{
-				unsigned int i = 1;
+                int i = 1;
 				while (i++)
 				{
 					path _test(_input.parent_path().string() + "/" + _input.stem().string() + "_" + std::to_string(i).append(_input.extension().string()));
@@ -66,7 +66,7 @@ namespace AGE_LIB
 						std::filesystem::copy(_input, _test);
 						break;
 					}
-					AGE_ASSERT(!(i - 1 > INTMAX_MAX));
+					AGE_ASSERT(!(i - 1 > INT_MAX));
 				}
 			}
 			catch (const std::filesystem::filesystem_error & e)

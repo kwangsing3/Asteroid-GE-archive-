@@ -12,6 +12,7 @@
 
 #include <AGE_FileBrowser.h>
 #include <Window.h>
+#include <World.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
@@ -51,10 +52,10 @@ int main()
         //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
-		Window* _Editorwindow = new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
+		Window* _Editorwindow = new Window();
 		_Editorwindow->DeBug_Mode = true;
 
-
+       
 
 	//UI 初始化-------------
 		IMGUI_CHECKVERSION();
@@ -116,7 +117,7 @@ int main()
 			previousTime = currentFrame;
 		}
 		// Keep running
-		processInput(_Editorwindow->MainGLFWwindow);
+		Window::processInput(_Editorwindow->MainGLFWwindow);
 		// render
 		// ------
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -171,46 +172,3 @@ int main()
 
 
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		Window::WindowShouldClose = true;
-
-
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	// make sure the viewport matches the new window dimensions; note that width and 
-	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, width, height);
-}
-
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
-{
-
-
-
-}
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
-	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	}
-
-
-
-}
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	
-}

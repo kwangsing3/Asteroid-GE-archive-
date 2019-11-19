@@ -1,4 +1,4 @@
-﻿
+
 #include <AGE_FileBrowser.h>
 #include <string>
 #include <AGE_Assert.h>
@@ -217,7 +217,7 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 	if (_fst->_filetype == _FileType::Directory)
 	{
 		const float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
-		ImGui::Image((void*)DirectoryPicdata, ImVec2(10, 10));
+		ImGui::Image((void*)(uintptr_t)DirectoryPicdata, ImVec2(10, 10));
 		ImGui::SameLine(0.0f, spacing);
 	}
 	// Items 0..2 are Tree Node
@@ -335,6 +335,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 			}	ImGui::SameLine(0.0f, spacing);
 			if (ImGui::ArrowButton("##right", ImGuiDir_Right)) { }	ImGui::SameLine(0.0f, spacing);
 			
+            
 			ImGui::Text(WstringToString(Dir_currentSelect->_path).c_str());
 			
 			ImGui::EndChild();
@@ -375,7 +376,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					 // -1 = uses default padding
 					ImGui::BeginGroup();
 					
-					if (ImGui::ImageButton((void*)(Dir_currentSelect->_filesBelow[i]->_filetype == _FileType::Directory ? DirectoryPicdata : DocPicdata), button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f)))
+					if (ImGui::ImageButton((void*)(Dir_currentSelect->_filesBelow[i]->_filetype == _FileType::Directory ? (uintptr_t)DirectoryPicdata : (uintptr_t)DocPicdata), button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f)))
 					{
 						AGE_PRINTCONSLE("Belongs to: "+Dir_currentSelect->_filesBelow[i]->_FileName_string);
 					}
