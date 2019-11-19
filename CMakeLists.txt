@@ -15,13 +15,13 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glfw-3.3)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glm)
 
 
-
 set(CMAKE_CXX_STANDARD 17)
 
 ##設定頭文件(.h)位置
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/lib/glm)
+
 #link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 添加目錄下所有的來源檔(.Cpp)並新增至DIR_SRCS變量

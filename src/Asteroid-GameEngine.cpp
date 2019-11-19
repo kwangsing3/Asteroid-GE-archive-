@@ -4,20 +4,27 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <AGE_Assert.h>
-#include <glm/glm.hpp>
-#include <shader_m.h>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_Custom.h>
 
 #include <AGE_FileBrowser.h>
+#include <Window.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+
+
+
+
 // settings
-unsigned int SCR_WIDTH = 1920;
-unsigned int SCR_HEIGHT = 1080;
+unsigned int Window_Width = 1920;
+unsigned int Window_Height = 1080;
 //const char* glsl_version = "#version 460";
 bool isFullscreen = false;
 AGE_FileBrowser* _Filebrowser;
@@ -44,34 +51,12 @@ int main()
         //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
-	GLFWmonitor* primary = glfwGetPrimaryMonitor();
-	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-	SCR_WIDTH = mode->width;
-	SCR_HEIGHT = mode->height;
+		Window* _Editorwindow = new Window(framebuffer_size_callback, mouse_move_callback, scroll_callback, mouse_button_callback);
+		_Editorwindow->DeBug_Mode = true;
 
-	GLFWwindow* _Editorwindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Asteroid-GameEngine", isFullscreen ? monitor : NULL, NULL);
-	if (_Editorwindow == NULL)
-	{
-		AGE_PRINTCONSLE("Create _EditorWindow was failed");
-		glfwTerminate();
-		return -1;
-	}
 
-	//glfwMaximizeWindow(_Editorwindow);
-	glfwMakeContextCurrent(_Editorwindow);
-    //glfwSwapInterval(1);
-	glfwSetFramebufferSizeCallback(_Editorwindow, framebuffer_size_callback);
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		AGE_PRINTCONSLE("Failed to initialize GLAD");
-		return -1;
-	}
 
 	//UI 初始化-------------
-	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); //(void)io;
@@ -86,66 +71,65 @@ int main()
 			//ImGui::StyleColorsClassic();
 		ImGui::StyleColorsCustom();
 
-        
+
 		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(_Editorwindow, true);
+		ImGui_ImplGlfw_InitForOpenGL(_Editorwindow->MainGLFWwindow, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
-	}
+
+	// configure global opengl state
+// -----------------------------
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_MULTISAMPLE);
+	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glEnable(GL_CULL_FACE);
+	//glEnable(GL_FRAMEBUFFER_SRGB); //gamma校正
+	// build and compile our shader zprogram
+	// ------------------------------------
 
 
 
-
-
-
-	Shader ourShader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs");
-
-	float vertices[] = {
-		// positions         // colors
-		 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
-		 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top 
-	};
-
-	unsigned int VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 
 
 	_Filebrowser = new AGE_FileBrowser("./");
 
-    bool showwindow = true;
+
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
+	float previousTime = glfwGetTime();
+	int frameCount = 0;
 	// Loop prograss
-	while (!glfwWindowShouldClose(_Editorwindow))
+	while (!Window::WindowShouldClose)
 	{
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+		frameCount++;
+		if (currentFrame - previousTime >= 1.0f)
+		{
+			WindowUI::_FPS = frameCount;
+			frameCount = 0;
+			previousTime = currentFrame;
+		}
 		// Keep running
-		processInput(_Editorwindow);
+		processInput(_Editorwindow->MainGLFWwindow);
 		// render
 		// ------
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
 
 
 		//-------
 		//Draw side
 		//
 
-				// render the triangle
-		ourShader.use();
-		ourShader.setVec3("Color", glm::vec3(sin(glfwGetTime()) * 0.2f, sin(glfwGetTime()) / 2.0f + 0.5f, cos(glfwGetTime()) * 2.0f));
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// render the triangle
+	
 
 		//-------
 		//UI side
@@ -157,27 +141,29 @@ int main()
         
         
         //ImGui::ShowDemoWindow(&showwindow);
-		AGE_FileBrowser::ImGUIListTheBrowser();
+		WindowUI::ShowMyImGUIDemoWindow(&WindowUI::All_UIElement, &Window_Width, &Window_Height);
 
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
-		glfwSwapBuffers(_Editorwindow);
+		glfwSwapBuffers(_Editorwindow->MainGLFWwindow);
 		glfwPollEvents();
 	}
 
 
 	// optional: de-allocate all resources once they've outlived their purpose:
 		// ------------------------------------------------------------------------
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
+		//glDeleteVertexArrays(1, &VAO);
+		//glDeleteBuffers(1, &VBO);
 
 		// glfw: terminate, clearing all previously allocated GLFW resources.
 		// ------------------------------------------------------------------
-
-	glfwDestroyWindow(_Editorwindow);
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	glfwDestroyWindow(_Editorwindow->MainGLFWwindow);
 	glfwTerminate();
 
 	return 0;
@@ -185,15 +171,46 @@ int main()
 
 
 
-
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
+		Window::WindowShouldClose = true;
+
+
 }
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
+{
+
+
+
+}
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
+
+
+}
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	
 }

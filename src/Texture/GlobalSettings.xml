@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GlobalSettings>
+
+  <WindowSetting>
+    <viewport width="1280" height="720"/>
+    <DebugMode DebugMode="true"></DebugMode>
+
+    
+  </WindowSetting>
+  <ProjectSetting>
+    <All_UIElement All_UIElement="true"></All_UIElement>
+    <Game_Mode Game_Mode="1"></Game_Mode>
+    <Project Project_Focus="0"></Project>
+  </ProjectSetting>
+  
+  
+  
+  
+  
+
+</GlobalSettings>
