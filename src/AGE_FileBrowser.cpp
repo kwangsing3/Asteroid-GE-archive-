@@ -5,8 +5,15 @@
 #include <AGE_FileSystem.hpp>
 #include <codecvt>
 
+
+
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#endif // !STB_IMAGE_IMPLEMENTATION
+
+
+
 
 path* AGE_FileBrowser::pathToDisplay;
 std::vector<AGE_FileBrowser::AGE_FileStruct> AGE_FileBrowser::vec_List_in_Directory;

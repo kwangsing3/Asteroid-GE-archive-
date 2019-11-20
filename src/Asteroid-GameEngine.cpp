@@ -14,8 +14,8 @@
 #include <Window.hpp>
 #include <World.hpp>
 
-
-
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 
 // settings
@@ -88,11 +88,11 @@ int main()
 	// ------------------------------------
 
 
-
-
-
 	_Filebrowser = new AGE_FileBrowser("./");
 
+
+	Assimp::Importer _omp;
+	_omp.ReadFile(".ExampleModel", aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;

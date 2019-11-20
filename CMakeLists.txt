@@ -7,21 +7,22 @@ cmake_minimum_required (VERSION 3.10)
 project(Asteroid-GameEngine VERSION 1.0)
 
 
-
+set(CMAKE_CXX_STANDARD 17)
 #--------------------------------------------------------------------
 # Add Library
 #--------------------------------------------------------------------
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glfw)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glm)
 
+include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/assimp)
 ##設定頭文件(.h)位置
 
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/lib/glm)
 
+include_directories(${CMAKE_SOURCE_DIR}/lib/glm)
+#include_directories(${CMAKE_SOURCE_DIR}/lib/assimp/include)
 #link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 添加目錄下所有的來源檔(.Cpp)並新增至DIR_SRCS變量
@@ -39,6 +40,7 @@ add_executable (${PROJECT_NAME} ${DIR_SRCS})
 #--------------------------------------------------------------------
 
 target_link_libraries(${PROJECT_NAME} glfw ${GLFW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} assimp)
 #target_link_libraries(${PROJECT_NAME} glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES})
 
 #--------------------------------------------------------------------

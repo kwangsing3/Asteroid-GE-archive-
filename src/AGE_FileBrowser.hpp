@@ -1,5 +1,5 @@
-#ifndef AGE_FILEBROWSER
-#define AGE_FILEBROWSER
+#ifndef AGE_FILEBROWSER_H
+#define AGE_FILEBROWSER_H
 
 
 #include <glad/glad.h>
@@ -92,4 +92,4 @@ protected:
 
 
 
-#endif // !AGE_FILEBROWSER
+#endif // !AGE_FILEBROWSER_H
