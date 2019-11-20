@@ -1,26 +1,37 @@
-#include <Window.h>
+#include <Window.hpp>
 
 #include <imgui.h>
 
+#include <Actor.hpp>
+#include <ADD_Component.hpp>
 
-#include <AGE_FileBrowser.h>
+#include <World.hpp>
+#include <SceneManager.hpp>
+#include <Camera.hpp>
+
+#include <AGE_FileBrowser.hpp>
 
 //#include <AGE_Model.h>
+
 
 GLFWwindow* Window::MainGLFWwindow = NULL;
 //Default  settings
 
+// ImVec2  Window::viewport_pos;
+// ImVec2  Window::viewport_size;
+
 bool Window::WindowShouldClose = false;
 bool Window::DeBug_Mode = false;
 
-
-
+//World* Window::_Mainworld;
+extern World* _MainWorld;
 //關於專案設定
 bool WindowUI::All_UIElement = true;
 
 std::vector<int> Window::vec_ID;
-WindowUI *Window::_Main_UI;
+WindowUI* Window::_Main_UI;
 
+Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 
 

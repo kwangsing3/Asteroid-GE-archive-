@@ -3,22 +3,17 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <AGE_Assert.h>
+#include <AGE_Assert.hpp>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <imgui_Custom.h>
+#include <imgui_Custom.hpp>
 
-#include <AGE_FileBrowser.h>
-#include <Window.h>
-#include <World.h>
+#include <AGE_FileBrowser.hpp>
+#include <Window.hpp>
+#include <World.hpp>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_move_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 
 
@@ -29,7 +24,7 @@ unsigned int Window_Height = 1080;
 //const char* glsl_version = "#version 460";
 bool isFullscreen = false;
 AGE_FileBrowser* _Filebrowser;
-
+World* _MainWorld;
 
 int main()
 {
@@ -54,7 +49,7 @@ int main()
 
 		Window* _Editorwindow = new Window();
 		_Editorwindow->DeBug_Mode = true;
-
+		_MainWorld = new World();
        
 
 	//UI 初始化-------------
@@ -123,13 +118,13 @@ int main()
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
-
+		_MainWorld->_SceneManager.CheckReloadShader();
 
 		//-------
 		//Draw side
 		//
 
-		// render the triangle
+		_MainWorld->UpdateFrame();
 	
 
 		//-------

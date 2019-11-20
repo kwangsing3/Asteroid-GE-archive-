@@ -4,22 +4,46 @@
 //
 //  Created by KS on 2019/11/20.
 //
+#ifndef POINTLIGHT_H
+#define POINTLIGHT_H
 
-#ifndef PointLight_hpp
-#define PointLight_hpp
+#include <Component.hpp>
 
-#include <stdio.h>
 
-class PointLight
+
+class PointLight :public Component
 {
 public:
-    PointLight()
-    {
-        
-        
-    }
-    
+
+
+	glm::vec3 Ambient;
+	glm::vec3 Diffuse;
+	glm::vec3 Specular;
+	float Constant;
+	float linear;
+	float quadratic;
+
+	PointLight(Actor* _ac)
+	{
+		_actor = _ac;
+
+		enabled = true;
+		Ambient = { 0.05f, 0.05f, 0.05f };
+		Diffuse = { 0.8f, 0.8f, 0.8f };
+		Specular = { 1.0f, 1.0f, 1.0f };
+		Constant = 1.0f;
+		linear = 0.09f;
+		quadratic = 0.032f;
+	}
+	void SaveFile(pugi::xml_node* _node) override;
+	void OpenFile(pugi::xml_node* _node) override;
+	void Copy(Actor* _actor) override;
 };
 
 
-#endif /* PointLight_hpp */
+
+
+#endif // !DIRECTIONALLIGHT_H
+
+
+

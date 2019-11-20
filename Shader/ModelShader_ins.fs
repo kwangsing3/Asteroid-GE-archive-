@@ -6,7 +6,6 @@ struct Material {
     sampler2D specular;
     float shininess;
 }; 
-
 struct DirLight {
     vec3 direction;
 	
@@ -14,7 +13,6 @@ struct DirLight {
     vec3 diffuse;
     vec3 specular;
 };
-
 struct PointLight {
     vec3 position;
     
@@ -26,7 +24,6 @@ struct PointLight {
     vec3 diffuse;
     vec3 specular;
 };
-
 struct SpotLight {
     vec3 position;
     vec3 direction;
@@ -41,7 +38,6 @@ struct SpotLight {
     vec3 diffuse;
     vec3 specular;       
 };
-
 #define DLight_Length 3
 #define PLight_Length 3
 #define SLight_Length 3
@@ -50,8 +46,8 @@ in VS_OUT {
     vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
+	vec4 FragPosLightSpace;
 } fs_in;
-
 vec3 gridSamplingDisk[20] = vec3[]
 (
    vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
@@ -79,6 +75,7 @@ uniform samplerCube depthMap;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform float far_plane;
+uniform bool  Use_Light;
 //uniform bool shadows;
 //Shadow texture
 
@@ -105,32 +102,30 @@ void main()
 	} 
     // phase 3: spot light
     result += CalcSpotLight(spotLight, normal,  fs_in.FragPos, viewDir);    
-
-	  //vec3 normal = normalize(fs_in.Normal);
-
+	
 	//shadow
-	
-    //vec3 normal = normalize(fs_in.Normal);
-	
-    vec3 lightColor = vec3(1.0);
+    vec3 lightColor = vec3(0.2);         // 看來lightColor要靠自己計算強度值 雖然很簡單就是了
     // ambient
     vec3 ambient = 0.3 * color;
     // diffuse
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float diff = max(dot(lightDir, normal), 0.0);
-    vec3 diffuse = diff * lightColor;
+    vec3 diffuse = diff*lightColor ;
     // specular
     //vec3 viewDir = normalize(viewPos - fs_in.FragPos);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = 0.0;
     vec3 halfwayDir = normalize(lightDir + viewDir);  
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
-    vec3 specular = spec * lightColor;    
+    vec3 specular = spec*lightColor;    
     // calculate shadow
     float shadow = ShadowCalculation(fs_in.FragPos);                      
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;   
-	
-	 FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+		
+	if(Use_Light)
+		FragColor = vec4(mix(result,Color,0.6)*lighting, 1.0);
+	else
+		FragColor = vec4(Color*lighting, 1.0);
 	// FragColor = vec4(1,1,1,1.0);
 	// FragColor = vec4(mix(result,Color,0.6),1.0);
 }

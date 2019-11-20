@@ -11,7 +11,7 @@ project(Asteroid-GameEngine VERSION 1.0)
 #--------------------------------------------------------------------
 # Add Library
 #--------------------------------------------------------------------
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glfw-3.3)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glfw)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glm)
 
 

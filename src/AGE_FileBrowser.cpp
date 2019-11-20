@@ -1,8 +1,8 @@
 
-#include <AGE_FileBrowser.h>
+#include <AGE_FileBrowser.hpp>
 #include <string>
-#include <AGE_Assert.h>
-#include <AGE_FileSystem.h>
+#include <AGE_Assert.hpp>
+#include <AGE_FileSystem.hpp>
 #include <codecvt>
 
 #define STB_IMAGE_IMPLEMENTATION
