@@ -16,8 +16,8 @@ struct Render_Struct
 {
     Meshrender* _meshrender;
     bool Drawing = true;
-    unsigned int amount = 0;
-    unsigned int DrawingAmount = 0;
+    int amount = 0;
+    int DrawingAmount = 0;
     std::vector<Transform*> transformList;
     std::vector<Transform*> DrawingtransformList;
     std::vector<bool*> _visableList;

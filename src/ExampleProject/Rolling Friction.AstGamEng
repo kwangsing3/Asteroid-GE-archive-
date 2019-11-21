@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene name="test" Objects_Size="125">
+  <Objects name="Floor" meshrender="1" _BoxCollision="1" Component_size="2">
+    <Position x="-17.6700001" y="-32.7599983" z="-7.19000006" />
+    <Rotation x="0" y="0" z="0" />
+    <Scale x="100" y="1" z="100" />
+    <MeshRender VertexColorX="0.173082441" VertexColorY="0.240196049" VertexColorZ="0.177030206" />
+    <BoxCollision Mass="0" />
+  </Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.929920733" VertexColorY="0.5607903" VertexColorZ="0.651584864" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="0" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.423510641" VertexColorY="0.523002684" VertexColorZ="0.720733821" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="0" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.361240506" VertexColorY="0.564035952" VertexColorZ="0.654144824" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="0" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.367379099" VertexColorY="0.446092278" VertexColorZ="0.635010958" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="0" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.277777851" VertexColorY="0.547822118" VertexColorZ="0.627264798" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="2" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.501380444" VertexColorY="0.632040203" VertexColorZ="0.778912187" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="2" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.943877757" VertexColorY="0.31627667" VertexColorZ="0.665951312" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="2" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.158900246" VertexColorY="0.30781424" VertexColorZ="0.83394587" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="2" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.506991208" VertexColorY="0.656165838" VertexColorZ="0.630878508" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="2" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.268378943" VertexColorY="0.518574953" VertexColorZ="0.933103085" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="4" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.481452674" VertexColorY="0.954268575" VertexColorZ="0.922701359" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="4" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.525447369" VertexColorY="0.472810626" VertexColorZ="0.904567599" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="4" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.545882463" VertexColorY="0.583337069" VertexColorZ="0.940719962" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="4" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.468555659" VertexColorY="0.845740438" VertexColorZ="0.702912092" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="4" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.839012802" VertexColorY="0.457763255" VertexColorZ="0.733637989" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="6" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.708926857" VertexColorY="0.498240471" VertexColorZ="0.928003192" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="6" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.826740742" VertexColorY="0.531152308" VertexColorZ="0.902662873" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="6" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.952007532" VertexColorY="0.634916186" VertexColorZ="0.80310142" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="6" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.464998603" VertexColorY="0.718480825" VertexColorZ="0.936242759" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="6" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.403783828" VertexColorY="0.544187784" VertexColorZ="0.689436197" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="8" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.744385421" VertexColorY="0.874809444" VertexColorZ="0.958541214" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="8" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.128686979" VertexColorY="0.950671852" VertexColorZ="0.961532116" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="8" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.446558744" VertexColorY="0.657958508" VertexColorZ="0.626262724" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="8" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.734487295" VertexColorY="0.973349333" VertexColorZ="0.891711831" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="0" y="8" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.640389681" VertexColorY="0.807403088" VertexColorZ="0.872045517" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.132595405" VertexColorY="0.880275071" VertexColorZ="0.770066381" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="0" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.85733521" VertexColorY="0.684714437" VertexColorZ="0.986499488" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="0" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.622457922" VertexColorY="0.460079014" VertexColorZ="0.884496093" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="0" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.521501184" VertexColorY="0.984231353" VertexColorZ="0.822345614" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="0" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.890309334" VertexColorY="0.683405995" VertexColorZ="0.640657365" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="2" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.813035011" VertexColorY="0.954974651" VertexColorZ="0.640815139" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="2" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.915749907" VertexColorY="0.460062981" VertexColorZ="0.663521349" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="2" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.509510875" VertexColorY="0.889794111" VertexColorZ="0.798899889" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="2" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.954944313" VertexColorY="0.837878525" VertexColorZ="0.728741169" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="2" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.109859288" VertexColorY="0.623139381" VertexColorZ="0.90683198" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="4" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.734950006" VertexColorY="0.855167806" VertexColorZ="0.96256125" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="4" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.140825242" VertexColorY="0.370579839" VertexColorZ="0.825010061" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="4" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.487843037" VertexColorY="0.401359558" VertexColorZ="0.841028094" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="4" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.599556625" VertexColorY="0.661664665" VertexColorZ="0.612066031" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="4" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.240030617" VertexColorY="0.534061193" VertexColorZ="0.82927382" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="6" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.122387782" VertexColorY="0.747414589" VertexColorZ="0.63223815" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="6" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.874351025" VertexColorY="0.495137215" VertexColorZ="0.962211847" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="6" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.741361499" VertexColorY="0.789349794" VertexColorZ="0.659522057" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="6" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.926713765" VertexColorY="0.644185066" VertexColorZ="0.856831312" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="6" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.116792135" VertexColorY="0.876647115" VertexColorZ="0.660076082" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="8" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.808069885" VertexColorY="0.62770164" VertexColorZ="0.696727395" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="8" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.702957451" VertexColorY="0.746993423" VertexColorZ="0.984796643" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="8" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.731161833" VertexColorY="0.533152223" VertexColorZ="0.689018905" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="8" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.197514504" VertexColorY="0.326006949" VertexColorZ="0.682460308" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="2" y="8" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.943192601" VertexColorY="0.954197168" VertexColorZ="0.795989096" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.743501902" VertexColorY="0.97776264" VertexColorZ="0.717267036" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="0" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.889457464" VertexColorY="0.580221236" VertexColorZ="0.98399961" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="0" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.427567035" VertexColorY="0.938389957" VertexColorZ="0.889663577" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="0" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.218666315" VertexColorY="0.747343183" VertexColorZ="0.88984859" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="0" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.384329468" VertexColorY="0.70146668" VertexColorZ="0.735068679" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="2" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.895562291" VertexColorY="0.746462584" VertexColorZ="0.628651738" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="2" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.38238892" VertexColorY="0.361187071" VertexColorZ="0.712169766" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="2" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.984532893" VertexColorY="0.443471551" VertexColorZ="0.995131552" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="2" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.304998308" VertexColorY="0.73635608" VertexColorZ="0.693642497" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="2" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.75025934" VertexColorY="0.473405093" VertexColorZ="0.993318558" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="4" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.690648377" VertexColorY="0.612295032" VertexColorZ="0.659666181" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="4" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.147273839" VertexColorY="0.757429838" VertexColorZ="0.706666112" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="4" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.681116164" VertexColorY="0.996685028" VertexColorZ="0.685608506" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="4" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.137446478" VertexColorY="0.901979208" VertexColorZ="0.632282317" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="4" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.798756838" VertexColorY="0.473371208" VertexColorZ="0.642230809" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="6" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.949602246" VertexColorY="0.692857504" VertexColorZ="0.669365764" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="6" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.962658048" VertexColorY="0.993367434" VertexColorZ="0.983400941" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="6" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.94297725" VertexColorY="0.727376997" VertexColorZ="0.820418835" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="6" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.388733953" VertexColorY="0.378879935" VertexColorZ="0.822521269" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="6" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.709578276" VertexColorY="0.741603613" VertexColorZ="0.606460989" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="8" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.657299757" VertexColorY="0.38868016" VertexColorZ="0.683539391" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="8" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.776374996" VertexColorY="0.644933701" VertexColorZ="0.704881072" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="8" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.943888962" VertexColorY="0.433894277" VertexColorZ="0.702918351" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="8" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.243777782" VertexColorY="0.611773908" VertexColorZ="0.7141065" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="4" y="8" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.764778137" VertexColorY="0.836776257" VertexColorZ="0.642312586" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.580153227" VertexColorY="0.683623195" VertexColorZ="0.69509387" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="0" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.949366987" VertexColorY="0.344847858" VertexColorZ="0.683088303" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="0" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.651505768" VertexColorY="0.585155427" VertexColorZ="0.721594512" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="0" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.896986663" VertexColorY="0.588494658" VertexColorZ="0.774573565" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="0" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.975517631" VertexColorY="0.571336865" VertexColorZ="0.837102771" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="2" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.485604584" VertexColorY="0.425814211" VertexColorZ="0.784757137" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="2" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.494386405" VertexColorY="0.643991232" VertexColorZ="0.771257102" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="2" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.267554104" VertexColorY="0.977387488" VertexColorZ="0.670644641" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="2" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.121523805" VertexColorY="0.955239654" VertexColorZ="0.646157742" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="2" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.708523333" VertexColorY="0.881596148" VertexColorZ="0.78723079" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="4" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.692810774" VertexColorY="0.967192113" VertexColorZ="0.681257129" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="4" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.319178194" VertexColorY="0.467878938" VertexColorZ="0.80821681" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="4" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.899416625" VertexColorY="0.679268956" VertexColorZ="0.878201783" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="4" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.477236658" VertexColorY="0.669812322" VertexColorZ="0.847598135" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="4" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.566812158" VertexColorY="0.365840703" VertexColorZ="0.908746719" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="6" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.956188798" VertexColorY="0.631165564" VertexColorZ="0.940878689" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="6" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.287860721" VertexColorY="0.448246956" VertexColorZ="0.957045317" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="6" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.687152624" VertexColorY="0.848834336" VertexColorZ="0.913996696" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="6" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.920782089" VertexColorY="0.375840694" VertexColorZ="0.767948568" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="6" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.271182626" VertexColorY="0.481381208" VertexColorZ="0.885621786" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="8" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.190083891" VertexColorY="0.80665803" VertexColorZ="0.943226457" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="8" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.69737494" VertexColorY="0.365946352" VertexColorZ="0.714658916" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="8" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.297937274" VertexColorY="0.500650346" VertexColorZ="0.847087443" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="8" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.130499601" VertexColorY="0.703817248" VertexColorZ="0.950114489" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="6" y="8" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.808126688" VertexColorY="0.550981283" VertexColorZ="0.923984826" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.107283324" VertexColorY="0.436065525" VertexColorZ="0.906602263" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="0" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.648577034" VertexColorY="0.679565609" VertexColorZ="0.976566732" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="0" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.960748136" VertexColorY="0.820717514" VertexColorZ="0.600227475" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="0" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.245774657" VertexColorY="0.92022109" VertexColorZ="0.747016668" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="0" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.541737854" VertexColorY="0.895174325" VertexColorZ="0.727142274" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="2" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.118022457" VertexColorY="0.938449204" VertexColorZ="0.682085752" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="2" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.20217143" VertexColorY="0.766448975" VertexColorZ="0.779984474" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="2" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.365695477" VertexColorY="0.819935501" VertexColorZ="0.954027772" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="2" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.956223309" VertexColorY="0.511604488" VertexColorZ="0.931141734" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="2" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.841952384" VertexColorY="0.772609472" VertexColorZ="0.835991979" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="4" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.733324528" VertexColorY="0.322141558" VertexColorZ="0.929427326" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="4" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.474012822" VertexColorY="0.91808939" VertexColorZ="0.656986237" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="4" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.923102438" VertexColorY="0.315272033" VertexColorZ="0.800127387" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="4" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.885794997" VertexColorY="0.75055182" VertexColorZ="0.75070399" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="4" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.571368277" VertexColorY="0.94161123" VertexColorZ="0.696177065" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="6" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.824982405" VertexColorY="0.487141013" VertexColorZ="0.980384529" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="6" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.901297748" VertexColorY="0.647864223" VertexColorZ="0.9445436" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="6" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.516927183" VertexColorY="0.850495636" VertexColorZ="0.707355022" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="6" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.279599488" VertexColorY="0.631149054" VertexColorZ="0.949681222" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="6" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.196385056" VertexColorY="0.32974869" VertexColorZ="0.667861819" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="8" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.841142774" VertexColorY="0.822893441" VertexColorZ="0.721967757" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="8" z="2" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.434694409" VertexColorY="0.492950201" VertexColorZ="0.821124732" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="8" z="4" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.281633228" VertexColorY="0.690801382" VertexColorZ="0.9718256" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="8" z="6" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.559927344" VertexColorY="0.503746748" VertexColorZ="0.80837369" />
+<BoxCollision Mass="1" />
+</Objects>
+<Objects name="Actor" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="8" y="8" z="8" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="0.210123599" VertexColorY="0.343860328" VertexColorZ="0.800372601" />
+<BoxCollision Mass="1" />
+</Objects>
+<CameraSetting Zoom="45" Yaw="-119.500031" Pitch="3.80000615">
+<Transform>
+<Position x="34.2104607" y="-8.19118404" z="49.1399956" />
+</Transform>
+</CameraSetting>
+</Scene>

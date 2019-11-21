@@ -26,11 +26,15 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/glm)
 #link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 添加目錄下所有的來源檔(.Cpp)並新增至DIR_SRCS變量
-aux_source_directory(${CMAKE_SOURCE_DIR}/src DIR_SRCS)
-
+aux_source_directory(${CMAKE_SOURCE_DIR}/src MAIN_SRCS)
+aux_source_directory(${CMAKE_SOURCE_DIR}/src/GraphicEngine GRAPHICENGINE_SRCS)
+LIST (APPEND ALL_SRC
+${MAIN_SRCS}
+${GRAPHICENGINE_SRCS}
+)
 
 # 將來源新增到此專案的可執行檔。
-add_executable (${PROJECT_NAME} ${DIR_SRCS})
+add_executable (${PROJECT_NAME} ${ALL_SRC})
 
 
 
@@ -52,9 +56,21 @@ add_custom_command(
              ${CMAKE_SOURCE_DIR}/Shader $<TARGET_FILE_DIR:${PROJECT_NAME}>/Shader
          COMMENT "Copying Shader" VERBATIM
          )
-		 add_custom_command(
+add_custom_command(
          TARGET ${PROJECT_NAME} POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_directory              
              ${CMAKE_SOURCE_DIR}/src/Texture $<TARGET_FILE_DIR:${PROJECT_NAME}>/Texture
+         COMMENT "Copying Texture" VERBATIM
+         )
+add_custom_command(
+         TARGET ${PROJECT_NAME} POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy_directory              
+             ${CMAKE_SOURCE_DIR}/src/ExampleProject $<TARGET_FILE_DIR:${PROJECT_NAME}>/ExampleProject
+         COMMENT "Copying Texture" VERBATIM
+         )
+add_custom_command(
+         TARGET ${PROJECT_NAME} POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy_directory              
+             ${CMAKE_SOURCE_DIR}/src/ExampleModel $<TARGET_FILE_DIR:${PROJECT_NAME}>/ExampleModel
          COMMENT "Copying Texture" VERBATIM
          )

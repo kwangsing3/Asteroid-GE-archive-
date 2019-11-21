@@ -5,10 +5,10 @@
 #include <GLFW/glfw3.h>
 #include <AGE_Assert.hpp>
 
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-#include <imgui_Custom.hpp>
+#include <GraphicEngine/imgui.h>
+#include <GraphicEngine/imgui_impl_glfw.h>
+#include <GraphicEngine/imgui_impl_opengl3.h>
+#include <GraphicEngine/imgui_Custom.hpp>
 
 #include <AGE_FileBrowser.hpp>
 #include <Window.hpp>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene name="test" Objects_Size="6">
+<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="1.63" y="1.35000002" z="1" />
+<Rotation x="0" y="0" z="-20" />
+<Scale x="0.5" y="0.5" z="0.5" />
+<MeshRender VertexColorX="0.999989986" VertexColorY="1" VertexColorZ="0.999993682" />
+<BoxCollision Mass="0" />
+</Objects>
+<Objects name="New DirectionalLight" _Dirlight="1" Component_size="1">
+<Position x="0" y="0" z="0" />
+<Rotation x="-4.0999999" y="-4.69999981" z="17.3999996" />
+<Scale x="1" y="1" z="1" />
+<Ambient X="0.745097995" Y="0.745090544" Z="0.745090544" />
+<Diffuse X="1" Y="0.999989986" Z="0.999989986" />
+<Specular X="0" Y="0.0882613659" Z="1" />
+</Objects>
+<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="-1.67999995" y="1.09000003" z="1" />
+<Rotation x="-35.0999985" y="0" z="18" />
+<Scale x="0.600000024" y="0.600000024" z="0.600000024" />
+<MeshRender VertexColorX="0" VertexColorY="1" VertexColorZ="0.0892856121" />
+<BoxCollision Mass="0" />
+</Objects>
+<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="1.88" y="-0.560000002" z="1" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="10" y="0.100000001" z="10" />
+<MeshRender VertexColorX="0.999991357" VertexColorY="0.999989986" VertexColorZ="1" />
+<BoxCollision Mass="0" />
+</Objects>
+<Objects name="New Cube" meshrender="1" _BoxCollision="1" Component_size="2">
+<Position x="-1.62" y="-0.569999993" z="1" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="0.800000012" y="0.800000012" z="0.800000012" />
+<MeshRender VertexColorX="0.704719365" VertexColorY="0.758928537" VertexColorZ="0" />
+<BoxCollision Mass="0" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="2.78999996" y="0" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="0.999989986" VertexColorZ="0.999989986" />
+</Objects>
+</Scene>

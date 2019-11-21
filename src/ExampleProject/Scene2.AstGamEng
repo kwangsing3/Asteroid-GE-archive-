@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene name="test" Objects_Size="7">
+
+<Objects name="Actor" meshrender="1" Component_size="1">
+<Position x="-2.87000012" y="-1.28499985" z="1.55499983" />
+<Rotation x="51" y="71.5" z="36.4000015" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="-4.4000001" y="-1.57000005" z="0" />
+<Rotation x="0" y="-3" z="0" />
+<Scale x="100" y="0.100000001" z="100" />
+<MeshRender VertexColorX="0.22621192" VertexColorY="0.325304747" VertexColorZ="0.482300878" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="-2.87000012" y="-1.28499985" z="1.55499983" />
+<Rotation x="51" y="71.5" z="36.4000015" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
+<Objects name="New DirectionalLight" _Dirlight="1" Component_size="1">
+<Position x="0" y="0" z="0" />
+<Rotation x="-0.800000012" y="-0.300000012" z="1" />
+<Scale x="1" y="1" z="1" />
+<Ambient X="0.513274312" Y="0.513269186" Z="0.513269186" />
+<Diffuse X="0" Y="0.0784481093" Z="0.530973434" />
+<Specular X="0" Y="0.85840708" Z="0.153287008" />
+</Objects>
+<Objects name="New Cube" meshrender="1" Component_size="1">
+<Position x="-1.67999995" y="-1.20000005" z="-1.32000005" />
+<Rotation x="0" y="-132" z="0" />
+<Scale x="1" y="1" z="1" />
+<MeshRender VertexColorX="1" VertexColorY="1" VertexColorZ="1" />
+</Objects>
+<Objects name="New PointLight" _PointLight="1" Component_size="1">
+<Position x="-3.9000001" y="-0.0500000007" z="0" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<Ambient X="0.340707958" Y="0.34070456" Z="0.34070456" />
+<Diffuse X="0.800000012" Y="0.800000012" Z="0.800000012" />
+<Specular X="1" Y="1" Z="1" />
+<Constant Constant="1" />
+<linear linear="0.0900000036" />
+<quadratic quadratic="0.0320000015" />
+</Objects>
+<Objects name="New PointLight" _PointLight="1" Component_size="1">
+<Position x="-3.02999997" y="0" z="-5.01999998" />
+<Rotation x="0" y="0" z="0" />
+<Scale x="1" y="1" z="1" />
+<Ambient X="0.0500000007" Y="0.0500000007" Z="0.0500000007" />
+<Diffuse X="0.800000012" Y="0.800000012" Z="0.800000012" />
+<Specular X="1" Y="1" Z="1" />
+<Constant Constant="1" />
+<linear linear="0.0900000036" />
+<quadratic quadratic="0.0320000015" />
+</Objects>
+</Scene>

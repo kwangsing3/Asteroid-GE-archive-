@@ -1,20 +1,30 @@
 #ifndef WINDOW_H
 #define WINDOW_H
-
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <pugixml.hpp>
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <AGE_Assert.hpp>
-#include <pugixml.hpp>
-
 //#include <World.h>
 
 
 
 //#include <GraphicEngine/imgui.h>
 
+
+class Actor;
+//class SceneManager;
+struct SelectObject
+{
+	Actor* _actor;
+	bool Is_selected = false;
+	bool Is_renaming = false;
+	SelectObject(Actor* _ac)
+	{
+		_actor = _ac;
+	}
+};
 
 extern unsigned int Window_Width;
 extern unsigned int Window_Height;
@@ -26,7 +36,13 @@ class WindowUI
 public:
 
 	//static SelectObject* cur_SelectObject;
-
+	static std::vector<SelectObject*> cur_SelectObject_List;
+	static std::vector<SelectObject*> copy_SelectObject_List;
+	static void Deletecur_actor(SelectObject* cur_actor);
+	static void Renamecur_actor(SelectObject* cur_actor);
+	static void SelectThisActor(Actor* _actor);
+	static void SelectThisObject(SelectObject* actor);
+	static void ListInspectorCur(SelectObject* _sel);
 	static void CopyEvent();
 	static void PasteEvent();
 
@@ -68,28 +84,34 @@ public:
 
 		_Main_UI = new WindowUI();
 		//Xml_SettingImport();
-
+		
 		pugi::xml_document _doc;
-		std::ifstream _XMLstream("Texture/GlobalSettings.xml");
+		std::ifstream _XMLstream("GlobalSettings.xml");
 		pugi::xml_parse_result result = _doc.load(_XMLstream);
 		std::cout << "Load result: " << result.description() << std::endl;
-		if (_doc != NULL)
+		if (result != NULL)
 		{
 			this->_Main_UI->All_UIElement = _doc.child("GlobalSettings").child("ProjectSetting").child("All_UIElement").attribute("All_UIElement").as_bool();
 			this->DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
 			this->progect_I_am_focus = _doc.child("GlobalSettings").child("ProjectSetting").child("Project").attribute("Project_Focus").as_int();
 		}
+
+		
+
 		_XMLstream.close();
-
-
-
+		
+		GLFWmonitor* primary = glfwGetPrimaryMonitor();
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		Window_Width = mode->width;
 		Window_Height = mode->height;
 		MainGLFWwindow = glfwCreateWindow(Window_Width, Window_Height, "Asteroid-GameEngine", isFullscreen ? monitor : NULL, NULL);
-		AGE_ASSERT(MainGLFWwindow != NULL);  //Failed to create window
-
+		if (MainGLFWwindow == NULL)
+		{
+			std::cout << "Failed to create GLFW window" << std::endl;
+			glfwTerminate();
+			//return;
+		}
 		glfwMaximizeWindow(MainGLFWwindow);
 		//glfwHideWindow(MainGLFWwindow);
 		//glfwSetWindowMonitor(MainGLFWwindow, monitor, 0, 0, _Width, _Height, mode->refreshRate);
@@ -98,19 +120,25 @@ public:
 		glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)mouse_move_callback);
 		glfwSetScrollCallback(MainGLFWwindow, (GLFWscrollfun)scroll_callback);
 		glfwSetMouseButtonCallback(MainGLFWwindow, (GLFWmousebuttonfun)mouse_button_callback);
+		// tell GLFW to capture our mouse
 		glfwSetInputMode(MainGLFWwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
 		// glad: load all OpenGL function pointers
 		// ---------------------------------------
-		AGE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)); //Failed to inited glad
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
+			std::cout << "Failed to initialize GLAD" << std::endl;
+			//return;
+		}
+
 
 
 		//InitWorld();
-
+		/*調試用函數*/
 
 
 
 	}
+
 	static void processInput(GLFWwindow* window)
 	{
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -155,6 +183,7 @@ private:
 	{
 
 	}
+
 
 
 };

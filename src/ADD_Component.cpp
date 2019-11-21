@@ -137,7 +137,7 @@ PointLight* ADD_Component::Add_PointLight(Actor* _actor)
 	
 	return _box;
 }*/
-/*
+
 Actor* ADD_Component::Copy_Actor(Actor* _actor)
 {
 	if (_actor == NULL) return NULL;
@@ -150,12 +150,12 @@ Actor* ADD_Component::Copy_Actor(Actor* _actor)
 		Add_DirectionalLight(_ac)->Copy(_actor);
 	if (_actor->_PointLight != NULL)
 		Add_PointLight(_ac)->Copy(_actor);
-	if (_actor->boxcollision != NULL)
+	/*if (_actor->boxcollision != NULL)
 		Add_BoxCollision(_ac, _actor->boxcollision->_Mass)->Copy(_actor);
-
+		*/
 
 	return _ac;
 }
-*/
+
 
 

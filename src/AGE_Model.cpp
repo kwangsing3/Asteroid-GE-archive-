@@ -3,11 +3,11 @@
 
 #include <stb_image.h>
 
-//#include <assimp/postprocess.h>
+#include <assimp/postprocess.h>
 
 void AGE_Model::loadModel(std::string const& path)
 {
-	/*_aiScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	_aiScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	// check for errors
 	if (!_aiScene || _aiScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !_aiScene->mRootNode) // if is Not Zero
 	{
@@ -15,12 +15,12 @@ void AGE_Model::loadModel(std::string const& path)
 		return;
 	}
 	directory = path.substr(0, path.find_last_of('/'));
-	processNode(_aiScene->mRootNode, _aiScene);*/
+	processNode(_aiScene->mRootNode, _aiScene);
 
 
 
 }
-/*
+
 Mesh* AGE_Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	// data to fill
@@ -91,8 +91,8 @@ Mesh* AGE_Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	return new Mesh(vertices,indices,textures);
-}*/
-/*
+}
+
 SkeletalMesh* AGE_Model::processSkeletalMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<Vertex> vertices;
@@ -176,8 +176,8 @@ SkeletalMesh* AGE_Model::processSkeletalMesh(aiMesh* mesh, const aiScene* scene)
 
 
 	return new SkeletalMesh(vertices, indices, textures, vec_VertexWithBones, vec_BonesData, scene);
-}*/
-/*
+}
+
 void AGE_Model::processNode(aiNode* node, const aiScene* scene)
 {
 	// process each mesh located at the current node
@@ -235,8 +235,8 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 	}
 
 	return textureID;
-}*/
-/*
+}
+
 std::vector<Texture> AGE_Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
 	std::vector<Texture> textures;
@@ -277,4 +277,4 @@ std::vector<Texture> AGE_Model::loadMaterialTextures(aiMaterial* mat, aiTextureT
 	}
 
 	return textures;
-}*/
+}

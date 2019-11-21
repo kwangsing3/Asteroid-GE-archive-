@@ -2,7 +2,7 @@
 #define WORLD_H
 #pragma once
 //#include "btBulletDynamicsCommon.h"
-#include <GLDebugDrawer.hpp>
+#include <GraphicEngine/GLDebugDrawer.hpp>
 //#include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
 #include <Camera.hpp>
 #include <AGE_Assert.hpp>
@@ -265,10 +265,10 @@ public:
 	}
 private:
 	int Collision_flag = 0;
-	void CreateMouseCollision();
-	void UpdateCollision();
-	void DeleteCollision();
-	void AddCollision();
+	void CreateMouseCollision() {}
+	void UpdateCollision() {}
+	void DeleteCollision() {}
+	void AddCollision() {}
 
 
 };
