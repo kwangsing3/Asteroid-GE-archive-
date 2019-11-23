@@ -5,10 +5,8 @@
 
 
 
-
 //unsigned int World::depthMapFBO;
 extern World* _MainWorld;
-/*
 void _Pivot::CreateMouseCollision()
 {
 	_needdebug = true;
@@ -69,9 +67,9 @@ void _Pivot::DeleteCollision()
 }
 void _Pivot::AddCollision()
 {
-	CreateMouseCollision();
+	//CreateMouseCollision();
 }
-*/
+
 #include <stb_image.h>
 unsigned int loadCubemap(std::vector<std::string> faces)
 {
@@ -102,7 +100,6 @@ unsigned int loadCubemap(std::vector<std::string> faces)
 
 	return textureID;
 }
-/*
 void World::initPhysics()
 {
 	createEmptyDynamicsWorld();
@@ -114,8 +111,7 @@ void World::initPhysics()
 
 	this->m_dynamicsWorld->setDebugDrawer(_deb);
 	//_piv = new _Pivot(new Actor());
-}*/
-/*
+}
 void World::init_PhysicsProgress()
 {
 	if (!InitPhysics) return;
@@ -130,8 +126,7 @@ void World::init_PhysicsProgress()
 
 		_PhysicsProgress.push_back(new _PhysicsStruct(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, false));
 	}
-}*/
-/*
+}
 void World::depose_init_PhysicsProgress()
 {
 	if (_PhysicsProgress.empty()) return;
@@ -141,7 +136,7 @@ void World::depose_init_PhysicsProgress()
 	}
 	_PhysicsProgress.clear();
 	InitPhysics = true;
-}*/
+}
 void World::CreateDepthMap()
 {
 	// Point Light Depth Cubemap Texture
@@ -189,7 +184,7 @@ void World::CreateDepthMap()
 void World::UpdateFrame()
 {
 	//Pyhscis Pipeline
-	/*if (this->_PlayMode)
+	if (this->_PlayMode)
 	{
 		if (InitPhysics) init_PhysicsProgress();
 
@@ -198,7 +193,7 @@ void World::UpdateFrame()
 			製作一個Funcition 專門在繪製前initPhysics, 用struct儲存index以及提前抽取actor, 然後只需要依照此struct進行索引然後改變物體位置。
 			之後再停止模擬時複寫回去  */
 
-	/*	for (int i = 0; i < _PhysicsProgress.size(); i++)
+		for (int i = 0; i < _PhysicsProgress.size(); i++)
 		{
 			if (_PhysicsProgress[i]->Static) continue;
 			_PhysicsProgress[i]->_actor->transform->MoveByPhysics(&this->m_dynamicsWorld->getCollisionObjectArray()[_PhysicsProgress[i]->_index]->getWorldTransform());
@@ -207,9 +202,9 @@ void World::UpdateFrame()
 	else
 	{
 		if (!_PhysicsProgress.empty()) depose_init_PhysicsProgress();
-	}*/
+	}
 	_SceneManager.vec_SpecializedDraw();  //只需要畫一次的非普通場景特殊繪製   (座標軸、Axis ... etc) 
-	//this->m_dynamicsWorld->debugDrawWorld();
+	this->m_dynamicsWorld->debugDrawWorld();
 	glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -248,4 +243,6 @@ void World::UpdateFrame()
 
 
 }
+
+
 

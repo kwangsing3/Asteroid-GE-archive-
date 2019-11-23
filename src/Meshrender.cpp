@@ -14,6 +14,7 @@
 
 
 
+
 extern Camera _editorCamera;
 extern World* _MainWorld;
 
@@ -74,15 +75,11 @@ void Meshrender::Draw(Shader* _shader)
 		this->_model->_meshes[i]->Draw(_shader);
 
 }
-void Meshrender::SetVisable(bool _bool)
-{
-	this->_visable = _bool;
-}
+
 
 //  --------------------------------- Mouse Collision --------------------------------- 
 #include <World.hpp>
 //btCollisionShape* colShape;
-/*
 void Meshrender::CreateMouseCollision()
 {
 
@@ -148,7 +145,10 @@ void Meshrender::UpdateCollision()
 	}
 
 }
-
+void Meshrender::SetVisable(bool _bool)
+{
+	this->_visable = _bool;
+}
 void Meshrender::ReSetCollisionFlag()
 {
 	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
@@ -156,4 +156,3 @@ void Meshrender::ReSetCollisionFlag()
 }
 
 
-*/

@@ -11,11 +11,12 @@
 #include <AGE_Model.hpp>
 #include <glm/gtc/random.hpp>
 
-//class btRigidBody;
-//class btCollisionShape;
+
+class btRigidBody;
+class btCollisionShape;
 class Transform;
-//class btTransform;
-//class btDefaultMotionState;
+class btTransform;
+class btDefaultMotionState;
 class Shader;
 class Actor;
 class Meshrender :public Component
@@ -24,7 +25,7 @@ public:
 	bool _needdebug = false;
 	bool _visable = true;
 	//---------------------------------
-	//btRigidBody* body;
+	btRigidBody* body;
 	AGE_Model* _model;
 	glm::vec3 VertexColor = glm::vec3(0.8f);
 
@@ -47,7 +48,7 @@ public:
 		this->enabled = true;
 
 		_model = new AGE_Model(_path);
-		//CreateMouseCollision();
+		CreateMouseCollision();
 
 	}
 	void SaveFile(pugi::xml_node* _node) override;
@@ -57,25 +58,24 @@ public:
 
 
 
-	//virtual void UpdateCollision();
+	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
-	//void ReSetCollisionFlag();
+	void ReSetCollisionFlag();
 	void Draw(Shader* _shader);
-	//void CreateMouseCollision();
+	void CreateMouseCollision();
 private:
 
 
 
 protected:
-	//btCollisionShape* colShape;
+	btCollisionShape* colShape;
 	// Draw Pipeline Variable
 	float near_plane = 1.0f;
 	float far_plane = 25.0f;
 	glm::mat4 _ModelMatrix4;
 	glm::vec3 EulerAngles;
-	//btDefaultMotionState* myMotionState;
+	btDefaultMotionState* myMotionState;
 };
 
 #endif //MESHRENDER_H
-
 

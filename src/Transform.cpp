@@ -8,7 +8,7 @@
 #include <Transform.hpp>
 
 #include <Actor.hpp>
-//#include "btBulletCollisionCommon.h"
+#include "btBulletCollisionCommon.h"
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 //#include <glm/gtx/quaternion.hpp>
@@ -70,8 +70,8 @@ void Transform::Copy(Actor* _actor)
 void Transform::Translate(glm::vec3 _pos)
 {
 	this->position = _pos;
-	//if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
+	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 void Transform::Translate(glm::mat4 _pos)
@@ -88,8 +88,8 @@ void Transform::Translate(glm::mat4 _pos)
 void Transform::Rotate(glm::vec3 _rot)
 {
 	this->rotation = _rot;
-	//if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
+	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 /*void Transform::Rotate(glm::Quaternion _qu);
@@ -105,16 +105,15 @@ void Transform::Rotate(glm::vec3 _rot)
 void Transform::Scale(glm::vec3 _scal)
 {
 	this->scale = _scal;
-	//if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
+	if (this->_actor->boxcollision != NULL) 
+		this->_actor->boxcollision->UpdateCollision();
 }
-//btScalar _x, _y, _z;
-/*
+btScalar _x, _y, _z;
 void Transform::MoveByPhysics(btTransform* _trans)
 {
 	_trans->getRotation().getEulerZYX(_z, _y, _x);
 	this->_actor->transform->Rotate(glm::vec3(glm::degrees(_x), -glm::degrees(_y), glm::degrees(_z)));
 	this->_actor->transform->Translate(glm::vec3(_trans->getOrigin().getX(), _trans->getOrigin().getY(), _trans->getOrigin().getZ()));
 	//_trans->getRotation().getEulerZYX(this->rotation.z,this->rotation.y, this->rotation.x);
-}*/
-
+}

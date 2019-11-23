@@ -8,13 +8,13 @@
 // mydebugdrawer.SetMatrices(ViewMatrix, ProjectionMatrix);
 // dynamicsWorld->debugDrawWorld();
 
-/*
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <SceneManager.hpp>
-#include <LinearMath/btIDebugDraw.hpp>
+//#include <LinearMath/btIDebugDraw.hpp>
 
 // Helper class; draws the world as seen by Bullet.
 // This is very handy to see it Bullet's world matches yours
@@ -143,4 +143,4 @@ public:
 	}
 	int getDebugMode(void) const { return 3; }
 	int m=0;
-};*/
+};

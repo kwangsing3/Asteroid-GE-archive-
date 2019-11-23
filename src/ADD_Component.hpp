@@ -8,7 +8,7 @@ class Actor;
 class Meshrender;
 class DirectionalLight;
 class PointLight;
-//class BoxCollision;
+class BoxCollision;
 class SceneManager;
 
 
@@ -28,7 +28,7 @@ public:
 
 	DirectionalLight* Add_DirectionalLight(Actor* _actor = nullptr);
 	PointLight* Add_PointLight(Actor* _actor = nullptr);
-	//BoxCollision* Add_BoxCollision(Actor* _actor = nullptr, float mass = 1);
+	BoxCollision* Add_BoxCollision(Actor* _actor = nullptr, float mass = 1);
 	Actor* Copy_Actor(Actor* _actor);
 };
 

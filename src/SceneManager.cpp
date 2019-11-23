@@ -6,7 +6,7 @@
 #include <DirectionalLight.hpp>
 #include <PointLight.hpp>
 #include <Meshrender.hpp>
-//#include <BoxCollision.hpp>
+#include <BoxCollision.hpp>
 #include <Actor.hpp>
 #include <World.hpp>
 #include <Window.hpp>
@@ -101,7 +101,7 @@ void SceneManager::OpenFile()
 		}
 		if (tool.attribute("_BoxCollision").as_int())
 		{
-			//_ADDManager->Add_BoxCollision(_Actor)->OpenFile(&tool);    //調試用
+			_ADDManager->Add_BoxCollision(_Actor)->OpenFile(&tool);    //調試用
 			_check++;
 		}
 		if (_check != _componentSize) { std::cout << _char << ": Component_size error" << std::endl; }
@@ -165,11 +165,11 @@ void SceneManager::SaveFile()
 			Objects[i]->_PointLight->SaveFile(&_cur);
 			component_size++;
 		}
-		/*if (Objects[i]->boxcollision != NULL)
+		if (Objects[i]->boxcollision != NULL)
 		{
 			Objects[i]->boxcollision->SaveFile(&_cur);
 			component_size++;
-		}*/
+		}
 		_cur.append_attribute("Component_size") = component_size;
 	}
 	root.append_attribute("Objects_Size") = Objects.size();
@@ -183,8 +183,8 @@ void SceneManager::SaveFile()
 void SceneManager::NewScene()
 {
 	_MainWorld->_PlayMode = false;
-	//_MainWorld->depose_init_PhysicsProgress();
-	//_MainWorld->exitPhysics();
+	_MainWorld->depose_init_PhysicsProgress();
+	_MainWorld->exitPhysics();
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender_Instancing.clear();
@@ -194,7 +194,7 @@ void SceneManager::NewScene()
 	delete _MainWorld->_piv;
 	_MainWorld->_piv = new _Pivot(new Actor());
 
-	//_MainWorld->initPhysics();
+	_MainWorld->initPhysics();
 }
 void SceneManager::AddToRenderPipeline_Instancing(Meshrender* _mrender)
 {
@@ -587,7 +587,7 @@ void SceneManager::vec_SpecializedDraw()
 	int _le = glm::length(_editorCamera.transform.position);
 
 	//_Croodinate->_actor->transform->Scale(glm::vec3(_editorCamera.transform.position.y > 40? 10:2));
-	_Croodinate->_actor->transform->Scale(glm::vec3(1));
+	//_Croodinate->_actor->transform->Scale(glm::vec3(1));
 	_Croodinate->Draw(vec_ShaderProgram[0]);
 }
 

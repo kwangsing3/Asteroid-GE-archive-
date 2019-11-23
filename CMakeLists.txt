@@ -13,15 +13,18 @@ set(CMAKE_CXX_STANDARD 17)
 #--------------------------------------------------------------------
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glfw)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/glm)
-
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/bullet3)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/assimp)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/assimp)
+
 ##設定頭文件(.h)位置
 
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/glm)
+include_directories(${CMAKE_SOURCE_DIR}/lib/bullet3/src)
+include_directories(${CMAKE_SOURCE_DIR}/lib/bullet3/examples)
 #include_directories(${CMAKE_SOURCE_DIR}/lib/assimp/include)
 #link_directories(${CMAKE_SOURCE_DIR}/lib)
 
@@ -32,19 +35,28 @@ LIST (APPEND ALL_SRC
 ${MAIN_SRCS}
 ${GRAPHICENGINE_SRCS}
 )
-
+link_directories(${PROJECT_NAME} ${BULLET_LIBRARY_DIRS})
 # 將來源新增到此專案的可執行檔。
 add_executable (${PROJECT_NAME} ${ALL_SRC})
 
 
 
-
+list (APPEND BULLET_LIBRARIES LinearMath)
+list (APPEND BULLET_LIBRARIES Bullet3Common)
+list (APPEND BULLET_LIBRARIES BulletInverseDynamics)
+list (APPEND BULLET_LIBRARIES BulletCollision)
+list (APPEND BULLET_LIBRARIES BulletDynamics)
+list (APPEND BULLET_LIBRARIES BulletSoftBody)
 #--------------------------------------------------------------------
 # Add GLFW-Lib
 #--------------------------------------------------------------------
 
 target_link_libraries(${PROJECT_NAME} glfw ${GLFW_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} assimp)
+target_link_libraries(${PROJECT_NAME}  ${BULLET_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} ${BULLET_COLLISION_LIBRARY})
+#target_link_libraries(${PROJECT_NAME} ${BULLET_DYNAMICS_LIBRARY})
+#target_link_libraries(${PROJECT_NAME} ${BULLET_MATH_LIBRARY})
 #target_link_libraries(${PROJECT_NAME} glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES})
 
 #--------------------------------------------------------------------

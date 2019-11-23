@@ -1,9 +1,9 @@
 #ifndef WORLD_H
 #define WORLD_H
-#pragma once
-//#include "btBulletDynamicsCommon.h"
+
+#include "btBulletDynamicsCommon.h"
 #include <GraphicEngine/GLDebugDrawer.hpp>
-//#include <Physics Engine/CommonInterfaces/CommonRigidBodyBase.h>
+#include <CommonInterfaces/CommonRigidBodyBase.h>
 #include <Camera.hpp>
 #include <AGE_Assert.hpp>
 
@@ -21,13 +21,14 @@
 #include <Meshrender.hpp>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
+
 extern Camera _editorCamera;
 
 class _Pivot : public AGE_Model
 {
 
 public:
-	//btRigidBody* body[3];
+	btRigidBody* body[3];
 	Actor* _actor;
 	bool _visable = false;
 	std::vector<Actor*> _lowwerActor;
@@ -35,7 +36,7 @@ public:
 	bool Drag[3] = { false,false,false };
 	bool _DragMode[3] = { false,false,false };
 	bool _needdebug = true;
-	//std::vector<btCollisionShape*> colshape;
+	std::vector<btCollisionShape*> colshape;
 	int _group = 1;
 	int _mask = 1;
 	unsigned int VBO, VAO;
@@ -46,7 +47,7 @@ public:
 		_actor->transform->name = (char*)"Pivot";
 
 		this->CreatePivot();
-		//CreateMouseCollision();
+		CreateMouseCollision();
 	}
 	void CreatePivot()
 	{
@@ -265,10 +266,10 @@ public:
 	}
 private:
 	int Collision_flag = 0;
-	void CreateMouseCollision() {}
-	void UpdateCollision() {}
-	void DeleteCollision() {}
-	void AddCollision() {}
+	void CreateMouseCollision();
+	void UpdateCollision();
+	void DeleteCollision();
+	void AddCollision();
 
 
 };
@@ -290,7 +291,7 @@ struct _PhysicsStruct
 
 
 
-struct World //: public CommonRigidBodyBase   //是一種Scene
+struct World : public CommonRigidBodyBase   //是一種Scene
 {
 	unsigned int depthMapFBO_PoLight;
 	unsigned int depthCubemap = 0;
@@ -299,10 +300,10 @@ struct World //: public CommonRigidBodyBase   //是一種Scene
 
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
-	World()// : CommonRigidBodyBase()
+	World() : CommonRigidBodyBase()
 	{
 		_PlayMode = false;
-		//initPhysics();
+		initPhysics();
 
 		// ----------------------- Shadow -----------------------
 		CreateDepthMap();
@@ -321,15 +322,13 @@ public:
 	}
 	void UpdateFrame();
 
-	//virtual void initPhysics();
-	//void init_PhysicsProgress();
-	//void depose_init_PhysicsProgress();
+	virtual void initPhysics();
+	void init_PhysicsProgress();
+	void depose_init_PhysicsProgress();
 	void CreateDepthMap();
 protected:
 	std::vector<_PhysicsStruct*> _PhysicsProgress;
 };
 
 
-
 #endif // !WORLD_H
-
