@@ -5,7 +5,7 @@
 //  Created by KS on 2019/11/20.
 //
 
-#include <PointLight.hpp>
+#include <Component/PointLight.hpp>
 #include <Actor.hpp>
 //#include <Xml/pugixml.hpp>
 

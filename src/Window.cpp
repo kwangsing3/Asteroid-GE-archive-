@@ -17,29 +17,6 @@ GLFWwindow* Window::MainGLFWwindow = NULL;
 
 // ImVec2  Window::viewport_pos;
 // ImVec2  Window::viewport_size;
-
-bool Window::WindowShouldClose = false;
-bool Window::DeBug_Mode = false;
-
-//World* Window::_Mainworld;
-extern World* _MainWorld;
-//關於專案設定
-bool WindowUI::All_UIElement = true;
-
-std::vector<int> Window::vec_ID;
-WindowUI* Window::_Main_UI;
-
-Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
-
-//static unsigned int _Width = 800;
-//static unsigned int _Height = 600;
-
-/*void Window::InitWorld()
-{
-	this->_Mainworld = new World();
-	this->_Mainworld->CreateDepthMap();
-}*/
-// ---------------------------UI---------------------------
 static void MainMenuBar();
 static void Menu_File();
 //static void ShowExampleAppLayout(bool* p_open);
@@ -51,237 +28,40 @@ static void ShowSimpleOverlay(bool* p_open);
 bool WindowUI::show_simple_overlay = true;
 static std::vector<SelectObject*> SceneObject_List;
 
-float WindowUI::UI_Left_X;
-float WindowUI::UI_Left_Y;
-float WindowUI::UI_Right_X;
-float WindowUI::_FPS = 0;
-int Window::progect_I_am_focus;
-void Clear_ListBool()
+bool WindowUI::WindowShouldClose = false;
+bool Window::DeBug_Mode = false;
+
+//World* Window::_Mainworld;
+
+//關於專案設定
+bool WindowUI::All_UIElement = true;
+
+std::vector<int> Window::vec_ID;
+WindowUI* Window::_Main_UI;
+
+Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+ float WindowUI::deltaTime = 0.0f;
+ float WindowUI::lastFrame = 0.0f;
+ float WindowUI::previousTime = glfwGetTime();
+ int WindowUI::frameCount = 0;
+ bool WindowUI::isClickingPivot = false;
+ float  WindowUI::lastX = 500.0f;
+ float  WindowUI::lastY = 300.0f;
+
+
+void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned int* height)
 {
-	for (int i = 0; i < SceneObject_List.size(); i++)
+	float currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+	frameCount++;
+	if (currentFrame - previousTime >= 1.0f)
 	{
-		SceneObject_List[i]->Is_renaming = SceneObject_List[i]->Is_selected = false;
+		_FPS = frameCount;
+		frameCount = 0;
+		previousTime = currentFrame;
 	}
-}
-
-//SelectObject *WindowUI::cur_SelectObject;
-std::vector<SelectObject*> WindowUI::cur_SelectObject_List;
-std::vector<SelectObject*> WindowUI::copy_SelectObject_List;
-
-void WindowUI::Deletecur_actor(SelectObject* cur_selectobject)
-{
-	if (cur_selectobject == NULL) return;    //先暫時移除
-
-	/*for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
-	{
-		if (*it == cur_selectobject->_actor)
-		{
-			SceneManager::Objects.erase(it);
-			break;
-		}
-	}
-	for (auto it = SceneManager::vec_ObjectsToRender.begin(); it != SceneManager::vec_ObjectsToRender.end(); it++)
-	{
-		if (*it == cur_selectobject->_actor->meshrender)
-		{
-			SceneManager::vec_ObjectsToRender.erase(it);
-			break;
-		}
-	}
-	if (cur_selectobject->_actor->_PointLight != NULL)
-	{
-		for (auto it = SceneManager::vec_PointLight.begin(); it != SceneManager::vec_PointLight.end(); it++)
-		{
-			if (*it == cur_selectobject->_actor->_PointLight)
-			{
-				SceneManager::vec_PointLight.erase(it);
-				break;
-			}
-		}
-	}
-	if (cur_selectobject->_actor->_Dirlight != NULL)
-	{
-		for (auto it = SceneManager::vec_DirectionlLight.begin(); it != SceneManager::vec_DirectionlLight.end(); it++)
-		{
-			if (*it == cur_selectobject->_actor->_Dirlight)
-			{
-				SceneManager::vec_DirectionlLight.erase(it);
-				break;
-			}
-		}
-	}*/
-	cur_selectobject = NULL;
-}
-void WindowUI::Renamecur_actor(SelectObject* cur_actor)
-{
-	if (cur_actor != NULL)
-		cur_actor->Is_renaming = true;
-}
-void WindowUI::SelectThisActor(Actor* _actor)
-{
-	//_MainWorld->depose_init_PhysicsProgress();
-	//_MainWorld->InitPhysics = true;
-
-	if (_actor != NULL)
-	{
-		for (int i = 0; i < SceneObject_List.size(); i++)
-		{
-			if (SceneObject_List[i]->_actor == _actor)
-			{
-				WindowUI::SelectThisObject(SceneObject_List[i]);
-				break;
-			}
-		}
-	}
-	else
-	{
-		Clear_ListBool();
-		cur_SelectObject_List.clear();
-		WindowUI::ListInspectorCur(NULL);
-		if (_MainWorld->_piv != NULL) _MainWorld->_piv->AttachObject(NULL);
-	}
-}
-void WindowUI::SelectThisObject(SelectObject* selectobject)
-{
-	if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held  沒有按壓才會進來
-	{
-		Clear_ListBool();
-		cur_SelectObject_List.clear();
-
-		if (_MainWorld->_piv != NULL)
-		{
-			_MainWorld->_piv->AttachObject(NULL);
-			_MainWorld->_piv->AttachObject(selectobject->_actor);
-		}
-	}
-	else
-	{
-		if (_MainWorld->_piv != NULL)
-		{
-			_MainWorld->_piv->AttachObject_Multiple(selectobject->_actor);
-		}
-	}
-	selectobject->Is_selected = !selectobject->Is_selected;
-	cur_SelectObject_List.push_back(selectobject);
-}
-void WindowUI::CopyEvent()
-{
-	if (cur_SelectObject_List.empty())
-		return;
-
-	copy_SelectObject_List = cur_SelectObject_List;
-}
-void WindowUI::PasteEvent()
-{
-	//Paste
-	if (copy_SelectObject_List.empty())
-		return;
-	Clear_ListBool();
-	cur_SelectObject_List.clear();
-	if (_MainWorld->_piv != NULL) _MainWorld->_piv->_lowwerActor.clear();
-	for (int i = 0; i < copy_SelectObject_List.size(); i++)
-	{
-		SelectObject* _ns = new SelectObject(_MainWorld->_SceneManager._ADDManager->Copy_Actor(copy_SelectObject_List[i]->_actor));
-		_ns->Is_selected = true;
-		SceneObject_List.push_back(_ns);
-		cur_SelectObject_List.push_back(_ns);
-
-		if (_MainWorld->_piv != NULL)
-		{
-			_MainWorld->_piv->AttachObject_Multiple(_ns->_actor);
-		}
-	}
-	copy_SelectObject_List.clear();
-
-
-	//Select
-}
-void WindowUI::ListInspectorCur(SelectObject* _sel)
-{
-	if (_sel != NULL)
-	{
-		if (_sel->_actor->transform != NULL && _sel->_actor->transform->enabled)
-		{
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-
-				float _test[3] = { glm::radians(_sel->_actor->transform->rotation.x),glm::radians(_sel->_actor->transform->rotation.y),glm::radians(_sel->_actor->transform->rotation.z) };
-				if (ImGui::DragFloat3("Position", (float*)&_sel->_actor->transform->position, 0.01f)) { _sel->_actor->transform->Translate(_sel->_actor->transform->position); _MainWorld->_SceneManager.NeedInitedDraw = true; }
-				if (ImGui::DragFloat3("Rotation", (float*)&_sel->_actor->transform->rotation, 0.1f)) { _sel->_actor->transform->Rotate(_sel->_actor->transform->rotation); _MainWorld->_SceneManager.NeedInitedDraw = true; }
-				if (ImGui::DragFloat3("Scale", (float*)&_sel->_actor->transform->scale, 0.01f)) { _sel->_actor->transform->Scale(_sel->_actor->transform->scale); _MainWorld->_SceneManager.NeedInitedDraw = true; }
-
-			}
-		}
-		if (_sel->_actor->_Dirlight != NULL && _sel->_actor->_Dirlight->enabled)
-		{
-			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_Dirlight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_Dirlight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_Dirlight->Specular);
-			}
-		}
-		if (_sel->_actor->_PointLight != NULL && _sel->_actor->_PointLight->enabled)
-		{
-			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_PointLight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_PointLight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_PointLight->Specular);
-				ImGui::DragFloat("Constant", &_sel->_actor->_PointLight->Constant, 0.01f);
-				ImGui::DragFloat("linear", &_sel->_actor->_PointLight->linear, 0.01f);
-				ImGui::DragFloat("quadratic", &_sel->_actor->_PointLight->quadratic, 0.01f);
-			}
-		}
-		if (_sel->_actor->meshrender != NULL && _sel->_actor->meshrender->enabled)
-		{
-			if (ImGui::CollapsingHeader("MeshRender", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::Text("MeshRender");
-				const char* items[] = { "Cube","Sphere","No function for now" };
-				static int item_current = 0;
-				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
-
-				ImGui::ColorEdit4("Diffuse", (float*)&_sel->_actor->meshrender->VertexColor);
-
-				if (ImGui::Checkbox("Debug", &_sel->_actor->meshrender->_needdebug))
-				{
-					//_sel->_actor->meshrender->ReSetCollisionFlag();
-				}
-				static int _curco = 0;
-				if (ImGui::Button("Reload Shader"))   _MainWorld->_SceneManager.NeedReloadShader = true;
-
-				if (ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable))
-				{
-					//SceneManager::NeedInitedDraw = true;
-					_sel->_actor->meshrender->SetVisable(_sel->_actor->meshrender->_visable);
-				}
-			}
-		}
-		/*if (_sel->_actor->boxcollision != NULL && _sel->_actor->boxcollision->enabled)
-		{
-			if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				float f0 = _sel->_actor->boxcollision->_Mass;
-				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
-				{
-
-					_sel->_actor->boxcollision->_Mass = f0;
-					_sel->_actor->boxcollision->UpdateCollision();
-				}
-				if (ImGui::Checkbox("Debug Line", &_sel->_actor->boxcollision->_needdebug))
-				{
-					_sel->_actor->boxcollision->ReSetCollisionFlag();
-				}
-			}
-		}*/
-	}
-
-
-}
-void WindowUI::ShowMyImGUIDemoWindow(bool* p_open, unsigned int* width, unsigned int* height)
-{
-
 	//Main Background--------------------------------------------------------------------------------------
 	if (WindowUI::All_UIElement)
 	{
@@ -572,6 +352,239 @@ void WindowUI::ShowMyImGUIDemoWindow(bool* p_open, unsigned int* width, unsigned
 	ImGui::ShowDemoWindow(p_open);
 }
 
+// Keep running
+
+
+// ---------------------------UI---------------------------
+
+
+float WindowUI::UI_Left_X;
+float WindowUI::UI_Left_Y;
+float WindowUI::UI_Right_X;
+float WindowUI::_FPS = 0;
+int Window::progect_I_am_focus;
+std::vector<SelectObject*> WindowUI::cur_SelectObject_List;
+std::vector<SelectObject*> WindowUI::copy_SelectObject_List;
+void Clear_ListBool()
+{
+	for (int i = 0; i < SceneObject_List.size(); i++)
+	{
+		SceneObject_List[i]->Is_renaming = SceneObject_List[i]->Is_selected = false;
+	}
+}
+void WindowUI::Deletecur_actor(SelectObject* cur_selectobject)
+{
+	if (cur_selectobject == NULL) return;    //先暫時移除
+
+	/*for (auto it = SceneManager::Objects.begin(); it != SceneManager::Objects.end(); it++)
+	{
+		if (*it == cur_selectobject->_actor)
+		{
+			SceneManager::Objects.erase(it);
+			break;
+		}
+	}
+	for (auto it = SceneManager::vec_ObjectsToRender.begin(); it != SceneManager::vec_ObjectsToRender.end(); it++)
+	{
+		if (*it == cur_selectobject->_actor->meshrender)
+		{
+			SceneManager::vec_ObjectsToRender.erase(it);
+			break;
+		}
+	}
+	if (cur_selectobject->_actor->_PointLight != NULL)
+	{
+		for (auto it = SceneManager::vec_PointLight.begin(); it != SceneManager::vec_PointLight.end(); it++)
+		{
+			if (*it == cur_selectobject->_actor->_PointLight)
+			{
+				SceneManager::vec_PointLight.erase(it);
+				break;
+			}
+		}
+	}
+	if (cur_selectobject->_actor->_Dirlight != NULL)
+	{
+		for (auto it = SceneManager::vec_DirectionlLight.begin(); it != SceneManager::vec_DirectionlLight.end(); it++)
+		{
+			if (*it == cur_selectobject->_actor->_Dirlight)
+			{
+				SceneManager::vec_DirectionlLight.erase(it);
+				break;
+			}
+		}
+	}*/
+	cur_selectobject = NULL;
+}
+void WindowUI::Renamecur_actor(SelectObject* cur_actor)
+{
+	if (cur_actor != NULL)
+		cur_actor->Is_renaming = true;
+}
+void WindowUI::SelectThisActor(Actor* _actor)
+{
+	//_MainWorld->depose_init_PhysicsProgress();
+	//_MainWorld->InitPhysics = true;
+
+	if (_actor != NULL)
+	{
+		for (int i = 0; i < SceneObject_List.size(); i++)
+		{
+			if (SceneObject_List[i]->_actor == _actor)
+			{
+				WindowUI::SelectThisObject(SceneObject_List[i]);
+				break;
+			}
+		}
+	}
+	else
+	{
+		Clear_ListBool();
+		cur_SelectObject_List.clear();
+		WindowUI::ListInspectorCur(NULL);
+		if (_MainWorld->_piv != NULL) _MainWorld->_piv->AttachObject(NULL);
+	}
+}
+void WindowUI::SelectThisObject(SelectObject* selectobject)
+{
+	if (!ImGui::GetIO().KeyCtrl)    // Clear selection when CTRL is not held  沒有按壓才會進來
+	{
+		Clear_ListBool();
+		cur_SelectObject_List.clear();
+
+		if (_MainWorld->_piv != NULL)
+		{
+			_MainWorld->_piv->AttachObject(NULL);
+			_MainWorld->_piv->AttachObject(selectobject->_actor);
+		}
+	}
+	else
+	{
+		if (_MainWorld->_piv != NULL)
+		{
+			_MainWorld->_piv->AttachObject_Multiple(selectobject->_actor);
+		}
+	}
+	selectobject->Is_selected = !selectobject->Is_selected;
+	cur_SelectObject_List.push_back(selectobject);
+}
+void WindowUI::CopyEvent()
+{
+	if (cur_SelectObject_List.empty())
+		return;
+
+	copy_SelectObject_List = cur_SelectObject_List;
+}
+void WindowUI::PasteEvent()
+{
+	//Paste
+	if (copy_SelectObject_List.empty())
+		return;
+	Clear_ListBool();
+	cur_SelectObject_List.clear();
+	if (_MainWorld->_piv != NULL) _MainWorld->_piv->_lowwerActor.clear();
+	for (int i = 0; i < copy_SelectObject_List.size(); i++)
+	{
+		SelectObject* _ns = new SelectObject(_MainWorld->_SceneManager._ADDManager->Copy_Actor(copy_SelectObject_List[i]->_actor));
+		_ns->Is_selected = true;
+		SceneObject_List.push_back(_ns);
+		cur_SelectObject_List.push_back(_ns);
+
+		if (_MainWorld->_piv != NULL)
+		{
+			_MainWorld->_piv->AttachObject_Multiple(_ns->_actor);
+		}
+	}
+	copy_SelectObject_List.clear();
+
+
+	//Select
+}
+void WindowUI::ListInspectorCur(SelectObject* _sel)
+{
+	if (_sel != NULL)
+	{
+		if (_sel->_actor->transform != NULL && _sel->_actor->transform->enabled)
+		{
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+
+				float _test[3] = { glm::radians(_sel->_actor->transform->rotation.x),glm::radians(_sel->_actor->transform->rotation.y),glm::radians(_sel->_actor->transform->rotation.z) };
+				if (ImGui::DragFloat3("Position", (float*)&_sel->_actor->transform->position, 0.01f)) { _sel->_actor->transform->Translate(_sel->_actor->transform->position); _MainWorld->_SceneManager.NeedInitedDraw = true; }
+				if (ImGui::DragFloat3("Rotation", (float*)&_sel->_actor->transform->rotation, 0.1f)) { _sel->_actor->transform->Rotate(_sel->_actor->transform->rotation); _MainWorld->_SceneManager.NeedInitedDraw = true; }
+				if (ImGui::DragFloat3("Scale", (float*)&_sel->_actor->transform->scale, 0.01f)) { _sel->_actor->transform->Scale(_sel->_actor->transform->scale); _MainWorld->_SceneManager.NeedInitedDraw = true; }
+
+			}
+		}
+		if (_sel->_actor->_Dirlight != NULL && _sel->_actor->_Dirlight->enabled)
+		{
+			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_Dirlight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_Dirlight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_Dirlight->Specular);
+			}
+		}
+		if (_sel->_actor->_PointLight != NULL && _sel->_actor->_PointLight->enabled)
+		{
+			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_PointLight->Ambient);
+				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_PointLight->Diffuse);
+				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_PointLight->Specular);
+				ImGui::DragFloat("Constant", &_sel->_actor->_PointLight->Constant, 0.01f);
+				ImGui::DragFloat("linear", &_sel->_actor->_PointLight->linear, 0.01f);
+				ImGui::DragFloat("quadratic", &_sel->_actor->_PointLight->quadratic, 0.01f);
+			}
+		}
+		if (_sel->_actor->meshrender != NULL && _sel->_actor->meshrender->enabled)
+		{
+			if (ImGui::CollapsingHeader("MeshRender", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				ImGui::Text("MeshRender");
+				const char* items[] = { "Cube","Sphere","No function for now" };
+				static int item_current = 0;
+				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
+
+				ImGui::ColorEdit4("Diffuse", (float*)&_sel->_actor->meshrender->VertexColor);
+
+				if (ImGui::Checkbox("Debug", &_sel->_actor->meshrender->_needdebug))
+				{
+					//_sel->_actor->meshrender->ReSetCollisionFlag();
+				}
+				static int _curco = 0;
+				if (ImGui::Button("Reload Shader"))   _MainWorld->_SceneManager.NeedReloadShader = true;
+
+				if (ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable))
+				{
+					//SceneManager::NeedInitedDraw = true;
+					_sel->_actor->meshrender->SetVisable(_sel->_actor->meshrender->_visable);
+				}
+			}
+		}
+		/*if (_sel->_actor->boxcollision != NULL && _sel->_actor->boxcollision->enabled)
+		{
+			if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
+			{
+				float f0 = _sel->_actor->boxcollision->_Mass;
+				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
+				{
+
+					_sel->_actor->boxcollision->_Mass = f0;
+					_sel->_actor->boxcollision->UpdateCollision();
+				}
+				if (ImGui::Checkbox("Debug Line", &_sel->_actor->boxcollision->_needdebug))
+				{
+					_sel->_actor->boxcollision->ReSetCollisionFlag();
+				}
+			}
+		}*/
+	}
+
+
+}
+
+
 
 
 
@@ -701,7 +714,7 @@ static void Menu_File()
 	{
 		ImGui::Text("version v1.0.0");
 	}
-	if (ImGui::MenuItem("Quit", "Alt+F4")) { Window::WindowShouldClose = true; }
+	if (ImGui::MenuItem("Quit", "Alt+F4")) { WindowUI::WindowShouldClose = true; }
 }
 static void ShowSimpleOverlay(bool* p_open)
 {

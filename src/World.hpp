@@ -17,8 +17,8 @@
 #include <SceneManager.hpp>
 #include <ADD_Component.hpp>
 #include <Actor.hpp>
-//#include <Window.h>
-#include <Meshrender.hpp>
+#include <Camera.hpp>
+#include <Component/Meshrender.hpp>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
 
@@ -28,8 +28,8 @@ class _Pivot : public AGE_Model
 {
 
 public:
-	btRigidBody* body[3];
-	Actor* _actor;
+	btRigidBody* body[3] = {NULL,NULL ,NULL };
+	Actor* _actor = NULL;
 	bool _visable = false;
 	std::vector<Actor*> _lowwerActor;
 	bool _attaching = false;

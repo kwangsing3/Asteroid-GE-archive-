@@ -1,11 +1,11 @@
 ﻿#include <AGE_Assert.hpp>
 
-#include<ADD_Component.hpp>
+#include <ADD_Component.hpp>
 #include <Actor.hpp>
-#include <Meshrender.hpp>
-#include <DirectionalLight.hpp>
-#include <PointLight.hpp>
-#include <BoxCollision.hpp>
+#include <Component/Meshrender.hpp>
+#include <Component/DirectionalLight.hpp>
+#include <Component/PointLight.hpp>
+#include <Component/BoxCollision.hpp>
 
 #include <SceneManager.hpp>
 
@@ -27,16 +27,16 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor, Shape _sha)
 		DefaultShapePath = "";
 		break;
 	case Shape::Cube:
-		DefaultShapePath = "ExampleModel/Cube.obj";
+		DefaultShapePath = "ExampleModel/Cube.fbx";
 		break;
 	case Shape::Sphere:
-		DefaultShapePath = "ExampleModel/Sphere.obj";
+		DefaultShapePath = "ExampleModel/Sphere.fbx";
 		break;
 	case Shape::Capsule:
 		DefaultShapePath = "";
 		break;
 	case Shape::Cylinder:
-		DefaultShapePath = "ExampleModel/Cylinder.obj";
+		DefaultShapePath = "ExampleModel/Cylinder.fbx";
 		break;
 	default:
 		AGE_ASSERT(false);
@@ -70,7 +70,7 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor, std::string _path)  // 
 	Meshrender* _mesh = new Meshrender(_ac, _path);
 	_OwnedSceneManager->ModelList.push_back(new ModelLoadStruct(_path, _mesh->_model));
 	_ac->meshrender = _mesh;
-
+	
 	if (!use_Instance || _mesh->_model->HasBone)
 		_OwnedSceneManager->AddToRenderPipeline(_mesh);
 	else
@@ -98,6 +98,8 @@ Meshrender* ADD_Component::ADD_CustomMesh(float* vertexs, unsigned int _Length) 
 	_ac->meshrender = _meshrender;
 	// 不應該加入到 Draw Pipeline 中  畢竟會繪製兩次  有另外獨立到SceneManager 中繪製
 	return _meshrender;
+
+	
 }
 
 

@@ -3,10 +3,10 @@
 #include <pugixml.hpp>
 
 
-#include <DirectionalLight.hpp>
-#include <PointLight.hpp>
-#include <Meshrender.hpp>
-#include <BoxCollision.hpp>
+#include <Component/DirectionalLight.hpp>
+#include <Component/PointLight.hpp>
+#include <Component/Meshrender.hpp>
+#include <Component/BoxCollision.hpp>
 #include <Actor.hpp>
 #include <World.hpp>
 #include <Window.hpp>
@@ -241,51 +241,52 @@ void SceneManager::UpdateRenderPipeline(Meshrender* _mrender)
 }
 Meshrender* SceneManager::ADD_Croodinate()
 {
+	float _Color_Deep = 0.4f, _Color_Light = 0.3f;
 	float coordinatesX[] = {
-		0.0f, 0.0f, 0.0f,         0.4f,0.4f,0.4f,
-		  0.0f, 0.0f, 10.0f * _coordinate_Scale,       0.4f,0.4f,0.4f,
+		0.0f, 0.0f, 0.0f,                              _Color_Deep,_Color_Deep,_Color_Deep,
+		  0.0f, 0.0f, 10.0f * _coordinate_Scale,       _Color_Deep,_Color_Deep,_Color_Deep,
 		  1.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		  1.0f, 0.0f, 10.0f * _coordinate_Scale,       0.3f,0.3f,0.3f,
+		  1.0f, 0.0f, 10.0f * _coordinate_Scale,        _Color_Light,_Color_Light,_Color_Light,
 		 2.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		  2.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
+		  2.0f, 0.0f, 10.0f * _coordinate_Scale,        _Color_Light,_Color_Light,_Color_Light,
 		  3.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		   3.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
+		   3.0f, 0.0f, 10.0f * _coordinate_Scale,      _Color_Light,_Color_Light,_Color_Light,
 			4.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		  4.0f, 0.0f, 10.0f * _coordinate_Scale,         0.3f,0.3f,0.3f,
+		  4.0f, 0.0f, 10.0f * _coordinate_Scale,         _Color_Light,_Color_Light,_Color_Light,
 		   5.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		  5.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
+		  5.0f, 0.0f, 10.0f * _coordinate_Scale,       _Color_Light,_Color_Light,_Color_Light,
 		 6.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		  6.0f, 0.0f, 10.0f * _coordinate_Scale,       0.3f,0.3f,0.3f,
+		  6.0f, 0.0f, 10.0f * _coordinate_Scale,        _Color_Light,_Color_Light,_Color_Light,
 			 7.0f, 0.0f, 0.0f,       0.3f,0.3f,0.3f,
-		 7.0f, 0.0f, 10.0f * _coordinate_Scale,         0.3f,0.3f,0.3f,
+		 7.0f, 0.0f, 10.0f * _coordinate_Scale,          _Color_Light,_Color_Light,_Color_Light,
 		 8.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
-		8.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
+		8.0f, 0.0f, 10.0f * _coordinate_Scale,         _Color_Light,_Color_Light,_Color_Light,
 		9.0f, 0.0f, 0.0f,         0.3f,0.3f,0.3f,
-		 9.0f, 0.0f, 10.0f * _coordinate_Scale,        0.3f,0.3f,0.3f,
+		 9.0f, 0.0f, 10.0f * _coordinate_Scale,        _Color_Light,_Color_Light,_Color_Light,
 		 // 10.0f, 0.0f, 0.0f,        0.3f,0.3f,0.3f,
 	   // 10.0f, 0.0f, 100.0f,        0.3f,0.3f,0.3f,
 	};
 	float coordinatesZ[] = {
-		0.0f, 0.0f, 0.0f,      0.4f,0.4f,0.4f,
-		10.0f * _coordinate_Scale, 0.0f, 0.0f,    0.4f,0.4f,0.4f,
+		0.0f, 0.0f, 0.0f,                          _Color_Deep,_Color_Deep,_Color_Deep,
+		10.0f * _coordinate_Scale, 0.0f, 0.0f,     _Color_Deep,_Color_Deep,_Color_Deep,
 		 0.0f, 0.0f, 1.0f,      0.3f,0.3f,0.3f,
-		10.0f * _coordinate_Scale, 0.0f, 1.0f,    0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 1.0f,     _Color_Light,_Color_Light,_Color_Light,
 		0.0f, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
-		10.0f * _coordinate_Scale, 0.0f, 2.0f,      0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 2.0f,     _Color_Light,_Color_Light,_Color_Light,
 		 0.0f, 0.0f, 3.0f,      0.3f,0.3f,0.3f,
-		 10.0f * _coordinate_Scale, 0.0f, 3.0f,       0.3f,0.3f,0.3f,
+		 10.0f * _coordinate_Scale, 0.0f, 3.0f,         _Color_Light,_Color_Light,_Color_Light,
 		 0.0f, 0.0f, 4.0f,       0.3f,0.3f,0.3f,
-		  10.0f * _coordinate_Scale, 0.0f, 4.0f,      0.3f,0.3f,0.3f,
+		  10.0f * _coordinate_Scale, 0.0f, 4.0f,      _Color_Light,_Color_Light,_Color_Light,
 		  0.0f, 0.0f, 5.0f,       0.3f,0.3f,0.3f,
-		  10.0f * _coordinate_Scale, 0.0f, 5.0f,      0.3f,0.3f,0.3f,
+		  10.0f * _coordinate_Scale, 0.0f, 5.0f,      _Color_Light,_Color_Light,_Color_Light,
 		  0.0f, 0.0f, 6.0f,     0.3f,0.3f,0.3f,
-		10.0f * _coordinate_Scale, 0.0f, 6.0f,      0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 6.0f,       _Color_Light,_Color_Light,_Color_Light,
 		 0.0f, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
-		  10.0f * _coordinate_Scale, 0.0f, 7.0f,      0.3f,0.3f,0.3f,
+		  10.0f * _coordinate_Scale, 0.0f, 7.0f,      _Color_Light,_Color_Light,_Color_Light,
 		 0.0f, 0.0f, 8.0f,       0.3f,0.3f,0.3f,
-		 10.0f * _coordinate_Scale, 0.0f, 8.0f,      0.3f,0.3f,0.3f,
+		 10.0f * _coordinate_Scale, 0.0f, 8.0f,     _Color_Light,_Color_Light,_Color_Light,
 		 0.0f, 0.0f, 9.0f,       0.3f,0.3f,0.3f,
-		10.0f * _coordinate_Scale, 0.0f, 9.0f,      0.3f,0.3f,0.3f,
+		10.0f * _coordinate_Scale, 0.0f, 9.0f,      _Color_Light,_Color_Light,_Color_Light,
 		//0.0f, 0.0f, 10.0f,       0.3f,0.3f,0.3f,
 		//100.0f, 0.0f, 10.0f,      0.3f,0.3f,0.3f,
 	};

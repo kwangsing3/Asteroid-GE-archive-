@@ -7,7 +7,7 @@
 #ifndef POINTLIGHT_H
 #define POINTLIGHT_H
 
-#include <Component.hpp>
+#include <Component/Component.hpp>
 
 
 

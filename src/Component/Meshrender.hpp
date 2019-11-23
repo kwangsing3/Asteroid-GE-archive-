@@ -7,7 +7,7 @@
 
 #ifndef MESHRENDER_H
 #define MESHRENDER_H
-#include <Component.hpp>
+#include <Component/Component.hpp>
 #include <AGE_Model.hpp>
 #include <glm/gtc/random.hpp>
 
@@ -25,8 +25,8 @@ public:
 	bool _needdebug = false;
 	bool _visable = true;
 	//---------------------------------
-	btRigidBody* body;
-	AGE_Model* _model;
+	btRigidBody* body = NULL;
+	AGE_Model* _model = NULL;
 	glm::vec3 VertexColor = glm::vec3(0.8f);
 
 	Meshrender(Actor* _a)
@@ -68,7 +68,7 @@ private:
 
 
 protected:
-	btCollisionShape* colShape;
+	btCollisionShape* colShape = NULL;
 	// Draw Pipeline Variable
 	float near_plane = 1.0f;
 	float far_plane = 25.0f;

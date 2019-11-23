@@ -5,10 +5,10 @@
 //  Created by KS on 2019/11/20.
 //
 
-#include <Meshrender.hpp>
+#include <Component/Meshrender.hpp>
 
 #include <shader_m.h>
-#include <Transform.hpp>
+#include <Component/Transform.hpp>
 #include <World.hpp>
 #include <Actor.hpp>
 

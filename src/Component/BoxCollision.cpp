@@ -1,4 +1,4 @@
-﻿#include <BoxCollision.hpp>
+﻿#include <Component/BoxCollision.hpp>
 #include <SceneManager.hpp>
 #include <Window.hpp>
 

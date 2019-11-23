@@ -56,8 +56,8 @@ void _Pivot::CreateMouseCollision()
 }
 void _Pivot::UpdateCollision()
 {
-	//DeleteCollision();
-	//CreateMouseCollision();
+	DeleteCollision();
+	CreateMouseCollision();
 }
 void _Pivot::DeleteCollision()
 {
@@ -67,7 +67,7 @@ void _Pivot::DeleteCollision()
 }
 void _Pivot::AddCollision()
 {
-	//CreateMouseCollision();
+	CreateMouseCollision();
 }
 
 #include <stb_image.h>

@@ -8,7 +8,7 @@
 #ifndef DIRECTIONALLIGHT_H
 #define DIRECTIONALLIGHT_H
 
-#include <Component.hpp>
+#include <Component/Component.hpp>
 
 
 

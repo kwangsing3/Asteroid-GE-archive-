@@ -29,11 +29,15 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/bullet3/examples)
 #link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # 添加目錄下所有的來源檔(.Cpp)並新增至DIR_SRCS變量
+
 aux_source_directory(${CMAKE_SOURCE_DIR}/src MAIN_SRCS)
 aux_source_directory(${CMAKE_SOURCE_DIR}/src/GraphicEngine GRAPHICENGINE_SRCS)
+aux_source_directory(${CMAKE_SOURCE_DIR}/src/Component COMPONENT_SRCS)
+
 LIST (APPEND ALL_SRC
 ${MAIN_SRCS}
 ${GRAPHICENGINE_SRCS}
+${COMPONENT_SRCS}
 )
 link_directories(${PROJECT_NAME} ${BULLET_LIBRARY_DIRS})
 # 將來源新增到此專案的可執行檔。
@@ -78,11 +82,17 @@ add_custom_command(
          TARGET ${PROJECT_NAME} POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_directory              
              ${CMAKE_SOURCE_DIR}/src/ExampleProject $<TARGET_FILE_DIR:${PROJECT_NAME}>/ExampleProject
-         COMMENT "Copying Texture" VERBATIM
+         COMMENT "Copying ExampleProject" VERBATIM
          )
 add_custom_command(
          TARGET ${PROJECT_NAME} POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy_directory              
              ${CMAKE_SOURCE_DIR}/src/ExampleModel $<TARGET_FILE_DIR:${PROJECT_NAME}>/ExampleModel
-         COMMENT "Copying Texture" VERBATIM
+         COMMENT "Copying ExampleModel" VERBATIM
+         )
+add_custom_command(
+         TARGET ${PROJECT_NAME} POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy            
+             ${CMAKE_SOURCE_DIR}/src/imgui.ini $<TARGET_FILE_DIR:${PROJECT_NAME}>/imgui.ini
+         COMMENT "Copying imgui.ini" VERBATIM
          )

@@ -407,7 +407,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 	void deleteRigidBody(btRigidBody* body)
 	{
 		int graphicsUid = body->getUserIndex();
-		m_guiHelper->removeGraphicsInstance(graphicsUid);
+		//m_guiHelper->removeGraphicsInstance(graphicsUid);
 
 		m_dynamicsWorld->removeRigidBody(body);
 		btMotionState* ms = body->getMotionState();

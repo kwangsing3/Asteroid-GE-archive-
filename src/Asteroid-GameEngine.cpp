@@ -22,9 +22,10 @@
 unsigned int Window_Width = 1920;
 unsigned int Window_Height = 1080;
 //const char* glsl_version = "#version 460";
-bool isFullscreen = false;
+
 AGE_FileBrowser* _Filebrowser;
 World* _MainWorld;
+
 
 int main()
 {
@@ -94,25 +95,12 @@ int main()
 	Assimp::Importer _omp;
 	_omp.ReadFile(".ExampleModel", aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
-	float previousTime = glfwGetTime();
-	int frameCount = 0;
+
 	// Loop prograss
-	while (!Window::WindowShouldClose)
+	while (!WindowUI::WindowShouldClose)
 	{
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-		frameCount++;
-		if (currentFrame - previousTime >= 1.0f)
-		{
-			WindowUI::_FPS = frameCount;
-			frameCount = 0;
-			previousTime = currentFrame;
-		}
-		// Keep running
-		Window::processInput(_Editorwindow->MainGLFWwindow);
+
+		WindowUI::processInput(_Editorwindow->MainGLFWwindow);
 		// render
 		// ------
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -137,7 +125,7 @@ int main()
         
         
         //ImGui::ShowDemoWindow(&showwindow);
-		WindowUI::ShowMyImGUIDemoWindow(&WindowUI::All_UIElement, &Window_Width, &Window_Height);
+		WindowUI::Updated_WindowEvent(&WindowUI::All_UIElement, &Window_Width, &Window_Height);
 
 
 		ImGui::Render();

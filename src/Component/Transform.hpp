@@ -7,7 +7,7 @@
 
 #ifndef CLASS_TRANSFORM_H
 #define CLASS_TRANSFORM_H
-#include<Component.hpp>
+#include <Component/Component.hpp>
 
 
 class btTransform;

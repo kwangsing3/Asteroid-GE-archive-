@@ -8,7 +8,7 @@
 //#include <Window.h>
 
 #include <iostream>
-#include <Component.hpp>
+#include <Component/Component.hpp>
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {

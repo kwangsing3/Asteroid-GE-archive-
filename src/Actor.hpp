@@ -8,21 +8,21 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-#include <Transform.hpp>
-#include <DirectionalLight.hpp>
-#include <PointLight.hpp>
-#include <Meshrender.hpp>
-#include <BoxCollision.hpp>
+#include <Component/Transform.hpp>
+#include <Component/DirectionalLight.hpp>
+#include <Component/PointLight.hpp>
+#include <Component/Meshrender.hpp>
+#include <Component/BoxCollision.hpp>
 
 class Actor
 {
 public:
 
-	Transform* transform;
-	DirectionalLight* _Dirlight;
-	PointLight* _PointLight;
-	Meshrender* meshrender;
-	BoxCollision* boxcollision;
+	Transform* transform = NULL;
+	DirectionalLight* _Dirlight = NULL;
+	PointLight* _PointLight = NULL;
+	Meshrender* meshrender = NULL;
+	BoxCollision* boxcollision = NULL;
 	bool enabled;
 
 	void removeActor();

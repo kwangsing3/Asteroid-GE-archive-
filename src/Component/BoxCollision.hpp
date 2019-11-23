@@ -1,6 +1,6 @@
 ﻿#ifndef BOXCOLLISION_H
 #define BOXCOLLISION_H
-#include <Component.hpp>
+#include <Component/Component.hpp>
 
 class btRigidBody;
 class btCollisionShape;
