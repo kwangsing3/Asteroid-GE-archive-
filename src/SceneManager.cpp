@@ -27,13 +27,16 @@ std::string _Examples_List[5] =
 //*********************************
 //Render Request
 //*********************************
+
+
 float near_plane = 1.0f;
 float far_plane = 7.5f;
 glm::mat4 shadowProj = glm::mat4(1.0f), lightView = glm::mat4(1.0f);
 glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
-glm::vec3 lightPos = _editorCamera.transform.position;
+//glm::vec3 lightPos = _world_this->_editorCamera->transform.position;
+glm::vec3 lightPos =glm::vec3(0,0,0);
 Shader* _CurrentShader;
-extern World* _MainWorld;
+
 
 int _coordinate_Base = 3, _coordinate_Scale = (int)pow(10, _coordinate_Base);    //如果需要改變伸縮的幅度就改前面的_coordinate_Base
 
@@ -63,9 +66,9 @@ void SceneManager::OpenFile()
 	}
 	pugi::xml_node _root = _doc.child("Scene");
 
-	if (_editorCamera.enabled)
+	if (_world_this->_editorCamera->enabled)
 	{
-		_editorCamera.OpenFile(&_root);
+		_world_this->_editorCamera->OpenFile(&_root);
 	}
 	for (pugi::xml_node tool = _root.first_child().next_sibling(); tool; tool = tool.next_sibling())
 	{
@@ -127,9 +130,9 @@ void SceneManager::SaveFile()
 	//*************************************************
 	// Save Camera
 	//*************************************************
-	if (_editorCamera.enabled)
+	if (_world_this->_editorCamera->enabled)
 	{
-		_editorCamera.SaveFile(&root);
+		_world_this->_editorCamera->SaveFile(&root);
 	}
 	//*************************************************
 	// Save Objects 
@@ -182,19 +185,17 @@ void SceneManager::SaveFile()
 }
 void SceneManager::NewScene()
 {
-	_MainWorld->_PlayMode = false;
-	_MainWorld->depose_init_PhysicsProgress();
-	_MainWorld->exitPhysics();
+	_world_this->_PlayMode = false;
+	_world_this->depose_init_PhysicsProgress();
+	_world_this->exitPhysics();
 	vec_DirectionlLight.clear();
 	vec_PointLight.clear();
 	vec_ObjectsToRender_Instancing.clear();
 	vec_ObjectsToRender.clear();
 	Objects.clear();
 
-	delete _MainWorld->_piv;
-	_MainWorld->_piv = new _Pivot(new Actor());
 
-	_MainWorld->initPhysics();
+	_world_this->initPhysics();
 }
 void SceneManager::AddToRenderPipeline_Instancing(Meshrender* _mrender)
 {
@@ -409,7 +410,7 @@ void SceneManager::SetUpShader()
 	for (int i = 0; i < vec_ShaderProgram.size(); i++)
 	{
 		vec_ShaderProgram[i]->use();
-		vec_ShaderProgram[i]->setMat4("projection", _editorCamera.Projection);
+		vec_ShaderProgram[i]->setMat4("projection", _world_this->_editorCamera->Projection);
 	}
 
 
@@ -504,9 +505,9 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 	case RenderShadowType::Normal:
 		_CurrentShader = vec_ShaderProgram[4];
 		_CurrentShader->use();
-		_CurrentShader->setVec3("viewPos", _editorCamera.transform.position);
-		lightPos = vec_DirectionlLight.empty() ? _editorCamera.transform.position : this->vec_DirectionlLight[0]->_actor->transform->rotation;
-		_CurrentShader->setVec3("lightPos", _editorCamera.transform.position);
+		_CurrentShader->setVec3("viewPos", _world_this->_editorCamera->transform.position);
+		lightPos = vec_DirectionlLight.empty() ? _world_this->_editorCamera->transform.position : this->vec_DirectionlLight[0]->_actor->transform->rotation;
+		_CurrentShader->setVec3("lightPos", _world_this->_editorCamera->transform.position);
 		break;
 	case RenderShadowType::DirectionalLight:
 		_CurrentShader = vec_ShaderProgram[3];
@@ -540,7 +541,7 @@ void SceneManager::DrawScene(RenderShadowType _RType)
 	if (!vec_ObjectsToRender_Instancing.empty())
 	{
 		_CurrentShader->setBool("Use_Instance", true);
-		_CurrentShader->setMat4("view", _editorCamera.GetViewMatrix());
+		_CurrentShader->setMat4("view", _world_this->_editorCamera->GetViewMatrix());
 		for (int y = 0; y < vec_ObjectsToRender_Instancing.size(); y++)
 		{
 			if (!vec_ObjectsToRender_Instancing[y]->Drawing) continue;
@@ -585,7 +586,7 @@ void SceneManager::vec_SpecializedDraw()
 {
 	vec_ShaderProgram[0]->use();
 
-	int _le = glm::length(_editorCamera.transform.position);
+	int _le = glm::length(_world_this->_editorCamera->transform.position);
 
 	//_Croodinate->_actor->transform->Scale(glm::vec3(_editorCamera.transform.position.y > 40? 10:2));
 	//_Croodinate->_actor->transform->Scale(glm::vec3(1));

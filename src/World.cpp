@@ -1,13 +1,12 @@
 #include <World.hpp>
+#include <Camera.hpp>
+#include <Window.hpp>  
+#include <SceneManager.hpp>
+extern unsigned int Window_Width, Window_Height;
 
-#include <Window.hpp>     //裡面有 #include <Camera.h>
 
 
-
-
-//unsigned int World::depthMapFBO;
-extern World* _MainWorld;
-void _Pivot::CreateMouseCollision()
+void World::_Pivot::CreateMouseCollision()
 {
 	_needdebug = true;
 	if (this->_visable)
@@ -16,13 +15,13 @@ void _Pivot::CreateMouseCollision()
 		btCollisionShape* _shap;
 		_shap = new btCapsuleShapeX(0.2f, 0.55f * (1 + this->_actor->transform->scale.x));
 		colshape.push_back(_shap);
-		_MainWorld->m_collisionShapes.push_back(_shap);
+		world_this->m_collisionShapes.push_back(_shap);
 		_shap = new btCapsuleShape(0.2f, 0.55f * (1 + this->_actor->transform->scale.x));
 		colshape.push_back(_shap);
-		_MainWorld->m_collisionShapes.push_back(_shap);
+		world_this->m_collisionShapes.push_back(_shap);
 		_shap = new btCapsuleShapeZ(0.2f, 0.55f * (1 + this->_actor->transform->scale.x));
 		colshape.push_back(_shap);
-		_MainWorld->m_collisionShapes.push_back(_shap);
+		world_this->m_collisionShapes.push_back(_shap);
 
 		btTransform startTransform[3]; startTransform[0].setIdentity(); startTransform[1].setIdentity(); startTransform[2].setIdentity();
 		btQuaternion quat;
@@ -50,22 +49,22 @@ void _Pivot::CreateMouseCollision()
 			Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 			body[i]->setCollisionFlags(Collision_flag);
 
-			_MainWorld->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
+			world_this->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
 		}
 	}
 }
-void _Pivot::UpdateCollision()
+void World::_Pivot::UpdateCollision()
 {
 	DeleteCollision();
 	CreateMouseCollision();
 }
-void _Pivot::DeleteCollision()
+void World::_Pivot::DeleteCollision()
 {
-	if (this->body[0] != NULL)_MainWorld->m_dynamicsWorld->removeRigidBody(body[0]);
-	if (this->body[1] != NULL)_MainWorld->m_dynamicsWorld->removeRigidBody(body[1]);
-	if (this->body[2] != NULL)_MainWorld->m_dynamicsWorld->removeRigidBody(body[2]);
+	if (this->body[0] != NULL)world_this->m_dynamicsWorld->removeRigidBody(body[0]);
+	if (this->body[1] != NULL)world_this->m_dynamicsWorld->removeRigidBody(body[1]);
+	if (this->body[2] != NULL)world_this->m_dynamicsWorld->removeRigidBody(body[2]);
 }
-void _Pivot::AddCollision()
+void World::_Pivot::AddCollision()
 {
 	CreateMouseCollision();
 }
@@ -103,14 +102,14 @@ unsigned int loadCubemap(std::vector<std::string> faces)
 void World::initPhysics()
 {
 	createEmptyDynamicsWorld();
-
-
 	GLDebugDrawer* _deb = new GLDebugDrawer();
 	_deb->setDebugMode(GLDebugDrawer::DBG_FastWireframe);
 
-
 	this->m_dynamicsWorld->setDebugDrawer(_deb);
-	//_piv = new _Pivot(new Actor());
+	if(_piv!=NULL)	delete _piv;
+	_piv = new _Pivot(new Actor(),this);
+	_editorCamera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+	_SceneManager = new SceneManager(this);
 }
 void World::init_PhysicsProgress()
 {
@@ -183,6 +182,7 @@ void World::CreateDepthMap()
 }
 void World::UpdateFrame()
 {
+	_SceneManager->CheckReloadShader();
 	//Pyhscis Pipeline
 	if (this->_PlayMode)
 	{
@@ -203,23 +203,23 @@ void World::UpdateFrame()
 	{
 		if (!_PhysicsProgress.empty()) depose_init_PhysicsProgress();
 	}
-	_SceneManager.vec_SpecializedDraw();  //只需要畫一次的非普通場景特殊繪製   (座標軸、Axis ... etc) 
+	_SceneManager->vec_SpecializedDraw();  //只需要畫一次的非普通場景特殊繪製   (座標軸、Axis ... etc) 
 	this->m_dynamicsWorld->debugDrawWorld();
 	glCullFace(GL_FRONT);
 	///Shadw
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	if (_RenderShadow && !_SceneManager.vec_DirectionlLight.empty())
+	if (_RenderShadow && !_SceneManager->vec_DirectionlLight.empty())
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_DirLight);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		_SceneManager.DrawScene(RenderShadowType::DirectionalLight);
+		_SceneManager->DrawScene(RenderShadowType::DirectionalLight);
 	}
 
-	if (false && !_SceneManager.vec_PointLight.empty())
+	if (false && !_SceneManager->vec_PointLight.empty())
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO_PoLight);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		_SceneManager.DrawScene(RenderShadowType::PointLight);
+		_SceneManager->DrawScene(RenderShadowType::PointLight);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -236,8 +236,8 @@ void World::UpdateFrame()
 	glBindTexture(GL_TEXTURE_2D, depthTexture_DirLight);
 	//ImGui::Image((void*)depthTexture_DirLight,ImVec2(300,300));
 	  /*  */
-	if (!_SceneManager.vec_ObjectsToRender.empty() || !_SceneManager.vec_ObjectsToRender_Instancing.empty())
-		_SceneManager.DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
+	if (!_SceneManager->vec_ObjectsToRender.empty() || !_SceneManager->vec_ObjectsToRender_Instancing.empty())
+		_SceneManager->DrawScene(RenderShadowType::Normal);  //False 代表沒有在渲染陰影
 
 
 

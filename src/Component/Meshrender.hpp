@@ -33,15 +33,7 @@ public:
 	{
 		this->_actor = _a;
 		this->enabled = true;
-
 	}
-	/*Meshrender(Actor* _a, Shape _shape)
-	{
-		this->_actor = _a;
-		this->enabled = true;
-		_model = new AGE_Model(_shape);
-		CreateMouseCollision();
-	}*/
 	Meshrender(Actor* _a, std::string _path)
 	{
 		this->_actor = _a;
@@ -54,10 +46,6 @@ public:
 	void SaveFile(pugi::xml_node* _node) override;
 	void OpenFile(pugi::xml_node* _node) override;
 	void Copy(Actor* _actor) override;
-
-
-
-
 	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
 	void ReSetCollisionFlag();
@@ -72,9 +60,9 @@ protected:
 	// Draw Pipeline Variable
 	float near_plane = 1.0f;
 	float far_plane = 25.0f;
-	glm::mat4 _ModelMatrix4;
-	glm::vec3 EulerAngles;
-	btDefaultMotionState* myMotionState;
+	glm::mat4 _ModelMatrix4 = glm::mat4(0);;
+	glm::vec3 EulerAngles = glm::vec3(0,0,0);
+	btDefaultMotionState* myMotionState = NULL;
 };
 
 #endif //MESHRENDER_H

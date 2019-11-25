@@ -12,14 +12,9 @@ public:
 	static float Y_pos;
 
 	static glm::vec3 MousePosInWorld;
-	Raycast() {
-
-	}
+	Raycast() {}
 	static glm::vec3 GetWorldPosition(float alpha);
-
 	static glm::vec3 GetScreenPosition(glm::vec3 _pos);
-	
-
 	static void SetMousePosition(float xpos,float ypos)
 	{
 		X_pos = xpos; Y_pos = ypos;

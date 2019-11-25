@@ -11,7 +11,7 @@ class DirectionalLight;
 class PointLight;
 class Transform;
 class Mesh;
-
+class World;
 struct Render_Struct
 {
     Meshrender* _meshrender;
@@ -52,7 +52,7 @@ public:
     ADD_Component* _ADDManager;
     DebugRenderType _DebugRenderType = DebugRenderType::Baisc;
     std::vector<ModelLoadStruct*> ModelList;
-
+	World* _world_this;
     //載入檔案
     void OpenFile();
     void OpenFile(int _index);
@@ -67,23 +67,18 @@ public:
 
 
     std::string _FilePAth;
-    SceneManager()
+    SceneManager(World* _world):_world_this(_world)
     {
         CheckReloadShader();
         _ADDManager = new ADD_Component(this);
         _Croodinate = ADD_Croodinate();
-        
     }
-    
 
-    //void DrawScene(bool _drawShadow, unsigned int _dp=NULL);
     void DrawScene(RenderShadowType _RType);
     void vec_SpecializedDraw();
-
-
     //static void DrawScene();   //this is test draw scene, only has simple drawing.
     void AddToRenderPipeline_Instancing(Meshrender* _mrender);
-   void AddToRenderPipeline(Meshrender* _mrender);
+    void AddToRenderPipeline(Meshrender* _mrender);
     void UpdateRenderPipeline(Meshrender * _mrender);
 private:
     Meshrender* ADD_Croodinate();
@@ -91,7 +86,6 @@ private:
     {
         if (!vec_ShaderProgram.empty())
             vec_ShaderProgram.clear();
-
         /*0*/vec_ShaderProgram.push_back(new Shader("Shader/SimpleDrawShader.vs", "Shader/SimpleDrawShader.fs"));
         /*1*/vec_ShaderProgram.push_back(new Shader("Shader/StandardVertexShader.vs", "Shader/StandardFragmentShader.fs"));
         /*2*/vec_ShaderProgram.push_back(new Shader("Shader/shadow_depth_PoLight.vs", "Shader/shadow_depth_PoLight.fs", "Shader/point_shadows_depth.gs"));
@@ -99,8 +93,6 @@ private:
         /*4*/vec_ShaderProgram.push_back(new Shader("Shader/ModelShader.vs", "Shader/ModelShader.fs")); //目前的最主要Shader
         /*5*/vec_ShaderProgram.push_back(new Shader("Shader/ModelShader_ins.vs", "Shader/ModelShader.fs"));    //目前的最主要Shader instance
         /*6*/vec_ShaderProgram.push_back(new Shader("Shader/SimpleTextureShader_Instancing.vs", "Shader/SimpleTextureShader_Instancing.fs"));
-
-
         SetUpShader();
     }
     //static glm::vec3 lightPos;

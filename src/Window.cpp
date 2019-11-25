@@ -1,5 +1,5 @@
 #include <Window.hpp>
-
+#include <AGE_Assert.hpp>
 #include <GraphicEngine/imgui.h>
 
 #include <Actor.hpp>
@@ -13,10 +13,51 @@
 //#include <AGE_Model.h>
 
 GLFWwindow* Window::MainGLFWwindow = NULL;
-//Default  settings
+World* Window::_MainWorld;
+WindowUI* Window::_Main_UI;
 
-// ImVec2  Window::viewport_pos;
-// ImVec2  Window::viewport_size;
+void Window::initialized()
+{
+	pugi::xml_document _doc;
+	std::ifstream _XMLstream("Texture/GlobalSettings.xml");
+	pugi::xml_parse_result result = _doc.load(_XMLstream);
+	std::cout << "Load result: " << result.description() << std::endl;
+	if (result != NULL)
+	{
+		this->_Main_UI->All_UIElement = _doc.child("GlobalSettings").child("ProjectSetting").child("All_UIElement").attribute("All_UIElement").as_bool();
+		//this->DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
+		this->progect_I_am_focus = _doc.child("GlobalSettings").child("ProjectSetting").child("Project").attribute("Project_Focus").as_int();
+	}
+	_XMLstream.close();
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+	Window_Width = mode->width;
+	Window_Height = mode->height;
+	MainGLFWwindow = glfwCreateWindow(Window_Width, Window_Height, "Asteroid-GameEngine", NULL, NULL);
+	if (MainGLFWwindow == NULL)
+	{
+		AGE_PRINTCONSLE("Failed to create GLFW window");
+		glfwTerminate();
+		AGE_ASSERT(0);
+	}
+	glfwMaximizeWindow(MainGLFWwindow);
+	//glfwHideWindow(MainGLFWwindow);
+	//glfwSetWindowMonitor(MainGLFWwindow, monitor, 0, 0, _Width, _Height, mode->refreshRate);
+	glfwMakeContextCurrent(MainGLFWwindow);
+	glfwSetFramebufferSizeCallback(MainGLFWwindow, (GLFWframebuffersizefun)framebuffer_size_callback);
+	glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)mouse_move_callback);
+	glfwSetScrollCallback(MainGLFWwindow, (GLFWscrollfun)scroll_callback);
+	glfwSetMouseButtonCallback(MainGLFWwindow, (GLFWmousebuttonfun)mouse_button_callback);
+	// tell GLFW to capture our mouse
+	glfwSetInputMode(MainGLFWwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	// glad: load all OpenGL function pointers
+	// ---------------------------------------
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) { AGE_PRINTCONSLE("Failed to initialize GLAD"); AGE_ASSERT(0); }
+
+	_MainWorld = new World();
+	_Main_UI = new WindowUI();
+}
+
 static void MainMenuBar();
 static void Menu_File();
 //static void ShowExampleAppLayout(bool* p_open);
@@ -27,28 +68,18 @@ static void ShowSimpleOverlay(bool* p_open);
 
 bool WindowUI::show_simple_overlay = true;
 static std::vector<SelectObject*> SceneObject_List;
-
-bool WindowUI::WindowShouldClose = false;
-bool Window::DeBug_Mode = false;
-
-//World* Window::_Mainworld;
+bool Window::WindowShouldClose = false;
 
 //關於專案設定
 bool WindowUI::All_UIElement = true;
-
 std::vector<int> Window::vec_ID;
-WindowUI* Window::_Main_UI;
-
-Camera _editorCamera(glm::vec3(0.0f, 0.0f, 3.0f));
-
- float WindowUI::deltaTime = 0.0f;
- float WindowUI::lastFrame = 0.0f;
- float WindowUI::previousTime = glfwGetTime();
- int WindowUI::frameCount = 0;
- bool WindowUI::isClickingPivot = false;
- float  WindowUI::lastX = 500.0f;
- float  WindowUI::lastY = 300.0f;
-
+float WindowUI::deltaTime = 0.0f;
+float WindowUI::lastFrame = 0.0f;
+float WindowUI::previousTime = glfwGetTime();
+int WindowUI::frameCount = 0;
+bool Window::isClickingPivot = false;
+float  Window::lastX = 500.0f;
+float  Window::lastY = 300.0f;
 
 void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned int* height)
 {
@@ -63,65 +94,50 @@ void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned i
 		previousTime = currentFrame;
 	}
 	//Main Background--------------------------------------------------------------------------------------
-	if (WindowUI::All_UIElement)
+	if (All_UIElement)
 	{
 		//Scene------------------------------------------------------------------------------------------------
 		ImGui::SetNextWindowPos(ImVec2(0, *height / 35), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(_SceneX, _SceneY), ImGuiCond_FirstUseEver);
 		{
-			if (!ImGui::Begin("Scene", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
+			if (!ImGui::Begin("Scene", p_open,ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
 				return;
 			}
 			//------------------------------------------------------------------------------------------------這裡根據物件太多可能會導致性能瓶頸  應該可以優化
-			if (_MainWorld->_SceneManager.Objects.size() > 0)
+			if (Window::_MainWorld->_SceneManager->Objects.size() > 0)
 			{
-				if (_MainWorld->_SceneManager.Objects.size() != SceneObject_List.size())  //刷新
+				if (Window::_MainWorld->_SceneManager->Objects.size() != SceneObject_List.size())  //刷新
 				{
 					SceneObject_List.clear();
-					for (int n = 0; n < _MainWorld->_SceneManager.Objects.size(); n++)
+					for (int n = 0; n < Window::_MainWorld->_SceneManager->Objects.size(); n++)
 					{
-						SceneObject_List.push_back(new SelectObject(_MainWorld->_SceneManager.Objects[n]));
+						SceneObject_List.push_back(new SelectObject(Window::_MainWorld->_SceneManager->Objects[n]));
 					}
 				}
-
-				//buf1 =(char*) "";
 				for (int n = 0; n < SceneObject_List.size(); n++)
 				{
-
-					std::string _newname = _MainWorld->_SceneManager.Objects[n]->transform->name + std::to_string(n);
+					std::string _newname = Window::_MainWorld->_SceneManager->Objects[n]->transform->name + std::to_string(n);
 					if (ImGui::Selectable(_newname.c_str(), SceneObject_List[n]->Is_selected))
 					{
 						WindowUI::SelectThisObject(SceneObject_List[n]);
 					}
 				}
-
 			}
-
-
-			/*
-			Your IDs will collide if you have the same name multiple times at same point of hierarchy.
-			You probably need to use ImGui::PushID(SceneManager::Objects[n]); ... Selectable .. ImGui::PopID() to avoid the ID collision.
-
-			Please read the FAQ!     避免ID衝突
-			*/
 
 			UI_Left_X = ImGui::GetWindowWidth() + ImGui::GetWindowPos().x;
 			UI_Left_Y = ImGui::GetWindowPos().y;
 			_SceneX = ImGui::GetWindowWidth();
 			_SceneY = ImGui::GetWindowHeight();
-			//delete [] array;
 			ImGui::End();
-
 		}
 		//Asset------------------------------------------------------------------------------------------------
 		ImGui::SetNextWindowPos(ImVec2(0, *height / 35 + _SceneY), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(_SceneX, *height - _SceneY), ImGuiCond_FirstUseEver);
 		{
-
-			if (!ImGui::Begin("Asset", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
+			if (!ImGui::Begin("Asset", p_open, ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
@@ -130,55 +146,51 @@ void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned i
 			//------------------------------------------------------------------------------------------------
 			ImGui::Text("fsdfsdad我是中文dfd");
 			ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
-
 			if (ImGui::Button("Create a empty object"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
 				_ac->transform->name = (char*)"New Actor";
 			}
 			if (ImGui::Button("Create a cube"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, Shape::Cube);
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, Shape::Cube);
 				_ac->transform->name = (char*)"New Cube";
 			}
 			if (ImGui::Button("Create a sphere"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, Shape::Sphere);
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, Shape::Sphere);
 				_ac->transform->name = (char*)"New Sphere";
 			}
 			if (ImGui::Button("Create a planet"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/planet.obj");
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, "ExampleModel/planet.obj");
 				_ac->transform->name = (char*)"New Plantet";
 			}
-
 			if (ImGui::Button("Create a Directional light"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_DirectionalLight(_ac);
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_DirectionalLight(_ac);
 				_ac->transform->name = (char*)"New DirectionalLight";
 			}
 			if (ImGui::Button("Create a PointLight"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_PointLight(_ac);
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_PointLight(_ac);
 				_ac->transform->name = (char*)"New PointLight";
 			}
 			if (ImGui::Button("Create 100 Asteroids"))
 			{
 				unsigned int amount = 100;
-
 				srand(glfwGetTime()); // initialize random seed	
 				float radius = 50.0;
 				float offset = 2.5f;
-
 				for (unsigned int i = 0; i < amount; i++)
 				{
-					Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-					_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/rock.obj");
+					Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+					Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, "ExampleModel/rock.obj");
 					_ac->transform->name = (char*)"New Asteroid";
 					//glm::mat4 model = glm::mat4(1.0f);
 					// 1. translation: displace along circle with 'radius' in range [-offset, offset]
@@ -199,34 +211,31 @@ void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned i
 					//model = glm::rotate(model, rotAngle, );
 					_ac->transform->Rotate(glm::vec3(0.4f * rotAngle, 0.6f * rotAngle, 0.8f * rotAngle));
 					// 4. now add to list of matrices
-
-
-
 				}
 
 			}
 			if (ImGui::Button("Create a doll"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/model.dae");
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, "ExampleModel/model.dae");
 				_ac->transform->name = (char*)"New doll";
 			}
 			if (ImGui::Button("Create a Lighting"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/FFXIII-Lighting/lightning_obj.obj");
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, "ExampleModel/FFXIII-Lighting/lightning_obj.obj");
 				_ac->transform->name = (char*)"New Lighting";
 			}
 			if (ImGui::Button("Create a 2B"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/nierautomata-2b/source/nier-3dprint.fbx");
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, "ExampleModel/nierautomata-2b/source/nier-3dprint.fbx");
 				_ac->transform->name = (char*)"New 2B";
 			}
 			if (ImGui::Button("Create a phoenix"))
 			{
-				Actor* _ac = _MainWorld->_SceneManager._ADDManager->Add_Actor();
-				_MainWorld->_SceneManager._ADDManager->Add_Meshrender(_ac, "ExampleModel/phoenix-bird/source/fly.fbx");
+				Actor* _ac = Window::_MainWorld->_SceneManager->_ADDManager->Add_Actor();
+				Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(_ac, "ExampleModel/phoenix-bird/source/fly.fbx");
 				_ac->transform->name = (char*)"New phoenix";
 			}
 
@@ -259,7 +268,7 @@ void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned i
 		ImGui::SetNextWindowSize(ImVec2(*width - (_maineditorX + _SceneX), *height), ImGuiCond_FirstUseEver);
 		{
 
-			if (!ImGui::Begin("Inspector", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus))
+			if (!ImGui::Begin("Inspector", p_open, ImGuiWindowFlags_NoBringToFrontOnFocus))
 			{
 				// Early out if the window is collapsed, as an optimization.
 				ImGui::End();
@@ -303,44 +312,48 @@ void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned i
 			ImGui::End();
 		}*/
 	}
+	if (!ImGui::Begin("FileBrowser", p_open))	// Early out if the window is collapsed, as an optimization.
+	{
+		ImGui::End();
+		return;
+	}
+	AGE_FileBrowser::ImGUIListTheBrowser();
+	ImGui::End();
+
+
 
 	//Main Background--------------------------------------------------------------------------------------
+	ImGui::SetNextWindowBgAlpha(0);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(10, 10), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(Window_Width, Window_Height), ImGuiCond_Once);
 	{
-		if (!ImGui::Begin("Main Background", p_open, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoBackground))
+		if (!ImGui::Begin("Main Background", p_open, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysUseWindowPadding))
 		{
 			// Early out if the window is collapsed, as an optimization.
 			ImGui::End();
 			return;
 		}
-		if (!WindowUI::All_UIElement)
+		/*if (ImGui::ImageButton((void*)0, ImVec2(100, 100),ImVec2(0, 0), ImVec2(1, 1),1,ImVec4(0,0,0,0), ImVec4(0, 0, 0, 0)))
 		{
-			//Window::viewport_pos = ImGui::GetWindowPos();
-			//Window::viewport_size = ImGui::GetWindowSize();
-		/*	ImGui::GetWindowDrawList()->AddImage(
-				(void*)(intptr_t)textureColorbuffer,
-				ImVec2(ImGui::GetCursorScreenPos()),
-				ImVec2(ImGui::GetCursorScreenPos().x + Window_Width,
-					ImGui::GetCursorScreenPos().y + Window_Height), ImVec2(0, 1), ImVec2(1, 0));*/
+			
+		}*/
+		ImGui::Image((void*)0, ImGui::GetWindowSize() , ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0), ImVec4(0, 0, 0, 0));
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PictureIcon"))
+			{
+				IM_ASSERT(payload->DataSize == sizeof(AGE_FileBrowser::AGE_FileStruct));
+				AGE_FileBrowser::AGE_FileStruct payload_n = *(AGE_FileBrowser::AGE_FileStruct*)payload->Data;
+				AGE_PRINTCONSLE("666");
+			}
+			ImGui::EndDragDropTarget();
 		}
+		
 		MainMenuBar();
 		ImGui::End();
+	
 	}
 	//調試用
-
-	{
-		if (!ImGui::Begin("FileBrowser", p_open))	// Early out if the window is collapsed, as an optimization.
-		{
-			ImGui::End();
-			return;
-		}
-
-		AGE_FileBrowser::ImGUIListTheBrowser();
-
-		ImGui::End();
-	}
-
 
 
 
@@ -423,8 +436,8 @@ void WindowUI::Renamecur_actor(SelectObject* cur_actor)
 }
 void WindowUI::SelectThisActor(Actor* _actor)
 {
-	//_MainWorld->depose_init_PhysicsProgress();
-	//_MainWorld->InitPhysics = true;
+	//Window::_MainWorld->depose_init_PhysicsProgress();
+	//Window::_MainWorld->InitPhysics = true;
 
 	if (_actor != NULL)
 	{
@@ -442,7 +455,7 @@ void WindowUI::SelectThisActor(Actor* _actor)
 		Clear_ListBool();
 		cur_SelectObject_List.clear();
 		WindowUI::ListInspectorCur(NULL);
-		if (_MainWorld->_piv != NULL) _MainWorld->_piv->AttachObject(NULL);
+		if (Window::_MainWorld->_piv != NULL) Window::_MainWorld->_piv->AttachObject(NULL);
 	}
 }
 void WindowUI::SelectThisObject(SelectObject* selectobject)
@@ -452,17 +465,17 @@ void WindowUI::SelectThisObject(SelectObject* selectobject)
 		Clear_ListBool();
 		cur_SelectObject_List.clear();
 
-		if (_MainWorld->_piv != NULL)
+		if (Window::_MainWorld->_piv != NULL)
 		{
-			_MainWorld->_piv->AttachObject(NULL);
-			_MainWorld->_piv->AttachObject(selectobject->_actor);
+			Window::_MainWorld->_piv->AttachObject(NULL);
+			Window::_MainWorld->_piv->AttachObject(selectobject->_actor);
 		}
 	}
 	else
 	{
-		if (_MainWorld->_piv != NULL)
+		if (Window::_MainWorld->_piv != NULL)
 		{
-			_MainWorld->_piv->AttachObject_Multiple(selectobject->_actor);
+			Window::_MainWorld->_piv->AttachObject_Multiple(selectobject->_actor);
 		}
 	}
 	selectobject->Is_selected = !selectobject->Is_selected;
@@ -482,17 +495,17 @@ void WindowUI::PasteEvent()
 		return;
 	Clear_ListBool();
 	cur_SelectObject_List.clear();
-	if (_MainWorld->_piv != NULL) _MainWorld->_piv->_lowwerActor.clear();
+	if (Window::_MainWorld->_piv != NULL) Window::_MainWorld->_piv->_lowwerActor.clear();
 	for (int i = 0; i < copy_SelectObject_List.size(); i++)
 	{
-		SelectObject* _ns = new SelectObject(_MainWorld->_SceneManager._ADDManager->Copy_Actor(copy_SelectObject_List[i]->_actor));
+		SelectObject* _ns = new SelectObject(Window::_MainWorld->_SceneManager->_ADDManager->Copy_Actor(copy_SelectObject_List[i]->_actor));
 		_ns->Is_selected = true;
 		SceneObject_List.push_back(_ns);
 		cur_SelectObject_List.push_back(_ns);
 
-		if (_MainWorld->_piv != NULL)
+		if (Window::_MainWorld->_piv != NULL)
 		{
-			_MainWorld->_piv->AttachObject_Multiple(_ns->_actor);
+			Window::_MainWorld->_piv->AttachObject_Multiple(_ns->_actor);
 		}
 	}
 	copy_SelectObject_List.clear();
@@ -510,9 +523,9 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 			{
 
 				float _test[3] = { glm::radians(_sel->_actor->transform->rotation.x),glm::radians(_sel->_actor->transform->rotation.y),glm::radians(_sel->_actor->transform->rotation.z) };
-				if (ImGui::DragFloat3("Position", (float*)&_sel->_actor->transform->position, 0.01f)) { _sel->_actor->transform->Translate(_sel->_actor->transform->position); _MainWorld->_SceneManager.NeedInitedDraw = true; }
-				if (ImGui::DragFloat3("Rotation", (float*)&_sel->_actor->transform->rotation, 0.1f)) { _sel->_actor->transform->Rotate(_sel->_actor->transform->rotation); _MainWorld->_SceneManager.NeedInitedDraw = true; }
-				if (ImGui::DragFloat3("Scale", (float*)&_sel->_actor->transform->scale, 0.01f)) { _sel->_actor->transform->Scale(_sel->_actor->transform->scale); _MainWorld->_SceneManager.NeedInitedDraw = true; }
+				if (ImGui::DragFloat3("Position", (float*)&_sel->_actor->transform->position, 0.01f)) { _sel->_actor->transform->Translate(_sel->_actor->transform->position); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
+				if (ImGui::DragFloat3("Rotation", (float*)&_sel->_actor->transform->rotation, 0.1f)) { _sel->_actor->transform->Rotate(_sel->_actor->transform->rotation); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
+				if (ImGui::DragFloat3("Scale", (float*)&_sel->_actor->transform->scale, 0.01f)) { _sel->_actor->transform->Scale(_sel->_actor->transform->scale); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
 
 			}
 		}
@@ -553,7 +566,7 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 					//_sel->_actor->meshrender->ReSetCollisionFlag();
 				}
 				static int _curco = 0;
-				if (ImGui::Button("Reload Shader"))   _MainWorld->_SceneManager.NeedReloadShader = true;
+				if (ImGui::Button("Reload Shader"))   Window::_MainWorld->_SceneManager->NeedReloadShader = true;
 
 				if (ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable))
 				{
@@ -618,17 +631,17 @@ static void MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Add Component"))
 		{
-			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) _MainWorld->_SceneManager._ADDManager->Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor, Shape::Cube); }
+			if (ImGui::MenuItem("Add MeshRender")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL) Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(WindowUI::cur_SelectObject_List[0]->_actor, Shape::Cube); }
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL)  _MainWorld->_SceneManager._ADDManager->Add_DirectionalLight(WindowUI::cur_SelectObject_List[0]->_actor); }
-			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL)  _MainWorld->_SceneManager._ADDManager->Add_PointLight(WindowUI::cur_SelectObject_List[0]->_actor); }
+			if (ImGui::MenuItem("Add DirectionalLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL)  Window::_MainWorld->_SceneManager->_ADDManager->Add_DirectionalLight(WindowUI::cur_SelectObject_List[0]->_actor); }
+			if (ImGui::MenuItem("Add PointLight")) { if (WindowUI::cur_SelectObject_List[0]->_actor != NULL)  Window::_MainWorld->_SceneManager->_ADDManager->Add_PointLight(WindowUI::cur_SelectObject_List[0]->_actor); }
 			if (ImGui::MenuItem("Add TestComponent")) {}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add BoxCollision"))
 			{
 				/*if (WindowUI::cur_SelectObject_List[0] != NULL && WindowUI::cur_SelectObject_List[0]->_actor != NULL)
-					_MainWorld->_SceneManager._ADDManager->Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);*/
+					Window::_MainWorld->_SceneManager._ADDManager->Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);*/
 
 			}
 			if (ImGui::MenuItem("Add BoxCollision2D")) {}
@@ -640,16 +653,16 @@ static void MainMenuBar()
 		if (ImGui::BeginMenu("DEBUG_setting"))
 		{
 			ImGui::MenuItem("All Element", "", &WindowUI::All_UIElement);
-			ImGui::MenuItem("Render shadow", "", &_MainWorld->_RenderShadow);
+			ImGui::MenuItem("Render shadow", "", &Window::_MainWorld->_RenderShadow);
 			ImGui::MenuItem("Simple Overlay", "", &WindowUI::show_simple_overlay);
-			ImGui::MenuItem("PlayMode", "", &_MainWorld->_PlayMode);
+			ImGui::MenuItem("PlayMode", "", &Window::_MainWorld->_PlayMode);
 
 			const char* items[] = { "Basic","Color","Light","Shadow" };
 			static int item_current = 0;
 			if (ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items)))
 			{
-				_MainWorld->_SceneManager._DebugRenderType = static_cast<DebugRenderType>(item_current);
-				_MainWorld->_SceneManager.NeedInitedShader = true;
+				Window::_MainWorld->_SceneManager->_DebugRenderType = static_cast<DebugRenderType>(item_current);
+				Window::_MainWorld->_SceneManager->NeedInitedShader = true;
 			}
 
 			ImGui::EndMenu();
@@ -662,7 +675,7 @@ static void MainMenuBar()
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				if (ImGui::MenuItem(std::to_string(i).c_str())) { _MainWorld->_SceneManager.OpenFile(i); }
+				if (ImGui::MenuItem(std::to_string(i).c_str())) { Window::_MainWorld->_SceneManager->OpenFile(i); }
 			}
 			ImGui::EndMenu();
 		}
@@ -672,10 +685,10 @@ static void MainMenuBar()
 static void Menu_File()
 {
 	ImGui::MenuItem("(dummy menu)", NULL, false, false);
-	if (ImGui::MenuItem("New")) { _MainWorld->_SceneManager.NewScene(); }
-	if (ImGui::MenuItem("Open", "Ctrl+O")) { _MainWorld->_SceneManager.OpenFile(); }
+	if (ImGui::MenuItem("New")) { Window::_MainWorld->_SceneManager->NewScene(); }
+	if (ImGui::MenuItem("Open", "Ctrl+O")) { Window::_MainWorld->_SceneManager->OpenFile(); }
 
-	if (ImGui::MenuItem("Save", "Ctrl+S")) { _MainWorld->_SceneManager.SaveFile(); }
+	if (ImGui::MenuItem("Save", "Ctrl+S")) { Window::_MainWorld->_SceneManager->SaveFile(); }
 	if (ImGui::MenuItem("Save As..")) {}
 	ImGui::Separator();
 	if (ImGui::BeginMenu("Options"))
@@ -714,7 +727,7 @@ static void Menu_File()
 	{
 		ImGui::Text("version v1.0.0");
 	}
-	if (ImGui::MenuItem("Quit", "Alt+F4")) { WindowUI::WindowShouldClose = true; }
+	if (ImGui::MenuItem("Quit", "Alt+F4")) { Window::WindowShouldClose = true; }
 }
 static void ShowSimpleOverlay(bool* p_open)
 {
@@ -751,10 +764,8 @@ static void ShowSimpleOverlay(bool* p_open)
 				ImGui::EndPopup();
 			}
 
-			
-			ImGui::Text(Window::DeBug_Mode ? "Debug Mode: Active" : "Debug Mode: inValid");
-			ImGui::Text(_MainWorld->_SceneManager._FilePAth.c_str());
-			ImGui::Text(std::to_string(glm::length(_editorCamera.transform.position)).c_str());
+			ImGui::Text(Window::_MainWorld->_SceneManager->_FilePAth.c_str());
+			ImGui::Text(std::to_string(glm::length(Window::_MainWorld->_editorCamera->transform.position)).c_str());
 		}
 		ImGui::End();
 
@@ -764,3 +775,5 @@ static void ShowSimpleOverlay(bool* p_open)
 
 	}
 }
+
+

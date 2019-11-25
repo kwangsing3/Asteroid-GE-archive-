@@ -3,9 +3,8 @@
 #include <Window.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <World.hpp>
 #include "btBulletDynamicsCommon.h"
-extern World* _MainWorld;
+
 void BoxCollision::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->boxcollision == NULL) return;
@@ -27,14 +26,11 @@ void BoxCollision::Copy(Actor * _actor)
 	//-----Component-----
 	this->_needdebug = _actor->boxcollision->_needdebug;
 
-
-
-
 }
 
 void BoxCollision::CreateBox()
 {
-	_MainWorld->InitPhysics = true;
+	Window::_MainWorld->InitPhysics = true;
 
 
 	btVector3 localInertia(0, 0, 0);
@@ -42,7 +38,7 @@ void BoxCollision::CreateBox()
 	if (colShape == NULL)
 	{
 		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
-		_MainWorld->m_collisionShapes.push_back(colShape);
+		Window::_MainWorld->m_collisionShapes.push_back(colShape);
 	}
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -67,15 +63,15 @@ void BoxCollision::CreateBox()
 	int Collision_flag = _needdebug ? 4 : btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
 	this->body->setCollisionFlags(Collision_flag);
 	body->_ActorInBullet = this->_actor; 
-	_MainWorld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
+	Window::_MainWorld->m_dynamicsWorld->addRigidBody(body, this->_Group, this->_Mask);
 }
 
 void BoxCollision::UpdateCollision()
 {
 	if (this->body == NULL) return;
-	if (!_MainWorld->_PlayMode)
+	if (!Window::_MainWorld->_PlayMode)
 	{
-		_MainWorld->deleteRigidBody(this->body);
+		Window::_MainWorld->deleteRigidBody(this->body);
 		CreateBox();
 	}
 }

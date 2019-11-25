@@ -42,6 +42,16 @@ public:
 		_ProjectDirectory_wstring = _CurrentDirectory_wstring;
 		Inited();
 	}
+	AGE_FileBrowser()
+	{
+		_CurrentDirectory_string = "./";
+		std::wstring _extension;
+		for (char x : _CurrentDirectory_string)
+			_extension += x;
+		_CurrentDirectory_wstring = _extension;
+		_ProjectDirectory_wstring = _CurrentDirectory_wstring;
+		Inited();
+	}
 	static void ImGUIListTheBrowser();   // For ImGui to call it every frame;
 
 private:

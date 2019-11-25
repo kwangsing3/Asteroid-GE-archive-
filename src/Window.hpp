@@ -6,36 +6,27 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <Raycast.hpp>
-#include <Camera.hpp>
-#include <World.hpp>
 #include <GraphicEngine/imgui.h>
+#include <World.hpp>
+#include <Raycast.hpp>
+#include <AGE_FileBrowser.hpp>
 
-extern World* _MainWorld;
-extern Camera _editorCamera;
-
+extern unsigned int Window_Width;
+extern unsigned int Window_Height;
 class Actor;
-//class SceneManager;
 struct SelectObject
 {
 	Actor* _actor;
 	bool Is_selected = false;
 	bool Is_renaming = false;
-	SelectObject(Actor* _ac)
-	{
-		_actor = _ac;
-	}
+	SelectObject(Actor* _ac){_actor = _ac;}
 };
 
-extern unsigned int Window_Width;
-extern unsigned int Window_Height;
-//SceneManager* _sceneManager;
-//class World;
-//   ---------------------------------UI---------------------------------
+
+
 class WindowUI
 {
 public:
-
 	//static SelectObject* cur_SelectObject;
 	static std::vector<SelectObject*> cur_SelectObject_List;
 	static std::vector<SelectObject*> copy_SelectObject_List;
@@ -55,25 +46,35 @@ public:
 	static float UI_Left_Y;
 	//static float UI_Right_X;
 	static float UI_Right_X;
-
 	static float deltaTime;
 	static float lastFrame;
 	static float previousTime;
 	static int frameCount;
-	static bool isClickingPivot;
+
+	AGE_FileBrowser* _Filebrowser;
+	WindowUI() { _Filebrowser = new AGE_FileBrowser(); }
+	static void Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned int* height);
+
+};
+class World;
+class Window
+{
+protected:
+	void initialized();
+public:
+	static GLFWwindow* MainGLFWwindow;
+	static int progect_I_am_focus;
+	static std::vector<int> vec_ID;
+
+	static WindowUI* _Main_UI;
+	static World* _MainWorld;
 	static float lastX;
 	static float lastY;
 	static bool WindowShouldClose;
+	static bool isClickingPivot;
+	Window() { initialized(); }
 
 
-	WindowUI()
-	{
-		UI_Left_X = 0;
-		UI_Right_X = 0;
-
-	}
-
-	static void Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned int* height);
 	static void processInput(GLFWwindow* window)
 	{
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -82,26 +83,26 @@ public:
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-				_editorCamera.ProcessKeyboard(FORWARD, deltaTime);
+				_MainWorld->_editorCamera->ProcessKeyboard(FORWARD, _Main_UI->deltaTime);
 			else
 				if (_MainWorld->_piv != NULL)_MainWorld->_piv->SwitchDragMode(0);
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			_editorCamera.ProcessKeyboard(BACKWARD, deltaTime);
+			_MainWorld->_editorCamera->ProcessKeyboard(BACKWARD, _Main_UI->deltaTime);
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			_editorCamera.ProcessKeyboard(LEFT, deltaTime);
+			_MainWorld->_editorCamera->ProcessKeyboard(LEFT, _Main_UI->deltaTime);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			_editorCamera.ProcessKeyboard(RIGHT, deltaTime);
+			_MainWorld->_editorCamera->ProcessKeyboard(RIGHT, _Main_UI->deltaTime);
 		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 		{
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-				_editorCamera.ProcessKeyboard(UP, deltaTime);
+				_MainWorld->_editorCamera->ProcessKeyboard(UP, _Main_UI->deltaTime);
 			else
 				if (_MainWorld->_piv != NULL)_MainWorld->_piv->SwitchDragMode(1);
 		}
 		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			_editorCamera.ProcessKeyboard(DOWN, deltaTime);
+			_MainWorld->_editorCamera->ProcessKeyboard(DOWN, _Main_UI->deltaTime);
 		if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
 			std::cout << "DELETE KEY PRESS" << std::endl;//WindowUI::Deletecur_actor(WindowUI::cur_SelectObject);
 		if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
@@ -113,28 +114,16 @@ public:
 		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 		{
 			if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-				CopyEvent();
+				WindowUI::CopyEvent();
 			if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-				PasteEvent();
+				WindowUI::PasteEvent();
 		}
-
+		
 	}
-
-	// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-	// ---------------------------------------------------------------------------------------------------------
-
-
-	// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-	// ---------------------------------------------------------------------------------------------
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
-		// make sure the viewport matches the new window dimensions; note that width and
-		// height will be significantly larger than specified on retina displays.
 		glViewport(0, 0, width, height);
 	}
-
-	// glfw: whenever the mouse moves, this callback is called
-	// -------------------------------------------------------
 	static void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		double xoffset = xpos - lastX;
@@ -144,7 +133,7 @@ public:
 		{
 			if (_MainWorld->_piv->Drag[0])
 			{
-				_MainWorld->_SceneManager.NeedInitedDraw = true;
+				_MainWorld->_SceneManager->NeedInitedDraw = true;
 				if (_MainWorld->_piv->_DragMode[0])
 					_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x + xoffset / 200, _MainWorld->_piv->_actor->transform->position.y, _MainWorld->_piv->_actor->transform->position.z));
 				else if (_MainWorld->_piv->_DragMode[1])
@@ -154,7 +143,7 @@ public:
 			}
 			else if (_MainWorld->_piv->Drag[1])
 			{
-				_MainWorld->_SceneManager.NeedInitedDraw = true;
+				_MainWorld->_SceneManager->NeedInitedDraw = true;
 				if (_MainWorld->_piv->_DragMode[0])
 					_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x, _MainWorld->_piv->_actor->transform->position.y + yoffset / 200, _MainWorld->_piv->_actor->transform->position.z));
 				else if (_MainWorld->_piv->_DragMode[1])
@@ -165,7 +154,7 @@ public:
 
 			else if (_MainWorld->_piv->Drag[2])
 			{
-				_MainWorld->_SceneManager.NeedInitedDraw = true;
+				_MainWorld->_SceneManager->NeedInitedDraw = true;
 				if (_MainWorld->_piv->_DragMode[0])
 					_MainWorld->_piv->Translate(glm::vec3(_MainWorld->_piv->_actor->transform->position.x, _MainWorld->_piv->_actor->transform->position.y, _MainWorld->_piv->_actor->transform->position.z + xoffset / 200));
 				else if (_MainWorld->_piv->_DragMode[1])
@@ -181,12 +170,9 @@ public:
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 		{
-			_editorCamera.ProcessMouseMovement(xoffset, yoffset);
+			_MainWorld->_editorCamera->ProcessMouseMovement(xoffset, yoffset);
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
-
-		//°O±o®³±¼
-
 	}
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
@@ -240,86 +226,13 @@ public:
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 		{
 			isClickingPivot = false;
-			//_piv->_actor = NULL;
 		}
 	}
-	// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-	// ----------------------------------------------------------------------
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		if (!ImGui::IsAnyWindowFocused())
-			_editorCamera.ProcessMouseScroll(yoffset);
+			_MainWorld->_editorCamera->ProcessMouseScroll(yoffset);
 	}
-
-
-};
-
-class Window
-{
-public:
-	static GLFWwindow* MainGLFWwindow;
-	bool isFullscreen;
-	static int progect_I_am_focus;
-	static bool DeBug_Mode;
-	static std::vector<int> vec_ID;
-	static WindowUI* _Main_UI;
-
-
-	//static World* _Mainworld;
-
-	Window()
-	{
-		
-		_Main_UI = new WindowUI();
-		//Xml_SettingImport();
-		
-		pugi::xml_document _doc;
-		std::ifstream _XMLstream("GlobalSettings.xml");
-		pugi::xml_parse_result result = _doc.load(_XMLstream);
-		std::cout << "Load result: " << result.description() << std::endl;
-		if (result != NULL)
-		{
-			this->_Main_UI->All_UIElement = _doc.child("GlobalSettings").child("ProjectSetting").child("All_UIElement").attribute("All_UIElement").as_bool();
-			this->DeBug_Mode = _doc.child("GlobalSettings").child("WindowSetting").child("Game_Mode").attribute("Game_Mode").as_bool();
-			this->progect_I_am_focus = _doc.child("GlobalSettings").child("ProjectSetting").child("Project").attribute("Project_Focus").as_int();
-		}
-
-		_XMLstream.close();
-		
-		GLFWmonitor* primary = glfwGetPrimaryMonitor();
-		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-		Window_Width = mode->width;
-		Window_Height = mode->height;
-		MainGLFWwindow = glfwCreateWindow(Window_Width, Window_Height, "Asteroid-GameEngine", NULL, NULL);
-		if (MainGLFWwindow == NULL)
-		{
-			std::cout << "Failed to create GLFW window" << std::endl;
-			glfwTerminate();
-			//return;
-		}
-		glfwMaximizeWindow(MainGLFWwindow);
-		//glfwHideWindow(MainGLFWwindow);
-		//glfwSetWindowMonitor(MainGLFWwindow, monitor, 0, 0, _Width, _Height, mode->refreshRate);
-		glfwMakeContextCurrent(MainGLFWwindow);
-		glfwSetFramebufferSizeCallback(MainGLFWwindow, (GLFWframebuffersizefun)WindowUI::framebuffer_size_callback);
-		glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)WindowUI::mouse_move_callback);
-		glfwSetScrollCallback(MainGLFWwindow, (GLFWscrollfun)WindowUI::scroll_callback);
-		glfwSetMouseButtonCallback(MainGLFWwindow, (GLFWmousebuttonfun)WindowUI::mouse_button_callback);
-		// tell GLFW to capture our mouse
-		glfwSetInputMode(MainGLFWwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		// glad: load all OpenGL function pointers
-		// ---------------------------------------
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			std::cout << "Failed to initialize GLAD" << std::endl;
-			//return;
-		}
-	}
-
-
-
-
 };
 
 

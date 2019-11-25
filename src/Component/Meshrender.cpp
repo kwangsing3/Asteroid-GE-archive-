@@ -9,15 +9,8 @@
 
 #include <shader_m.h>
 #include <Component/Transform.hpp>
-#include <World.hpp>
+#include <Window.hpp>
 #include <Actor.hpp>
-
-
-
-
-extern Camera _editorCamera;
-extern World* _MainWorld;
-
 
 void Meshrender::SaveFile(pugi::xml_node* _node)                                                                      // 重新設定一下 SaveFile and OpenFile
 {
@@ -60,7 +53,7 @@ void Meshrender::Draw(Shader* _shader)
 	if (_shader == NULL) { AGE_PRINTCONSLE("Meshrender Shader Pass failed"); AGE_ASSERT(false); }
 
 	// 共通
-	_shader->setMat4("view", _editorCamera.GetViewMatrix());
+	_shader->setMat4("view", Window::_MainWorld->_editorCamera->GetViewMatrix());
 	_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
 	this->_ModelMatrix4 = glm::mat4(1.0f);
 	this->_ModelMatrix4 = glm::translate(this->_ModelMatrix4, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
@@ -88,7 +81,7 @@ void Meshrender::CreateMouseCollision()
 	if (colShape == NULL)
 	{
 		colShape = new btBoxShape(btVector3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
-		_MainWorld->m_collisionShapes.push_back(colShape);
+		Window::_MainWorld->m_collisionShapes.push_back(colShape);
 	}
 	btScalar mass(0);
 	/// Create Dynamic Objects
@@ -118,8 +111,8 @@ void Meshrender::CreateMouseCollision()
 	int _group = 1;
 	int _mask = 1;
 	this->body->_ActorInBullet = this->_actor;
-	_MainWorld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
-	_MainWorld->InitPhysics = true;
+	Window::_MainWorld->m_dynamicsWorld->addRigidBody(body, _group, _mask);
+	Window::_MainWorld->InitPhysics = true;
 	//World::dynamicsWorld->updateSingleAabb(body);
 }
 void Meshrender::UpdateCollision()
@@ -127,9 +120,9 @@ void Meshrender::UpdateCollision()
 
 	if (this->body == NULL) return;
 
-	if (!_MainWorld->_PlayMode)
+	if (!Window::_MainWorld->_PlayMode)
 	{
-		_MainWorld->deleteRigidBody(this->body);
+		Window::_MainWorld->deleteRigidBody(this->body);
 		CreateMouseCollision();
 	}
 	else
@@ -141,7 +134,7 @@ void Meshrender::UpdateCollision()
 		initialTransform.setRotation(quat);
 		this->body->setWorldTransform(initialTransform);
 		this->myMotionState->setWorldTransform(initialTransform);
-		_MainWorld->m_dynamicsWorld->updateSingleAabb(this->body);
+		Window::_MainWorld->m_dynamicsWorld->updateSingleAabb(this->body);
 	}
 
 }

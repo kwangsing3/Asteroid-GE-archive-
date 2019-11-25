@@ -162,7 +162,6 @@ void AGE_FileBrowser::Inited()
 	return;
 }
 
-
 std::vector<AGE_FileBrowser::AGE_FileStruct*> AGE_FileBrowser::Refresh_below(std::wstring _NewPath) //第二層的讀取
 {
 	std::vector<AGE_FileStruct*> _result;
@@ -206,7 +205,6 @@ void AGE_FileBrowser::Refresh(AGE_FileStruct* _filestruct) // Only Directory can
 	if (!_filestruct->_filesBelow.empty())_filestruct->_filesBelow.clear();
 	_filestruct->_filesBelow = Refresh_below(_filestruct->_path);
 }
-
 
 
 void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
@@ -282,7 +280,6 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 		}	
 		else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
 		{
-			
 			selection_mask = (1 << node_clicked);           // Click to single-select
 		}
 	}
@@ -395,14 +392,14 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					float next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x; // Expected position if next button was on same line
 					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 					{
-						ImGui::SetDragDropPayload("pic", Dir_currentSelect->_filesBelow[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
+						ImGui::SetDragDropPayload("PictureIcon", Dir_currentSelect->_filesBelow[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
 																							// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
 						ImGui::Text("Swap %s", Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str());
 						ImGui::EndDragDropSource();
 					}
 					if (ImGui::BeginDragDropTarget())
 					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("pic"))    // 指被拖起來的那個物件
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PictureIcon"))    // 指被拖起來的那個物件
 						{
 							IM_ASSERT(payload->DataSize == sizeof(AGE_FileStruct));
 							AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
