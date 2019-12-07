@@ -52,6 +52,7 @@ void World::_Pivot::CreateMouseCollision()
 			world_this->m_dynamicsWorld->addRigidBody(body[i], _group, _mask);
 		}
 	}
+	
 }
 void World::_Pivot::UpdateCollision()
 {
@@ -60,9 +61,12 @@ void World::_Pivot::UpdateCollision()
 }
 void World::_Pivot::DeleteCollision()
 {
+	world_this->depose_init_PhysicsProgress();
+
 	if (this->body[0] != NULL)world_this->m_dynamicsWorld->removeRigidBody(body[0]);
 	if (this->body[1] != NULL)world_this->m_dynamicsWorld->removeRigidBody(body[1]);
 	if (this->body[2] != NULL)world_this->m_dynamicsWorld->removeRigidBody(body[2]);
+	
 }
 void World::_Pivot::AddCollision()
 {
@@ -113,14 +117,12 @@ void World::initPhysics()
 }
 void World::init_PhysicsProgress()
 {
-	if (!InitPhysics) return;
+	
 	InitPhysics = false;
 	depose_init_PhysicsProgress();
 	for (int i = 0; i < this->m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
-		if (this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender == NULL)
-			continue;
-		if (this->m_dynamicsWorld->getCollisionObjectArray()[i] == this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->meshrender->body)
+		if (this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet->transform->name == "Pivot")
 			continue;
 
 		_PhysicsProgress.push_back(new _PhysicsStruct(i, this->m_dynamicsWorld->getCollisionObjectArray()[i]->_ActorInBullet, false));

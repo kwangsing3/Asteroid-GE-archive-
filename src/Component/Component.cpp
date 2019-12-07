@@ -9,9 +9,9 @@
 #include <Actor.hpp>
 #include <time.h>
 
-std::vector<int> Component::vec_ID;
+std::vector<int> Component_Interface::vec_ID;
 
-unsigned Component::GetTimeSeed()
+unsigned Component_Interface::GetTimeSeed()
 {
     return (unsigned)time(NULL);
 }

@@ -19,7 +19,7 @@ class btTransform;
 class btDefaultMotionState;
 class Shader;
 class Actor;
-class Meshrender :public Component
+class Meshrender :public Component_Interface
 {
 public:
 	bool _needdebug = false;
@@ -45,12 +45,15 @@ public:
 	}
 	void SaveFile(pugi::xml_node* _node) override;
 	void OpenFile(pugi::xml_node* _node) override;
-	void Copy(Actor* _actor) override;
+	void Copy(Component_Interface* _information) override;
+	void Inspector() override;
+	void MoveEvent() { UpdateCollision(); }
 	virtual void UpdateCollision();
 	void SetVisable(bool _bool);
 	void ReSetCollisionFlag();
 	void Draw(Shader* _shader);
 	void CreateMouseCollision();
+
 private:
 
 

@@ -213,9 +213,9 @@ public:
 						isClickingPivot = true;
 					}
 					else
-					{
 						WindowUI::SelectThisActor(RayCallback.m_collisionObject->_ActorInBullet);
-					}
+						
+					
 				}
 				else if (!ImGui::IsAnyWindowFocused())
 				{
@@ -224,9 +224,7 @@ public:
 			}
 		}
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
-		{
 			isClickingPivot = false;
-		}
 	}
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{

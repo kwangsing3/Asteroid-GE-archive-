@@ -7,41 +7,29 @@
 
 #ifndef ACTOR_H
 #define ACTOR_H
+#include <vector>
 
-#include <Component/Transform.hpp>
-#include <Component/DirectionalLight.hpp>
-#include <Component/PointLight.hpp>
-#include <Component/Meshrender.hpp>
-#include <Component/BoxCollision.hpp>
 
+class Component_Interface;
+class Transform;
 class Actor
 {
 public:
 
-	Transform* transform = NULL;
-	DirectionalLight* _Dirlight = NULL;
-	PointLight* _PointLight = NULL;
-	Meshrender* meshrender = NULL;
-	BoxCollision* boxcollision = NULL;
-	bool enabled;
 
-	void removeActor();
-	//bool IsSelected;
+	bool enabled;
+	std::vector<Component_Interface*> _Components;
+	Transform* transform = NULL;
+	void removeActor() {}
 
 	Actor()
 	{
-		transform = new Transform();
-		transform->_actor = this;
-		transform->name = (char*)"Actor";
-		enabled = true;
-
-
-
+		inited();
 	}
 
 
 private:
-
+	void inited();
 };
 
 

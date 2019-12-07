@@ -2,6 +2,7 @@
 
 #include <ADD_Component.hpp>
 #include <Actor.hpp>
+#include <Component/Transform.hpp>
 #include <Component/Meshrender.hpp>
 #include <Component/DirectionalLight.hpp>
 #include <Component/PointLight.hpp>
@@ -57,8 +58,7 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor, std::string _path)  // 
 			Meshrender* _mesh = new Meshrender(_ac);
 			_mesh->_model = _OwnedSceneManager->ModelList[i]->_model;
 			_mesh->CreateMouseCollision();
-			_ac->meshrender = _mesh;
-
+			_ac->_Components.push_back(_mesh);
 			if (!use_Instance || _mesh->_model->HasBone)
 				_OwnedSceneManager->AddToRenderPipeline(_mesh);
 			else
@@ -69,7 +69,7 @@ Meshrender* ADD_Component::Add_Meshrender(Actor* _actor, std::string _path)  // 
 	/// If not Found then create new ModelList
 	Meshrender* _mesh = new Meshrender(_ac, _path);
 	_OwnedSceneManager->ModelList.push_back(new ModelLoadStruct(_path, _mesh->_model));
-	_ac->meshrender = _mesh;
+	_ac->_Components.push_back(_mesh);
 	
 	if (!use_Instance || _mesh->_model->HasBone)
 		_OwnedSceneManager->AddToRenderPipeline(_mesh);
@@ -95,7 +95,7 @@ Meshrender* ADD_Component::ADD_CustomMesh(float* vertexs, unsigned int _Length) 
 	std::vector<Mesh*> _newMeshVec;
 	_newMeshVec.push_back(new Mesh(_newVer));
 	_meshrender->_model = new AGE_Model(_newMeshVec);
-	_ac->meshrender = _meshrender;
+	_ac->_Components.push_back(_meshrender);
 	// 不應該加入到 Draw Pipeline 中  畢竟會繪製兩次  有另外獨立到SceneManager 中繪製
 	return _meshrender;
 
@@ -115,8 +115,7 @@ DirectionalLight* ADD_Component::Add_DirectionalLight(Actor* _actor)
 	Actor* _ac = _actor == NULL ? Add_Actor() : _actor;
 	DirectionalLight* _DirLight = new DirectionalLight(_actor);
 	//	_ac->transform->name = (char*)"Directional Light";
-	_OwnedSceneManager->vec_DirectionlLight.push_back(_DirLight);
-	_ac->_Dirlight = _DirLight;
+	_ac->_Components.push_back(_DirLight);
 	//_ac->transform->rotation = { -0.2f, -1.0f, -0.3f };
 	return _DirLight;
 }
@@ -126,17 +125,16 @@ PointLight* ADD_Component::Add_PointLight(Actor* _actor)
 	PointLight* _PoLight = new PointLight(_actor);
 	//_ac->transform->name = (char*)"Point Light";
 	_OwnedSceneManager->vec_PointLight.push_back(_PoLight);
-	_ac->_PointLight = _PoLight;
+	_ac->_Components.push_back(_PoLight);
 	return _PoLight;
 }
 
 BoxCollision* ADD_Component::Add_BoxCollision(Actor* _actor, float mass)
 {
 	Actor* _ac = _actor == NULL ? Add_Actor() : _actor;
-	if (_ac->meshrender == NULL) Add_Meshrender(_ac, Shape::Cube);
 	BoxCollision* _box = new BoxCollision(_actor, mass);
 	//_ac->transform->name = (char*)"Cube";
-	_ac->boxcollision = _box;
+	_ac->_Components.push_back(_box);
 
 	return _box;
 }
@@ -145,18 +143,13 @@ Actor* ADD_Component::Copy_Actor(Actor* _actor)
 {
 	if (_actor == NULL) return NULL;
 	Actor* _ac = Add_Actor();
-	_ac->transform->Copy(_actor);
+	_ac->_Components.resize(_actor->_Components.size());
+	for (auto i = 0; i < _actor->_Components.size(); i++)
+	{
+		_ac->_Components[i]->Copy(_actor->_Components[i]);
+	}
 
-	if (_actor->meshrender != NULL)
-		Add_Meshrender(_ac, _actor->meshrender->_model->_shape)->Copy(_actor);
-	if (_actor->_Dirlight != NULL)
-		Add_DirectionalLight(_ac)->Copy(_actor);
-	if (_actor->_PointLight != NULL)
-		Add_PointLight(_ac)->Copy(_actor);
-	if (_actor->boxcollision != NULL)
-		Add_BoxCollision(_ac, _actor->boxcollision->_Mass)->Copy(_actor);
-
-
+	AGE_ASSERT(0); //現在各Components之間的Copy功能還沒有實現
 	return _ac;
 }
 

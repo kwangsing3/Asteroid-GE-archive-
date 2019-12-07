@@ -5,7 +5,7 @@
 class btRigidBody;
 class btCollisionShape;
 class btTransform;
-class BoxCollision: public Component
+class BoxCollision: public Component_Interface
 {
 
 public:
@@ -34,13 +34,15 @@ public:
 	}
 	void SaveFile( pugi::xml_node* _node) override;
 	void OpenFile( pugi::xml_node* _node) override;
-	void Copy(Actor* _actor) override;
+	void Copy(Component_Interface* _information) override;
+	void Inspector() override;
+	void MoveEvent() { UpdateCollision(); }
 	void UpdateCollision();
 	void ReSetCollisionFlag();
 private:
 	void CreateBox();
 protected:
-	btCollisionShape* colShape;
+	btCollisionShape* colShape = NULL;
 
 };
 

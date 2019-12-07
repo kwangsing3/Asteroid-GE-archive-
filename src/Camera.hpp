@@ -42,7 +42,7 @@ public:
 };
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
-class Camera:public Component
+class Camera:public Component_Interface
 {
 public:
 	std::vector<glm::vec2> viewports
@@ -106,8 +106,9 @@ public:
 	unsigned int GetframeBuffer();
 	void SaveFile(pugi::xml_node* _node);
 	void OpenFile(pugi::xml_node* _node);
-
-
+	void Copy(Component_Interface* _information) {}
+	void Inspector() {}
+	void MoveEvent() {}
 
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix()

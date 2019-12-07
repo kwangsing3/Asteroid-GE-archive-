@@ -7,24 +7,42 @@
 
 void BoxCollision::SaveFile(pugi::xml_node* _node)
 {
-	if (_node == NULL || this->_actor->boxcollision == NULL) return;
+	if (_node == NULL) return;
 	_node->append_attribute("_BoxCollision") = 1;
-	_node->append_child("BoxCollision").append_attribute("Mass") = this->_actor->boxcollision->_Mass;
+	_node->append_child("BoxCollision").append_attribute("Mass") = this->_Mass;
 }
 void BoxCollision::OpenFile(pugi::xml_node* _node)
 {
-	if (_node == NULL || this->_actor->boxcollision == NULL) return;
+	if (_node == NULL) return;
 	float _f = _node->child("BoxCollision").attribute("Mass").as_float();
 	this->_Mass = _f;
 	UpdateCollision();
 }
 
-void BoxCollision::Copy(Actor * _actor)
+void BoxCollision::Copy(Component_Interface* _information)
 {
-	if (_actor == NULL || _actor->boxcollision == NULL) return;
-	this->enabled = _actor->boxcollision->enabled;
-	//-----Component-----
-	this->_needdebug = _actor->boxcollision->_needdebug;
+	if (_information == NULL) return;
+	
+
+
+
+
+
+}
+
+void BoxCollision::Inspector()
+{
+	if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
+	{
+		float f0 = this->_Mass;
+		if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
+		{
+			this->_Mass = f0;
+			this->UpdateCollision();
+		}
+		if (ImGui::Checkbox("Debug Line", &this->_needdebug))
+			this->ReSetCollisionFlag();
+	}
 
 }
 

@@ -17,6 +17,7 @@
 #include <Actor.hpp>
 
 #include <Component/Meshrender.hpp>
+#include <Component/Transform.hpp>
 // 為了方便釐清， 先做新的Class 來當作Pivot
 
 class Camera;
@@ -60,7 +61,7 @@ public:
 		{
 			SwitchDragMode(0);
 			_actor = _a;
-			_actor->transform->name = (char*)"Pivot";
+			_actor->transform->name = "Pivot";
 			this->CreatePivot();
 			CreateMouseCollision();
 		}
@@ -108,45 +109,19 @@ public:
 		}
 		void Draw(Shader* _shader, bool _renderShadow)// override
 		{
-			if (_renderShadow) return;
-			//Shader* _shader = _StandardShader? _StandardShader : new Shader("Shader/SimpleVertexShader.vs", "Shader/SimpleFragmentShader.fs");
-			//return;
-			if (this->_visable)
-			{
-				{
-					_shader->use();
-					//_shader.setVec3("viewPos", _editorCamera.transform.position);
-					//_shader.setFloat("material.shininess", 32.0f);   // 先暫時關掉燈光   確認跟燈光沒關係
-
-					glm::mat4 projection = world_this->_editorCamera->Projection;
-					glm::mat4 view = world_this->_editorCamera->GetViewMatrix();
-					_shader->setMat4("projection", projection);
-					_shader->setMat4("view", view);
-
-					glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first	
-					model = glm::translate(model, glm::vec3(this->_actor->transform->position.x, this->_actor->transform->position.y, this->_actor->transform->position.z));
-					glm::quat MyQuaternion;
-					glm::vec3 EulerAngles(glm::radians(this->_actor->transform->rotation.x), glm::radians(-this->_actor->transform->rotation.y), glm::radians(this->_actor->transform->rotation.z));
-					MyQuaternion = glm::quat(EulerAngles);
-					glm::mat4 RotationMatrix = glm::toMat4(MyQuaternion);
-					model = model * RotationMatrix;
-					model = glm::scale(model, glm::vec3(this->_actor->transform->scale.x, this->_actor->transform->scale.y, this->_actor->transform->scale.z));
-					_shader->setMat4("model", model);
-					//_shader->setVec3("Color", this->VertexColor.x, this->VertexColor.y, this->VertexColor.z);
-					//_shader.setBool("shadows", true); // enable/disable shadows by pressing 'SPACE'
-					//_shader.setBool("reverse_normals", false); // enable/disable shadows by pressing 'SPACE'
-				}
-				glBindVertexArray(VAO);
-				glDrawArrays(GL_LINES, 0, 36);
-			}
+			
 		}
 		void Translate(glm::vec3 _pos)
 		{
+			Transform* _trans;
+		
+
+
 			if (_lowwerActor.size() > 1)
 			{
 				for (int i = 0; i < _lowwerActor.size(); i++)
 				{
-					this->_lowwerActor[i]->transform->Translate(this->_lowwerActor[i]->transform->position + (_pos - this->_actor->transform->position));
+					_trans->Translate(this->_lowwerActor[i]->transform->position + (_pos - this->_actor->transform->position));
 				}
 			}
 			else

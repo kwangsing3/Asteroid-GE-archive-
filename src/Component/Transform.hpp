@@ -12,7 +12,7 @@
 
 class btTransform;
 class Actor;
-class Transform:public Component
+class Transform:public Component_Interface
 {
 public:
     glm::vec3 position;
@@ -28,9 +28,20 @@ public:
         name =(char*)"New Actor";
         enabled = true;
     }
+    Transform(Actor* actor)
+    {
+        _actor = actor;
+        position = glm::vec3(0.0f);
+        rotation = glm::vec3(0.0f);
+        scale = glm::vec3(1.0f);
+        name = (char*)"New Actor";
+        enabled = true;
+    }
     void SaveFile( pugi::xml_node* _node) override;
     void OpenFile( pugi::xml_node* _node) override;
-    void Copy(Actor* _actor) override;
+    void Copy(Component_Interface* _information) override;
+    void Inspector() override;
+    void MoveEvent() {};
     void Translate(glm::vec3 _pos);
     void Translate(glm::mat4 _pos);
     void Rotate(glm::vec3 _rot);

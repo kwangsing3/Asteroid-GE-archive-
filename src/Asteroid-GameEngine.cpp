@@ -42,6 +42,7 @@ int main()
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	Window* _Editorwindow = new Window();
 
 

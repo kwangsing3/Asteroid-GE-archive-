@@ -322,38 +322,8 @@ void WindowUI::Updated_WindowEvent(bool* p_open, unsigned int* width, unsigned i
 
 
 
-	//Main Background--------------------------------------------------------------------------------------
-	ImGui::SetNextWindowBgAlpha(0);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(Window_Width, Window_Height), ImGuiCond_Once);
-	{
-		if (!ImGui::Begin("Main Background", p_open, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysUseWindowPadding))
-		{
-			// Early out if the window is collapsed, as an optimization.
-			ImGui::End();
-			return;
-		}
-		/*if (ImGui::ImageButton((void*)0, ImVec2(100, 100),ImVec2(0, 0), ImVec2(1, 1),1,ImVec4(0,0,0,0), ImVec4(0, 0, 0, 0)))
-		{
-			
-		}*/
-		ImGui::Image((void*)0, ImGui::GetWindowSize() , ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0), ImVec4(0, 0, 0, 0));
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PictureIcon"))
-			{
-				IM_ASSERT(payload->DataSize == sizeof(AGE_FileBrowser::AGE_FileStruct));
-				AGE_FileBrowser::AGE_FileStruct payload_n = *(AGE_FileBrowser::AGE_FileStruct*)payload->Data;
-				AGE_PRINTCONSLE("666");
-			}
-			ImGui::EndDragDropTarget();
-		}
-		
-		MainMenuBar();
-		ImGui::End();
-	
-	}
-	//調試用
+
+	MainMenuBar();
 
 
 
@@ -517,84 +487,11 @@ void WindowUI::ListInspectorCur(SelectObject* _sel)
 {
 	if (_sel != NULL)
 	{
-		if (_sel->_actor->transform != NULL && _sel->_actor->transform->enabled)
+		for (auto& com : _sel->_actor->_Components)
 		{
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-
-				float _test[3] = { glm::radians(_sel->_actor->transform->rotation.x),glm::radians(_sel->_actor->transform->rotation.y),glm::radians(_sel->_actor->transform->rotation.z) };
-				if (ImGui::DragFloat3("Position", (float*)&_sel->_actor->transform->position, 0.01f)) { _sel->_actor->transform->Translate(_sel->_actor->transform->position); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
-				if (ImGui::DragFloat3("Rotation", (float*)&_sel->_actor->transform->rotation, 0.1f)) { _sel->_actor->transform->Rotate(_sel->_actor->transform->rotation); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
-				if (ImGui::DragFloat3("Scale", (float*)&_sel->_actor->transform->scale, 0.01f)) { _sel->_actor->transform->Scale(_sel->_actor->transform->scale); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
-
-			}
+			com->Inspector();
 		}
-		if (_sel->_actor->_Dirlight != NULL && _sel->_actor->_Dirlight->enabled)
-		{
-			if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_Dirlight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_Dirlight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_Dirlight->Specular);
-			}
-		}
-		if (_sel->_actor->_PointLight != NULL && _sel->_actor->_PointLight->enabled)
-		{
-			if (ImGui::CollapsingHeader("PointLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::ColorEdit3("Ambient", (float*)&_sel->_actor->_PointLight->Ambient);
-				ImGui::ColorEdit3("Diffuse", (float*)&_sel->_actor->_PointLight->Diffuse);
-				ImGui::ColorEdit3("Specular", (float*)&_sel->_actor->_PointLight->Specular);
-				ImGui::DragFloat("Constant", &_sel->_actor->_PointLight->Constant, 0.01f);
-				ImGui::DragFloat("linear", &_sel->_actor->_PointLight->linear, 0.01f);
-				ImGui::DragFloat("quadratic", &_sel->_actor->_PointLight->quadratic, 0.01f);
-			}
-		}
-		if (_sel->_actor->meshrender != NULL && _sel->_actor->meshrender->enabled)
-		{
-			if (ImGui::CollapsingHeader("MeshRender", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				ImGui::Text("MeshRender");
-				const char* items[] = { "Cube","Sphere","No function for now" };
-				static int item_current = 0;
-				ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
-
-				ImGui::ColorEdit4("Diffuse", (float*)&_sel->_actor->meshrender->VertexColor);
-
-				if (ImGui::Checkbox("Debug", &_sel->_actor->meshrender->_needdebug))
-				{
-					//_sel->_actor->meshrender->ReSetCollisionFlag();
-				}
-				static int _curco = 0;
-				if (ImGui::Button("Reload Shader"))   Window::_MainWorld->_SceneManager->NeedReloadShader = true;
-
-				if (ImGui::Checkbox("Visable", &_sel->_actor->meshrender->_visable))
-				{
-					//SceneManager::NeedInitedDraw = true;
-					_sel->_actor->meshrender->SetVisable(_sel->_actor->meshrender->_visable);
-				}
-			}
-		}
-		/*if (_sel->_actor->boxcollision != NULL && _sel->_actor->boxcollision->enabled)
-		{
-			if (ImGui::CollapsingHeader("BoxCollision", ImGuiTreeNodeFlags_DefaultOpen) | false)
-			{
-				float f0 = _sel->_actor->boxcollision->_Mass;
-				if (ImGui::InputFloat("Mass", &f0, 0.1f, 1.0f, "%.3f"))
-				{
-
-					_sel->_actor->boxcollision->_Mass = f0;
-					_sel->_actor->boxcollision->UpdateCollision();
-				}
-				if (ImGui::Checkbox("Debug Line", &_sel->_actor->boxcollision->_needdebug))
-				{
-					_sel->_actor->boxcollision->ReSetCollisionFlag();
-				}
-			}
-		}*/
 	}
-
-
 }
 
 
@@ -640,9 +537,8 @@ static void MainMenuBar()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Add BoxCollision"))
 			{
-				/*if (WindowUI::cur_SelectObject_List[0] != NULL && WindowUI::cur_SelectObject_List[0]->_actor != NULL)
-					Window::_MainWorld->_SceneManager._ADDManager->Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);*/
-
+				if (WindowUI::cur_SelectObject_List[0] != NULL && WindowUI::cur_SelectObject_List[0]->_actor != NULL)
+					Window::_MainWorld->_SceneManager->_ADDManager->Add_BoxCollision(WindowUI::cur_SelectObject_List[0]->_actor);
 			}
 			if (ImGui::MenuItem("Add BoxCollision2D")) {}
 			if (ImGui::MenuItem("Add SphereCollision")) {}

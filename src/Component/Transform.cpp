@@ -11,11 +11,7 @@
 #include "btBulletCollisionCommon.h"
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-//#include <glm/gtx/quaternion.hpp>
-//#include <Math/Math.h>
-
-//#include <World.h>
-//#include <Xml/pugixml.hpp>
+#include <Window.hpp>
 void Transform::SaveFile(pugi::xml_node* _node)
 {
 	if (_node == NULL || this->_actor->transform == NULL) return;
@@ -47,31 +43,36 @@ void Transform::OpenFile(pugi::xml_node* _node)
 	this->scale.z = _node->child("Scale").attribute("z").as_float();
 }
 
-void Transform::Copy(Actor* _actor)
+void Transform::Copy(Component_Interface* _information)
 {
-	if (_actor == NULL) return;
-	this->enabled = _actor->transform->enabled;
-	//-----Component-----
-	this->position.x = _actor->transform->position.x;
-	this->position.y = _actor->transform->position.y;
-	this->position.z = _actor->transform->position.z;
-	this->rotation.x = _actor->transform->rotation.x;
-	this->rotation.y = _actor->transform->rotation.y;
-	this->rotation.z = _actor->transform->rotation.z;
-	this->scale.x = _actor->transform->scale.x;
-	this->scale.y = _actor->transform->scale.y;
-	this->scale.z = _actor->transform->scale.z;
-	std::string _ns = _actor->transform->name;
-	this->name = _ns.append(" (Copy)");
+	if (_information == NULL) return;
 
 
+
+}
+
+void Transform::Inspector()
+{
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) | false)
+	{
+		float _test[3] = { glm::radians(this->rotation.x),glm::radians(this->rotation.y),glm::radians(this->rotation.z) };
+		if (ImGui::DragFloat3("Position", (float*)&this->position, 0.01f)) { this->Translate(this->position); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
+		if (ImGui::DragFloat3("Rotation", (float*)&this->rotation, 0.1f)) { this->Rotate(this->rotation); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
+		if (ImGui::DragFloat3("Scale", (float*)&this->scale, 0.01f)) { this->Scale(this->scale); Window::_MainWorld->_SceneManager->NeedInitedDraw = true; }
+	}
 }
 
 void Transform::Translate(glm::vec3 _pos)
 {
 	this->position = _pos;
-	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+
+	for (auto &com:this->_actor->_Components)
+	{
+		com->MoveEvent();
+	}
+
+	//if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
+	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 void Transform::Translate(glm::mat4 _pos)
@@ -88,8 +89,8 @@ void Transform::Translate(glm::mat4 _pos)
 void Transform::Rotate(glm::vec3 _rot)
 {
 	this->rotation = _rot;
-	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
+	//if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
+	//if (this->_actor->boxcollision != NULL) this->_actor->boxcollision->UpdateCollision();
 }
 
 /*void Transform::Rotate(glm::Quaternion _qu);
@@ -105,9 +106,9 @@ void Transform::Rotate(glm::vec3 _rot)
 void Transform::Scale(glm::vec3 _scal)
 {
 	this->scale = _scal;
-	if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
-	if (this->_actor->boxcollision != NULL) 
-		this->_actor->boxcollision->UpdateCollision();
+	//if (this->_actor->meshrender != NULL) this->_actor->meshrender->UpdateCollision();
+	//if (this->_actor->boxcollision != NULL) 
+	//	this->_actor->boxcollision->UpdateCollision();
 }
 btScalar _x, _y, _z;
 void Transform::MoveByPhysics(btTransform* _trans)

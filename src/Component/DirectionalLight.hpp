@@ -12,7 +12,7 @@
 
 
 
-class DirectionalLight :public Component
+class DirectionalLight :public Component_Interface
 {
 public:
 
@@ -31,7 +31,17 @@ public:
 	}
 	void SaveFile(pugi::xml_node* _node) override;
 	void OpenFile(pugi::xml_node* _node) override;
-	void Copy(Actor* _actor) override;
+	void Copy(Component_Interface* _information) override;
+	void Inspector() 
+	{
+		if (ImGui::CollapsingHeader("DirectionalLight", ImGuiTreeNodeFlags_DefaultOpen) | false)
+		{
+			ImGui::ColorEdit3("Ambient", (float*)&this->Ambient);
+			ImGui::ColorEdit3("Diffuse", (float*)&this->Diffuse);
+			ImGui::ColorEdit3("Specular", (float*)&this->Specular);
+		}
+	}
+	void MoveEvent() {};
 };
 
 #endif /* DirectionalLight_hpp */

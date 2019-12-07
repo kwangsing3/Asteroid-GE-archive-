@@ -131,9 +131,7 @@ void SceneManager::SaveFile()
 	// Save Camera
 	//*************************************************
 	if (_world_this->_editorCamera->enabled)
-	{
 		_world_this->_editorCamera->SaveFile(&root);
-	}
 	//*************************************************
 	// Save Objects 
 	//*************************************************
@@ -142,35 +140,16 @@ void SceneManager::SaveFile()
 	{
 		pugi::xml_node _cur = root.append_child("Objects");
 		_cur.append_attribute("name") = Objects[i]->transform->name.c_str();
-		//_cur.append_attribute("ID") = Objects[i]->ID;
 
 		//過濾坐標軸
-		if (Objects[i]->meshrender != NULL && Objects[i]->meshrender->_model->_shape == Shape::DEBUG)
-			continue;
+		//if (Objects[i]->transform->name=="Pivot")
+		//	continue;
+		//過濾坐標軸
 
 		component_size = 0;
-		if (Objects[i]->transform != NULL)
+		for (auto &com: Objects[i]->_Components)
 		{
-			Objects[i]->transform->SaveFile(&_cur);
-		}
-		if (Objects[i]->meshrender != NULL)
-		{
-			Objects[i]->meshrender->SaveFile(&_cur);
-			component_size++;
-		}
-		if (Objects[i]->_Dirlight != NULL)
-		{
-			Objects[i]->_Dirlight->SaveFile(&_cur);
-			component_size++;
-		}
-		if (Objects[i]->_PointLight != NULL)
-		{
-			Objects[i]->_PointLight->SaveFile(&_cur);
-			component_size++;
-		}
-		if (Objects[i]->boxcollision != NULL)
-		{
-			Objects[i]->boxcollision->SaveFile(&_cur);
+			com->SaveFile(&_cur);
 			component_size++;
 		}
 		_cur.append_attribute("Component_size") = component_size;
@@ -319,7 +298,7 @@ Meshrender* SceneManager::ADD_Croodinate()
 	std::vector<Mesh*> _newMeshVec;
 	_newMeshVec.push_back(new Mesh(_newVer));
 	_meshrender->_model = new AGE_Model(_newMeshVec);
-	_ac->meshrender = _meshrender;
+	_ac->_Components.push_back(_meshrender);
 	// 不應該加入到 Draw Pipeline 中  畢竟會繪製兩次  有另外獨立到SceneManager 中繪製
 	return _meshrender;
 }

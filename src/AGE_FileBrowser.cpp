@@ -12,7 +12,8 @@
 #include <stb_image.h>
 #endif // !STB_IMAGE_IMPLEMENTATION
 
-
+extern unsigned int Window_Width;
+extern unsigned int Window_Height;
 
 
 path* AGE_FileBrowser::pathToDisplay;
@@ -25,6 +26,7 @@ unsigned int AGE_FileBrowser::DirectoryPicdata;
 unsigned int AGE_FileBrowser::DocPicdata;
 AGE_FileBrowser::AGE_FileStruct* AGE_FileBrowser::Dir_currentSelect, *AGE_FileBrowser::Dir_ProjectBase;
 AGE_FileBrowser::AGE_FileStruct* AGE_FileBrowser::PreparedForCopy = NULL;
+static bool enable_drag = true, draging = false;
 
 int currentIndex = 0;
 
@@ -288,6 +290,7 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 		ImGui::SetDragDropPayload("TreenodeDragDrop", _fst, sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
 																			// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
 		ImGui::Text("Swap %s", _fst->_FileName_string.c_str());
+		draging = true;
 		ImGui::EndDragDropSource();
 	}
 	if (ImGui::BeginDragDropTarget())
@@ -298,6 +301,7 @@ void AGE_FileBrowser::IfitIsaDirectory(AGE_FileStruct* _fst)
 			AGE_FileStruct payload_n = *(AGE_FileStruct*)payload->Data;
 			AGE_PRINTCONSLE(_fst->_FileName_string.c_str());
 		}
+		draging = false;
 		ImGui::EndDragDropTarget();
 	}
 	ImGui::PopStyleVar();
@@ -395,6 +399,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 						ImGui::SetDragDropPayload("PictureIcon", Dir_currentSelect->_filesBelow[i], sizeof(AGE_FileStruct));        // Set payload to carry the index of our item (could be anything)
 																							// Display preview (could be anything, e.g. when dragging an image we could decide to display the filename and a small preview of the image, etc.)
 						ImGui::Text("Swap %s", Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str());
+						draging = true;
 						ImGui::EndDragDropSource();
 					}
 					if (ImGui::BeginDragDropTarget())
@@ -406,6 +411,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 							AGE_PRINTCONSLE(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str());
 							AGE_LIB::FileSystem::Move(payload_n._path, Dir_currentSelect->_filesBelow[i]->_path);
 						}
+						draging = false;
 						ImGui::EndDragDropTarget();
 					}
 					
@@ -531,7 +537,38 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 		ImGui::EndTabBar();
 	}
 
+	//Main Background--------------------------------------------------------------------------------------
+	ImGui::SetNextWindowBgAlpha(0);
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(Window_Width, Window_Height), ImGuiCond_Once);
+	{
+		if (!ImGui::Begin("Main Background", &enable_drag, draging? (ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysUseWindowPadding): (ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_AlwaysUseWindowPadding|ImGuiWindowFlags_NoInputs)))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
+		/*if (ImGui::ImageButton((void*)0, ImVec2(100, 100),ImVec2(0, 0), ImVec2(1, 1),1,ImVec4(0,0,0,0), ImVec4(0, 0, 0, 0)))
+		{
 
+		}*/
+		ImGui::Image((void*)0, ImGui::GetWindowSize(), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0), ImVec4(0, 0, 0, 0));
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PictureIcon"))
+			{
+				IM_ASSERT(payload->DataSize == sizeof(AGE_FileBrowser::AGE_FileStruct));
+				AGE_FileBrowser::AGE_FileStruct payload_n = *(AGE_FileBrowser::AGE_FileStruct*)payload->Data;
+				AGE_PRINTCONSLE(payload_n._FileName_string.c_str());
+			}
+			draging = false;
+			ImGui::EndDragDropTarget();
+		}
+
+	
+		ImGui::End();
+
+	}
 
 
 
