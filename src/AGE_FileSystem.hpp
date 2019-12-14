@@ -3,10 +3,21 @@
 
 #include <iostream>
 #include <filesystem>
+#include <string>
 
+namespace AGE_LIB_PRIVATE
+{
+	namespace FileSystem
+	{
+		std::string screencapture();
+	}
+	
+}
 
 namespace AGE_LIB
 {
+	
+
 	namespace FileSystem 
 	{
 		static void Move(std::filesystem::path  _from, std::filesystem::path _to);
@@ -106,15 +117,17 @@ namespace AGE_LIB
 			return std::filesystem::absolute(_input).wstring();
 		}
 
+	
 
 
 
+		// 簡簡單單的截圖功能
+		static std::string Screencapture()
+		{
+			return AGE_LIB_PRIVATE::FileSystem::screencapture();
+		}
 
-
-
-
-
-
+	
 
 
 

@@ -10,6 +10,7 @@
 #include <World.hpp>
 #include <Raycast.hpp>
 #include <AGE_FileBrowser.hpp>
+#include <AGE_FileSystem.hpp>
 
 extern unsigned int Window_Width;
 extern unsigned int Window_Height;
@@ -77,6 +78,8 @@ public:
 
 	static void processInput(GLFWwindow* window)
 	{
+		
+
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			WindowShouldClose = true;
 
@@ -118,7 +121,10 @@ public:
 			if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
 				WindowUI::PasteEvent();
 		}
-		
+		if (glfwGetKey(window, GLFW_KEY_F5) == GLFW_PRESS)
+		{
+			AGE_PRINTCONSLE(AGE_LIB::FileSystem::Screencapture());
+		}
 	}
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
@@ -173,6 +179,8 @@ public:
 			_MainWorld->_editorCamera->ProcessMouseMovement(xoffset, yoffset);
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
+
+	
 	}
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
@@ -180,6 +188,7 @@ public:
 		{
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+	
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
@@ -230,6 +239,11 @@ public:
 	{
 		if (!ImGui::IsAnyWindowFocused())
 			_MainWorld->_editorCamera->ProcessMouseScroll(yoffset);
+	}
+	// 開發調適用
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+	
 	}
 };
 

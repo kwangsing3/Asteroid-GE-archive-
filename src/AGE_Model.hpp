@@ -60,7 +60,7 @@ private:
 		
 		loadModel(_path);
 	}
-	void loadModel(std::string const& path);
+	void loadModel(std::string const& _path);
 	Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
 	SkeletalMesh* processSkeletalMesh(aiMesh* mesh, const aiScene* scene);
 	void processNode(aiNode* node, const aiScene* scene);

@@ -2,19 +2,20 @@
 #include <AGE_Model.hpp>
 
 #include <stb_image.h>
-
+#include <filesystem>
 #include <assimp/postprocess.h>
 
-void AGE_Model::loadModel(std::string const& path)
+void AGE_Model::loadModel(std::string const& _path)
 {
-	_aiScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	_aiScene = importer.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	// check for errors
 	if (!_aiScene || _aiScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !_aiScene->mRootNode) // if is Not Zero
 	{
 		std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
 		return;
 	}
-	directory = path.substr(0, path.find_last_of('/'));
+	std::filesystem::path _ChacePath(_path);
+	directory = _ChacePath.has_parent_path()? _ChacePath.parent_path().string(): _path;
 	processNode(_aiScene->mRootNode, _aiScene);
 
 

@@ -48,6 +48,7 @@ void Window::initialized()
 	glfwSetCursorPosCallback(MainGLFWwindow, (GLFWcursorposfun)mouse_move_callback);
 	glfwSetScrollCallback(MainGLFWwindow, (GLFWscrollfun)scroll_callback);
 	glfwSetMouseButtonCallback(MainGLFWwindow, (GLFWmousebuttonfun)mouse_button_callback);
+	glfwSetKeyCallback(MainGLFWwindow, key_callback);
 	// tell GLFW to capture our mouse
 	glfwSetInputMode(MainGLFWwindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	// glad: load all OpenGL function pointers

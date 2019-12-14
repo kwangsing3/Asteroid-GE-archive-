@@ -9,7 +9,7 @@
 #include <vector>
 #include <filesystem>
 #include <GraphicEngine/imgui.h>
-
+#include <AGE_Assert.hpp>
 
 using namespace std::filesystem;
 
@@ -28,6 +28,29 @@ public:
 		_FileType _filetype = _FileType::None;
 		std::wstring _path;
 		std::vector<AGE_FileStruct*> _filesBelow;
+		std::string GetFileType()
+		{
+			switch (_filetype)
+			{
+			case AGE_FileBrowser::_FileType::None: return "None";
+				break;
+			case AGE_FileBrowser::_FileType::Directory:return "Directory";
+				break;
+			case AGE_FileBrowser::_FileType::Scene:return "Scene";
+				break;
+			case AGE_FileBrowser::_FileType::Image:return "Image";
+				break;
+			case AGE_FileBrowser::_FileType::Audio:return "Audio";
+				break;
+			case AGE_FileBrowser::_FileType::Model:return "Model";
+				break;
+			case AGE_FileBrowser::_FileType::unKnown:return "unKnown";
+				break;
+			default:
+				AGE_ASSERT(0); //Should never goes here
+				break;
+			}
+		}
 	};
 
 	static std::vector<AGE_FileStruct> vec_List_in_Directory;

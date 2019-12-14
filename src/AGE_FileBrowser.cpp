@@ -4,7 +4,7 @@
 #include <AGE_Assert.hpp>
 #include <AGE_FileSystem.hpp>
 #include <codecvt>
-
+#include <Window.hpp>
 
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -45,24 +45,24 @@ AGE_FileBrowser::_FileType AGE_FileBrowser::DefineFileType(const directory_entry
 	
 	std::string _extension(WstringToString(_entry.path().extension().wstring()));
 
-	if (_extension == ".AstGamEng")
+	if (!_extension.compare(".AstGamEng")) // if equal will return 0, otherwise 1
 	{
 		return AGE_FileBrowser::_FileType::Scene;
 	}
-	else if (_extension == ".jpg"||".png"||".gif")
+	else if (!_extension.compare(".jpg") || !_extension.compare(".png") || !_extension.compare(".gif"))
 	{
 		return AGE_FileBrowser::_FileType::Image;
 	}
-	else if (_extension == ".mp3" || ".mp4" )
+	else if (!_extension.compare(".mp3") || !_extension.compare(".mp4"))
 	{
 		return AGE_FileBrowser::_FileType::Audio;
 	}
-	else if (_extension == ".fbx" || ".obj" || ".dae")
+	else if (!_extension.compare(".fbx") || !_extension.compare(".obj") || !_extension.compare(".dae"))
 	{
 		return AGE_FileBrowser::_FileType::Model;
 	}
-
-	return AGE_FileBrowser::_FileType::unKnown;
+	else
+		return AGE_FileBrowser::_FileType::unKnown;
 }
 inline const char* ToString(AGE_FileBrowser::_FileType v)
 {
@@ -321,7 +321,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 {
 	static bool popevent_rightclick = false;
 	static bool popevent_delete = false;
-
+	//static bool earlyout = false;
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
 	if (ImGui::BeginTabBar("FileBorwser", tab_bar_flags))
 	{
@@ -386,7 +386,39 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					
 					if (ImGui::ImageButton((void*)(Dir_currentSelect->_filesBelow[i]->_filetype == _FileType::Directory ? (uintptr_t)DirectoryPicdata : (uintptr_t)DocPicdata), button_sz, ImVec2(0, 0), ImVec2(1, 1), 1, ImVec4(0.0f, 0.0f, 0.0f, 1.0f)))
 					{
-						AGE_PRINTCONSLE("Belongs to: "+Dir_currentSelect->_filesBelow[i]->_FileName_string);
+						switch (Dir_currentSelect->_filesBelow[i]->_filetype)
+						{
+						case _FileType::None:
+							break;
+						case _FileType::Directory: 
+							/*Dir_currentSelect = Dir_currentSelect->_filesBelow[i];
+							Dir_currentSelect->beenRefresh = false;
+							
+							//early out
+							ImGui::EndGroup();
+							ImGui::PopID();
+							ImGui::EndChild(); 
+							ImGui::PopStyleVar();
+							ImGui::EndTabItem();
+							ImGui::EndTabBar();
+							return;
+							*/
+
+							break;
+						case _FileType::Scene:
+							break;
+						case _FileType::Image:
+							break;
+						case _FileType::Audio:
+							break;
+						case _FileType::Model: 
+							break;
+						case _FileType::unKnown:
+							break;
+						default:
+							AGE_ASSERT(0); //Should never goes here
+							break;
+						}
 					}
 					/*if (ImGui::Button(Dir_currentSelect->_filesBelow[i]->_FileName_string.c_str(), button_sz))
 					{
@@ -414,7 +446,11 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 						draging = false;
 						ImGui::EndDragDropTarget();
 					}
-					
+					if (ImGui::IsItemHovered())
+					{
+						ImGui::SetTooltip(Dir_currentSelect->_filesBelow[i]->GetFileType().c_str());
+						
+					}
 
 					if (ImGui::BeginPopupContextItem("icon menu"))
 					{
@@ -474,6 +510,7 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 					ImGui::PopTextWrapPos();
 					
 					ImGui::EndGroup();
+
 					if (i + 1 < Dir_currentSelect->_filesBelow.size() && next_button_x2 < window_visible_x2)
 						ImGui::SameLine();
 					ImGui::PopID();
@@ -560,6 +597,27 @@ void AGE_FileBrowser::ImGUIListTheBrowser()
 				IM_ASSERT(payload->DataSize == sizeof(AGE_FileBrowser::AGE_FileStruct));
 				AGE_FileBrowser::AGE_FileStruct payload_n = *(AGE_FileBrowser::AGE_FileStruct*)payload->Data;
 				AGE_PRINTCONSLE(payload_n._FileName_string.c_str());
+				switch (payload_n._filetype)
+				{
+				case _FileType::None: 
+					break;
+				case _FileType::Directory:
+					break;
+				case _FileType::Scene:
+					break;
+				case _FileType::Image:
+					break;
+				case _FileType::Audio:
+					break;
+				case _FileType::Model: Window::_MainWorld->_SceneManager->_ADDManager->Add_Meshrender(NULL,WstringToString(payload_n._path));
+					break;
+				case _FileType::unKnown:
+					break;
+				default:
+					AGE_ASSERT(0); //Should never goes here
+					break;
+				}
+				
 			}
 			draging = false;
 			ImGui::EndDragDropTarget();
