@@ -19,6 +19,14 @@
 | Shader | `Shader/` | GLSL Shader 管理 |
 | 紋理 | `Texture/` | 材質載入（stb_image）|
 
+## 實際截圖
+
+<img width="1920" height="1080" alt="AGE_screenshot01 (1)" src="https://github.com/user-attachments/assets/e0ea6028-5d6c-4599-85ee-ddfebfd52991" />
+<img width="1919" height="1079" alt="AGE-screenshot2" src="https://github.com/user-attachments/assets/21117338-34ed-4f9c-be4c-682eaee62db6" />
+<img width="1920" height="1080" alt="AGE_screenshot01" src="https://github.com/user-attachments/assets/8cb21589-94a5-415c-b463-2f6a9b7905f9" />
+
+
+
 ## 技術棧
 
 - **C++17**
